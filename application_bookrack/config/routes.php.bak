@@ -1,0 +1,117 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+/*
+| -------------------------------------------------------------------------
+| URI ROUTING
+| -------------------------------------------------------------------------
+| This file lets you re-map URI requests to specific controller functions.
+|
+| Typically there is a one-to-one relationship between a URL string
+| and its corresponding controller class/method. The segments in a
+| URL normally follow this pattern:
+|
+|	example.com/class/method/id/
+|
+| In some instances, however, you may want to remap this relationship
+| so that a different class/function is called than the one
+| corresponding to the URL.
+|
+| Please see the user guide for complete details:
+|
+|	http://codeigniter.com/user_guide/general/routing.html
+|
+| -------------------------------------------------------------------------
+| RESERVED ROUTES
+| -------------------------------------------------------------------------
+|
+| There area two reserved routes:
+|
+|	$route['default_controller'] = 'welcome';
+|
+| This route indicates which controller class should be loaded if the
+| URI contains no data. In the above example, the "welcome" class
+| would be loaded.
+|
+|	$route['404_override'] = 'errors/page_missing';
+|
+| This route will tell the Router what URI segments to use if those provided
+| in the URL cannot be matched to a valid route.
+|
+*/
+/*$route['url_request'] = 'controller path' */
+$route['default_controller'] = "site";
+/* site controller routes */
+$route['home'] = 'site/home';
+$route['login'] = 'site/login';
+$route['register'] = 'site/register';
+$route['logout'] = 'site/logout';
+
+/* users controller routes*/
+$route['profile'] = 'users/index';
+$route['profile/edit']='users/edit';
+$route['profile/(:any)'] = 'users/index/$1';
+$route['forgot'] = 'users/forgot';
+$route['followers'] = 'users/followers';
+$route['following'] = 'users/following';
+/* books controller routes*/
+$route['book'] = 'books/index';
+$route['book/(:any)'] = 'books/index';
+/* authors controller routes*/
+$route['author'] = 'authors/index';
+$route['author/(:any)'] = 'authors/index';
+/* publishers controller routes*/
+$route['publisher'] = 'publishers/index';
+$route['publisher/(:any)'] = 'publishers/index';
+/* status controller routes*/
+$route['post'] = 'statuses/post';
+/* search controller routes*/
+$route['search'] = 'searches/index';
+$route['search/(:any)'] = 'searches/index';
+$route['get_suggested_searches'] = 'searches/get_suggestions';
+/* admin default controller routes */
+$route['admin'] = 'admin/defaultController/index';
+/* admin books controller routes */
+$route['admin/books'] = 'admin/books/index';
+$route['admin/books/insert'] = 'admin/books/insert';
+$route['admin/books/view/(:num)'] = 'admin/books/view/$1';
+$route['admin/books/update'] = 'admin/books/update/$1';
+$route['admin/books/update/(:num)'] = 'admin/books/update/$1';
+$route['admin/books/delete'] = 'admin/books/delete';
+/* admin genres controller routes */
+$route['admin/genres'] = 'admin/genres/index';
+$route['admin/genres/(:num)'] = 'admin/genres/index/$1';
+$route['admin/genres/insert'] = 'admin/genres/insert';
+$route['admin/genres/view/(:num)'] = 'admin/genres/view/$1';
+$route['admin/genres/update'] = 'admin/genres/update/$1';
+$route['admin/genres/update/(:num)'] = 'admin/genres/update/$1';
+$route['admin/genres/delete'] = 'admin/genres/delete';
+/* admin users controller routes */
+$route['admin/users'] = 'admin/users/index';
+$route['admin/users/(:num)'] = 'admin/users/index/$1';
+$route['admin/users/view/(:num)'] = 'admin/users/view/$1';
+$route['admin/users/insert'] = 'admin/users/insert';
+$route['admin/users/update'] = 'admin/users/update/$1';
+$route['admin/users/update/(:num)'] = 'admin/users/update/$1';
+$route['admin/users/delete'] = 'admin/users/delete';
+/* admin publishers controller routes */
+$route['admin/publishers'] = 'admin/publishers/index';
+$route['admin/publishers/(:num)'] = 'admin/publishers/index/$1';
+$route['admin/publishers/insert'] = 'admin/publishers/insert';
+$route['admin/publishers/view/(:num)'] = 'admin/publishers/view/$1';
+$route['admin/publishers/update'] = 'admin/publishers/update/$1';
+$route['admin/publishers/update/(:num)'] = 'admin/publishers/update/$1';
+$route['admin/publishers/delete'] = 'admin/publishers/delete';
+/* admin authors controller routes */
+$route['admin/authors'] = 'admin/authors/index';
+$route['admin/authors/(:num)'] = 'admin/authors/index/$1';
+$route['admin/authors/insert'] = 'admin/authors/insert';
+$route['admin/authors/view/(:num)'] = 'admin/authors/view/$1';
+$route['admin/authors/update'] = 'admin/authors/update/$1';
+$route['admin/authors/update/(:num)'] = 'admin/authors/update/$1';
+$route['admin/authors/delete'] = 'admin/authors/delete';
+
+$route['(:any)'] = 'site/index';
+$route['404_override'] = '';
+
+
+/* End of file routes.php */
+/* Location: ./application/config/routes.php */

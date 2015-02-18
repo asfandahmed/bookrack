@@ -1,0 +1,209 @@
+body
+{
+	background-color: #FFFBFF;
+	color: #000;
+}
+.navbar-default
+{
+	background-color: #35262D;
+}
+.navbar-default .navbar-brand,
+.navbar-default .navbar-nav > li > a{
+	color: #fff;
+}
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-brand:hover{
+	color: #e7e7e7;
+}
+#content{
+	margin-top: 60px;
+}
+#main-login-signup
+{ 
+	margin-right: 10%;
+	font-size: 0.85em;
+}
+#login-form-page,#forgot-form-page
+{
+	margin-top: 10%;
+}
+#login-form, #signup-form
+{
+	padding: 3% 5%;
+}
+#signup-form hr
+{
+	margin-top: -2%;
+}
+.custom-panel {
+	background-color: #E8ECED;
+	color: #000;
+	/*border:solid 1px #999;*/
+	border-radius: 5px;
+}
+.left-panel{
+	padding: 0 0% 0 0;
+}
+.right-panel{
+	padding: 0 6% 0 0;
+}
+.top-bar {
+ background-color: #35262D;
+ color: #fff;
+}
+.minor-text{
+	color: #A4B7BB;
+}
+.links{
+	color: #76A0B0;
+}
+.links:hover{
+	color: #76A0B0;
+}
+.post{
+	padding: 2% 0;
+	margin: 0 0 2% 0; 
+}
+.social-bar ul{
+	margin: 0;
+	padding: 0;
+	display: inline;
+	font-size: 0.9em;
+}
+.social-bar ul li{
+	list-style-type: none;
+	float: left;
+	padding: 0 2% 0 0;
+}
+.post-book-info, .post-book-info ul{
+	margin: 0;
+	padding: 0;
+}
+.post-book-info ul{
+	display: block;
+}
+.post-book-info ul li{
+	list-style-type: none;
+}
+.post-username{
+	color:#76a0b0;
+	font-size: 1.1em;
+}
+.user-info-table{
+	font-size: 0.89em;
+	text-align: center;
+	margin: 0;
+	padding: 0;
+}
+.user-info-table th{
+	text-align: center;
+}
+.user-info-table td:hover{
+	background-color: #ddd;
+}
+.user-info-table td a{
+	
+	color: #76a0b0;
+	font-size: 1.4em;
+	padding: 30%;
+}
+.user-info-table td a:hover{
+	text-decoration: none !important;
+}
+.status-post-control{
+	padding-left: 0;
+}
+.list-group-item{
+	background-color: #e8eced;
+}
+.list-group-item.active, .list-group-item.active:hover, .list-group-item.active:focus {
+	background-color: #76a0b0;
+}
+.posts{
+	padding: 0;
+}
+.user-info-div{
+	padding: 3% 0 0 0;
+	margin: 0;
+}
+.user-info-div ul, .user-upper-section ul{
+	list-style-type: none;
+	margin: 0 0 0 0;
+	padding: 0;
+	background-color: #35262D;
+}
+.user-info-div ul li{
+	display: inline;
+	padding:  5% 0 5% 5%;
+	margin:  0 0 2% 0;
+}
+.user-info-div ul li a{
+	color: #dddddd;
+	font-weight: bold;
+}
+.user-info-div ul li a:hover,.user-upper-section ul li a:hover{
+	text-decoration: none;
+}
+.user-upper-section ul{
+	padding: 0.2% 2% 0.2% 1%;	
+}
+.user-upper-section ul li{
+	display: inline;
+	padding: 0.2% 2% 0.2% 1%;
+	margin:  0 0 0 0;
+	background-color: #35262D;
+}
+.user-upper-section ul li a{
+	color: #dddddd;
+	font-size: 1.1em;
+}
+.user-upper-section ul li a .active{
+	font-weight: bold;
+}
+.user-basic-info-section,.user-image-section,.profile-pic{
+	padding-right: 0;
+	padding-left: 0;
+}
+.user-basic-info-section th,.user-basic-info-section td{
+	font-size: 0.85em;
+	text-align: center;
+}
+.bar{
+	background-color: #35262D;
+}
+.info-bar{
+ padding-left: 0;
+ padding-right:0; 
+ margin-top:5%; 
+}
+.left-bar{
+	margin: 17% 0 0 0 !important;
+	padding: 0.5% 0 0.5% 0% !important;
+}
+.clear{
+	clear: both;
+}
+.user-box{
+	background-color: #E8ECED;
+	border-radius: 5px;
+	margin: 0.5% 0.2% 0.5% 0.2%;
+	padding: 1% 1%;
+}
+.username{
+	color: #76a0b0 !important;
+	text-decoration: none  !important;
+	font-weight: bold;
+	font-size: 1.1em;
+}
+.profile-info-section{
+	font-size: 0.85em;
+}
+#search-results{
+	z-index: 10;
+	position:absolute;
+	
+}
+.book-box{
+	padding: 0;
+	margin: 0;
+}
