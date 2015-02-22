@@ -4,7 +4,7 @@ class Users extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		$this->load->model('user');
+		$this->load->model(array('user','status'));
 		$this->load->helper(array('url','form'));
 		$this->load->library(array('common_functions','session','form_validation'));
 	}
@@ -129,23 +129,22 @@ class Users extends CI_Controller
 	}
 	private function load_user_profile($id,$owner)
 	{
-		$this->load->library('pagination');
 		$data['title']='Profile - Bookrack';
 		$data['user_info']=$this->user->get_basic_info($id);
 		$data['user']=$this->user->get($id);
 		$data['owner']=$owner;
-
-		$count=$this->user->get_feed_count($id)->offsetGet(0);
+		// change this to username in future instead of email
+		$email=$data['user']->email;
+		$count=$this->status->getContentCount($email)->offsetGet(0);
 
 		$config['base_url']=site_url('profile');
 		$config['total_rows']=$count['total'];
-		$config["per_page"]=2;
-		$this->pagination->initialize($config);
+		$config["per_page"]=5;
 		
-		$page = ($this->uri->segment(1)) ? $this->uri->segment(1) : 0;
-		
-		$data['posts']=$this->user->get_feed($id,$config["per_page"],$page);
-		$data['links']=$this->pagination->create_links();
+		$page = ($this->uri->segment(2)) ? $this->uri->segment(2) : 0;
+		$skip=$page*$config["per_page"];
+
+		$data['posts']=$this->status->getContent($email,$skip,$config["per_page"]);
 
 		$this->load->view('templates/header.php',$data);
 		$this->load->view('user/profile_upper_section.php',$data);
@@ -157,7 +156,7 @@ class Users extends CI_Controller
 		$data['title']='Shelf - Bookrack';
 		$data['user_info']=$this->user->get_basic_info($id);
 		$data['user']=$this->user->get($id);
-		$data['books']=$this->user->get_books($id,1);
+		$data['books']=$this->user->get_books($id,"OWNS");
 		$data['owner']=$owner;
 
 		$this->form_validation->set_rules('add_shelf', 'Shelf', 'trim|required|xss_clean');
@@ -180,7 +179,7 @@ class Users extends CI_Controller
 		$data['title']='Wishlist - Bookrack';
 		$data['user_info']=$this->user->get_basic_info($id);
 		$data['user']=$this->user->get($id);
-		$data['books']=$this->user->get_books($id,2);
+		$data['books']=$this->user->get_books($id,"WISHES");
 		$data['owner']=$owner;
 
 		$this->form_validation->set_rules('add_wishlist', 'Wishlist', 'trim|required|xss_clean');

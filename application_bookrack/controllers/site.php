@@ -13,22 +13,20 @@ class Site extends CI_Controller
 		if(!$this->common_functions->is_logged_in())
 			redirect(site_url());
 
-		$this->load->library('pagination');
-		$this->load->model('user');
+		$this->load->model(array('user','status'));
 		$id=$this->session->userdata('user_id');
+		$email=$this->session->userdata('email');
 		$data['title']='Home - Bookrack';
 		$data['user_info']=$this->user->get_basic_info($id);
 		
-		$count=$this->user->get_feed_count($id)->offsetGet(0);
+		$count=$this->status->getContentCount($email)->offsetGet(0);
 		$config['base_url']=site_url('home');
 		$config['total_rows']=$count['total'];
 		$config["per_page"]=5;
-		$this->pagination->initialize($config);
-		
 		$page = ($this->uri->segment(2)) ? $this->uri->segment(2) : 0;
+		$skip=$page*$config["per_page"];
 		
-		$data['posts']=$this->user->get_feed($id,$config["per_page"],$page);
-		$data['links']=$this->pagination->create_links();
+		$data['posts']=$this->status->getContent($email,$skip,$config["per_page"]);
 
 		$this->load->view('templates/header.php',$data);
 		$this->load->view('site/home.php',$data);

@@ -1,6 +1,7 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 class Status extends CI_Model{
-	public $post;
+	
+    public $title;
 	public $node;
 	public $nodeId;
 	public $statusId;
@@ -10,7 +11,7 @@ class Status extends CI_Model{
 	public function __construct()
 	{
 		parent::__construct();
-		$this->load->library('neo');
+        $this->load->library('neo');
 	}
 	public function getStatus()
 	{
@@ -19,20 +20,11 @@ class Status extends CI_Model{
 	public function setStatus()
 	{
 		$this->load->library('session');
-		$this->load->helper('date');
-		$datestring = "%Y-%m-%d %h:%i %a";
-		$time = time();
-		$date_time=mdate($datestring, $time);
-		$data=array(
-			'post'=>$this->input->post('status'),
-			);
-		$relationData=array(
-			'date_time'=>$date_time,
-			);
-		$nodeId = $this->neo->insert('Status',$data);
-		$userId = $this->session->userdata('user_id');
-		$this->neo->add_relation($userId,$nodeId,'POSTED',$relationData);
-		return $nodeId;
+		$status = new Status();
+        $email = $this->session->userdata('email');
+		$status->title=$this->input->post('status');
+
+        return self::add($email, $status);
 	}
 	public function deleteStatus()
 	{
@@ -55,31 +47,19 @@ class Status extends CI_Model{
 MATCH (user { email: {u}})
 OPTIONAL MATCH (user)-[r:CURRENTPOST]->(currentpost)
 DELETE r
-CREATE (user)-[:CURRENTPOST]->(p:Status { post:{title}, url:{url}, date_time:{timestamp}, statusId:{contentId} })
+CREATE (user)-[:CURRENTPOST]->(p:Status { title:{title}, date_time:{timestamp}, statusId:{statusId} })
 WITH p, collect(currentpost) as currentposts
 FOREACH (x IN currentposts | CREATE p-[:NEXTPOST]->x)
 RETURN p, {u} as username, true as owner
 CYPHER;
-
-        /*$query = new Query(
-            Neo4jClient::client(),
-            $queryString,
-            array(
-                'u' => $username,
-                'title' => $content->title,
-                'url' => $content->url,
-                'tagstr' => $content->tagstr,
-                'timestamp' => time(),
-                'contentId' => uniqid(),
-            )
-        );*/
-        $result = $this->neo->execute_query($queryString,array(
+        $CI = get_instance();
+        $result = $CI->neo->execute_query($queryString,array(
         		'u' => $email,
                 'title' => $status->title,
-                'url' => $status->url,
+                //'url' => $status->url,
                 // 'tagstr' => $content->tagstr,
                 'timestamp' => time(),
-                'contentId' => uniqid(),
+                'statusId' => uniqid(),
         	));
 
         return self::returnMappedContent($result);
@@ -96,8 +76,8 @@ CYPHER;
         $updatedAt = time();
 
         $node = $status->node;
-        $node->setProperty('post', $status->post);
-        $node->setProperty('url', $content->url);
+        $node->setProperty('title', $status->title);
+        //$node->setProperty('url', $content->url);
         // $node->setProperty('tagstr', $content->tagstr);
         $node->setProperty('updated', $updatedAt);
         $node->save();
@@ -122,8 +102,6 @@ CYPHER;
             'statusId' => $statusId,
         );
 
-        /*$query = new Query(Neo4jClient::client(), $queryString, $params);
-        $query->getResultSet();*/
         $this->neo->execute_query($queryString,$params);
     }
 
@@ -240,25 +218,26 @@ WITH usr
 MATCH (p:Status { statusId: { statusId }})-[:NEXTPOST*0..]-(l)-[:CURRENTPOST]-(u)
 RETURN p, u.email AS username, u = usr AS owner
 CYPHER;
-
-/*        $query = new Query(
-            Neo4jClient::client(),
-            $queryString,
-            array(
-                'u' => $username,
-                'contentId' => $contentId,
-            )
-        );
-
-        $result = $query->getResultSet();
-*/
-        $result = $this->neo->execute_query($queryString,array(
+        $CI = get_instance();
+        $result = $CI->neo->execute_query($queryString,array(
         		'u' => $email,
                 'statusId' => $contentId,
         	));
         return self::returnMappedContent($result);
     }
-
+    public static function getContentCount($email)
+    {
+$queryString = <<<CYPHER
+MATCH (u:User { email: { u }})-[:FOLLOWS*0..1]->f
+WITH DISTINCT f, u
+MATCH f-[:CURRENTPOST]-lp-[:NEXTPOST*0..]-p
+RETURN COUNT(p) as total
+CYPHER;
+$CI = get_instance();
+return $result = $CI->neo->execute_query($queryString,array(
+                'u' => $email,
+            ));
+    }
 	/**
      * Gets content from user's friends
      *
@@ -270,28 +249,20 @@ CYPHER;
      * @param  int       $skip     Records to skip
      * @return Content[]
      */
-    public static function getContent($email, $skip)
+    public static function getContent($email, $skip, $limit)
     {
         $queryString = <<<CYPHER
 MATCH (u:User { email: { u }})-[:FOLLOWS*0..1]->f
 WITH DISTINCT f, u
 MATCH f-[:CURRENTPOST]-lp-[:NEXTPOST*0..]-p
-RETURN p, f.email as username, f=u as owner
-ORDER BY p.timestamp desc SKIP {skip} LIMIT 4
+RETURN p, f.first_name as username, f=u as owner
+ORDER BY p.timestamp desc SKIP {skip} LIMIT {limit}
 CYPHER;
-/*
-        $query = new Query(
-            Neo4jClient::client(),
-            $queryString,
-            array(
-                'u' => $username,
-                'skip' => $skip,
-            )
-        );
-        $result = $query->getResultSet();*/
-        $result = $this->neo->execute_query($queryString,array(
+        $CI = get_instance();
+        $result = $CI->neo->execute_query($queryString,array(
         		'u' => $email,
-                'skip' => $skip,
+                'skip' => intval($skip),
+                'limit'=>intval($limit),
         	));
         return self::returnMappedContent($result);
     }
@@ -301,34 +272,33 @@ CYPHER;
      * @param  ResultSet $results
      * @return Content[]
      */
-    protected static function returnMappedContent(ResultSet $results)
+    protected static function returnMappedContent(Everyman\Neo4j\Query\ResultSet $results)
     {
         $mappedContentArray = array();
-
         foreach ($results as $row) {
             $mappedContentArray[] = self::createFromNode(
                 $row['p'],
-                $row['username'],
+                $row['email'],
                 $row['owner']
             );
         }
 
         return $mappedContentArray;
     }
-	protected static function createFromNode(Node $node, $username = null, $owner = false)
+	protected static function createFromNode(Everyman\Neo4j\Node $node, $email = null, $owner = false)
     {
         $status = new Status();
         $status->node = $node;
         $status->nodeId = $node->getId();
         $status->statusId = $node->getProperty('statusId');
-        $status->post = $node->getProperty('post');
-        $status->url = $node->getProperty('url');
+        $status->title = $node->getProperty('title');
+        //$status->url = $node->getProperty('url');
         // $status->tagstr = $node->getProperty('tagstr');
         $status->date_time = gmdate("F j, Y g:i a", $node->getProperty('date_time'));
         $status->owner = $owner;
         // $status->userNameForPost = $username;
 
-        return $content;
+        return $status;
     }
 }
 /* End of file Neo.php */

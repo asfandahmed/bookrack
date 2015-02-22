@@ -1,12 +1,5 @@
 $(document).ready(function(){
 	$('.comment_bar').hide();
-	$('.posts').jscroll({
-		autoTrigger: false,
-		nextSelector: '.next-link a',
-		padding:20,
-		loadingHtml: '<small> Loading...</small>',
-	    contentSelector: '.posts'
-	});
 	$("#profile_pic_box").capslide({
                     caption_color	: '#bfedfa',
                     caption_bgcolor	: '#000',

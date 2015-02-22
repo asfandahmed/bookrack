@@ -33,7 +33,7 @@ foreach ($posts as $post):
 			</div>
 		</div>
 		
-		<div class="row" id="post_<?=$post["post"]->getID()?>">
+		<div class="row" id="post_<?=$post->statusId?>">
 			<!--<div class="col-sm-offset-2 col-md-offset-2 col-lg-offset-2 col-sm-2 col-md-2 col-lg-2"><img src="<?=base_url().'assets/images/user-pic.jpg'?>" alt="" title=""></div>
 			<div class="col-sm-8 col-md-8 col-lg-8 post-book-info">
 				<ul>
@@ -43,17 +43,17 @@ foreach ($posts as $post):
 				</ul>
 			</div>-->
 			<div class="col-sm-offset-2 col-md-offset-2 col-lg-offset-2 col-sm-10 col-md-10 col-lg-10">
-				<?=$post["post"]->post;?>
+				<?=$post->title;?>
 			</div>
 		</div>
 	</div>
 	<div class="col-sm-12 col-md-12 col-lg-12 social-bar">
 		<ul>
-			<li><a href="#" class="like-button">Like</a></li><li><a href="#" onclick="showcommentbox(<?=$post["post"]->getID()?>)">Comment</a></li><li><a href="#">Favorite</a></li><li><a href="#">Wishlist</a></li><li><a href="#">Share</a></li>
+			<li><a href="#" class="like-button">Like</a></li><li><a href="#" onclick="showcommentbox(<?=$post->statusId?>)">Comment</a></li><li><a href="#">Favorite</a></li><li><a href="#">Wishlist</a></li><li><a href="#">Share</a></li>
 		</ul>
 	</div>
 	<hr>
-	<div class="col-sm-12 col-md-12 col-lg-12 comment_bar" id="commentbar_<?=$post["post"]->getID()?>">
+	<div class="col-sm-12 col-md-12 col-lg-12 comment_bar" id="commentbar_<?=$post->statusId?>">
 		<div class="row"><div class="col-sm-12 col-md-12 col-lg-12">view all comments</div></div>
 		<div class="row">
 			<div class="col-sm-2 col-md-2 col-lg-2"><img src="<?=$image_path?>" alt="" title=""></div>
@@ -64,5 +64,4 @@ foreach ($posts as $post):
 </div>
 <?php 
 endforeach; endif;
-echo $links;
 ?>

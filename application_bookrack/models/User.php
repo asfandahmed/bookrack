@@ -34,6 +34,10 @@ class User extends CI_Model
 	public function get_user($id){
 		return self::fromNode($this->get($id));
 	}
+	/**
+	* @param int $id
+	* @param array $data  contains key value pairs
+	*/
 	public function update_user_properties($id,$data)
 	{
 		$this->neo->update($id,$data);
@@ -197,7 +201,7 @@ class User extends CI_Model
 	public function get_books($id,$type)
 	{
 		switch ($type) {
-			case 1: // owns
+			case "OWNS": // owns
 				$query="START a=node({id}) 
 						MATCH (a)-[r:OWNS]->(b:Book)
 						WITH b
@@ -205,7 +209,7 @@ class User extends CI_Model
 						WITH b,g 
 						RETURN b, collect(g.name) as genre";		
 				break;
-			case 2: // wishes
+			case "WISHES": // wishes
 				$query="START a=node({id}) MATCH (a)-[r:WISHES]->(b:Book) 
 						WITH b
 						OPTIONAL MATCH (b)-[:GENRE]->(g:Genre)
