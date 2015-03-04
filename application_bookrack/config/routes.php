@@ -74,6 +74,7 @@ $route['publisher'] = 'publishers/index';
 $route['publisher/(:any)'] = 'publishers/index/$1';
 /* status controller routes*/
 $route['post'] = 'statuses/post';
+$route['load/posts'] = 'statuses/loadContent';
 /* search controller routes*/
 $route['search'] = 'searches/index';
 $route['search/(:any)'] = 'searches/index';

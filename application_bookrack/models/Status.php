@@ -251,6 +251,7 @@ return $result = $CI->neo->execute_query($queryString,array(
      */
     public static function getContent($email, $skip, $limit)
     {
+        //die($email.' | '.$skip. ' | '. $limit);
         $queryString = <<<CYPHER
 MATCH (u:User { email: { u }})-[:FOLLOWS*0..1]->f
 WITH DISTINCT f, u

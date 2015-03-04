@@ -6,7 +6,7 @@ class Users extends CI_Controller
 		parent::__construct();
 		$this->load->model(array('user','status'));
 		$this->load->helper(array('url','form'));
-		$this->load->library(array('common_functions','session','form_validation'));
+		$this->load->library(array('common_functions','session','form_validation','pagination'));
 	}
 	public function index($id="")
 	{
@@ -134,18 +134,22 @@ class Users extends CI_Controller
 		$data['user']=$this->user->get($id);
 		$data['owner']=$owner;
 		// change this to username in future instead of email
-		$email=$data['user']->email;
-		$count=$this->status->getContentCount($email)->offsetGet(0);
+		$this->session->set_userdata(array(
+			'load_profile_email'=>$data['user']->email
+			));
+		$email=$this->session->userdata('load_profile_email');
+		//$count=$this->status->getContentCount($email)->offsetGet(0);
 
-		$config['base_url']=site_url('profile');
-		$config['total_rows']=$count['total'];
-		$config["per_page"]=5;
+		//$config['base_url']=site_url('profile');
+		//$config['total_rows']=$count['total'];
+		//$config["per_page"]=5;
 		
-		$page = ($this->uri->segment(2)) ? $this->uri->segment(2) : 0;
-		$skip=$page*$config["per_page"];
+		//$page = ($this->uri->segment(2)) ? $this->uri->segment(2) : 0;
+		//$skip=$page*$config["per_page"];
+		//$this->pagination->initialize($config); 
 
-		$data['posts']=$this->status->getContent($email,$skip,$config["per_page"]);
-
+		//$data['posts']=$this->status->getContent($email,$skip,$config["per_page"]);
+		//die(print_r($data['posts']));
 		$this->load->view('templates/header.php',$data);
 		$this->load->view('user/profile_upper_section.php',$data);
 		$this->load->view('user/index.php',$data);

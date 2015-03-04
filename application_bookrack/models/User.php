@@ -32,7 +32,7 @@ class User extends CI_Model
 		return $this->neo->get_node($id);
 	}
 	public function get_user($id){
-		return self::fromNode($this->get($id));
+		return self::createFromNode($this->get($id));
 	}
 	/**
 	* @param int $id
@@ -274,7 +274,7 @@ class User extends CI_Model
 		//echo distance(32.9697, -96.80322, 29.46786, -98.53506, "N") . " Nautical Miles<br>";
 
 	}
-	protected static function fromNode(Everyman\Neo4j\Node $node){
+	protected static function createFromNode(Everyman\Neo4j\Node $node){
 		$user=new User();
 		$user->id=$node->getId();
 		$user->first_name=$node->getProperty('first_name');

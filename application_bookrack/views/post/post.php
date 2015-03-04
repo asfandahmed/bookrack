@@ -56,7 +56,7 @@ foreach ($posts as $post):
 	<div class="col-sm-12 col-md-12 col-lg-12 comment_bar" id="commentbar_<?=$post->statusId?>">
 		<div class="row"><div class="col-sm-12 col-md-12 col-lg-12">view all comments</div></div>
 		<div class="row">
-			<div class="col-sm-2 col-md-2 col-lg-2"><img src="<?=$image_path?>" alt="" title=""></div>
+			<div class="col-sm-2 col-md-2 col-lg-2"><img src="<?=$image_path?>" alt="" title="" style="width:50px;height:43px;"></div>
 			<div class="col-sm-10 col-md-10 col-lg-10">
 			</div>
 		</div>
