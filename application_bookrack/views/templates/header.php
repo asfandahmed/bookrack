@@ -4,13 +4,33 @@
 <title><?=$title?></title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Bootstrap -->
+
 <link href="<?=base_url('assets/css/bootstrap.min.css')?>" rel="stylesheet" media="screen">
 <link href="<?=base_url('assets/css/jquery-ui.min.css')?>" rel="stylesheet" media="screen">
 <link href="<?=base_url('assets/css/capSlide.min.css')?>" rel="stylesheet" media="screen">
+<link href="<?=base_url('assets/css/templatemo-style.css')?>" rel="stylesheet" media="screen">
 <link href="<?=base_url('assets/css/style.css')?>" rel="stylesheet" media="screen">
+<link href="<?=base_url('assets/css/owl-carousel.css')?>" rel="stylesheet" media="screen">
 <script src="<?=base_url('assets/js/jquery-latest.min.js')?>"></script>
 </head>
 <body>
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '1628567297365505',
+      xfbml      : true,
+      version    : 'v2.2'
+    });
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+</script>
 <div class="header">
 <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container-fluid">
@@ -30,7 +50,7 @@
       <?php if($this->common_functions->is_logged_in()):?>
       <ul class="nav navbar-nav">
         <li <?=($this->router->class=="site")?'class="active"':""?>><a href="<?=site_url('home')?>"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-        <li><a href="notification.html"><span class="glyphicon glyphicon-bell"></span>Notifications</a></li>
+        <li <?=($this->router->class=="notifications")?'class="active"':""?>><a href="<?=site_url('notifications')?>"><span class="glyphicon glyphicon-bell"></span>Notifications</a></li>
         <li><a href="<?=site_url('messages/load_message_panel')?>" data-toggle="modal" data-target="#contentModal" id="load_messages"><span class="glyphicon glyphicon-envelope"></span> Messages</a></li>
       </ul>
       <form name="search_form" id="search-form" action="<?=site_url('search')?>" method="GET" class="navbar-form navbar-left" role="search">
@@ -47,6 +67,7 @@
         <?php if(!$this->common_functions->is_logged_in()):?>
         <li><a href="<?=site_url('login')?>">Sign in</a></li>
         <li><a href="<?=site_url('register')?>">Sign up</a></li>
+        
         <?php else:?>
         <li <?=($this->router->class=="users")?'class="active"':""?>><a href="<?=site_url('profile')?>"><?php echo $this->session->userdata('first_name');?></a></li>
         <li class="dropdown">

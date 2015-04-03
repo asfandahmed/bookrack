@@ -3,6 +3,7 @@ class Borrow extends CI_Model
 {
 	public $requestId;
 	public $bookId;
+	public $bookTitle;
 	public $to;
 	public $from;
 	public $approved;
@@ -18,9 +19,18 @@ class Borrow extends CI_Model
 		$node = $this->neo->get_node($id);
 		return self::createFromRelationship($node);
 	}
-	public function set_borrow()
+	public function set_borrow($from)
 	{
-
+		$to = $this->input->post('to');
+		$data = array(
+				'requestId'=>uniqid(),
+				'bookId'=>$this->input->post('bookId'),
+				'bookTitle'=>$this->input->post('bookTitle'),
+				'approved'=>"1",
+				'date_time'=>time(),
+			);
+		//die(print_r($data));
+		return $this->neo->add_relation($from,$to,'BORROW',$data);
 	}
 	protected static function createFromRelationship(Everyman\Neo4j\Relationship $relation)
     {

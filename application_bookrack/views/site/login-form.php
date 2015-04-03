@@ -5,7 +5,7 @@ echo form_open($signin_post_url,array('id'=>'login-form','name'=>'login_form','c
 
 	<div class="form-group">
 	<div class="col-sm-12 col-md-12 col-lg-12">
-	<input type="email" name="email" class="form-control" value="<?php echo set_value('email'); ?>" id="inputEmail" placeholder="Email" required>
+	<input type="email" name="email" class="form-control" value="<?php echo set_value('email'); ?>" id="inputEmail" placeholder="Email" required autofocus>
 	</div>
 	</div>
 

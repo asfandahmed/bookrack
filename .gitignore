@@ -5,4 +5,7 @@
 */cache/!index.html
 */cache/!.htaccess
 *.psd
+*.jpg
+*.png
+*bmp
 user_guide/

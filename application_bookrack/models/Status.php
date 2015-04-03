@@ -6,7 +6,12 @@ class Status extends CI_Model{
 	public $nodeId;
 	public $statusId;
 	public $date_time;
+    public $userNameForPost;
+    public $userIdForPost;
+    public $userImageForPost;
 	public $owner;
+    public $likes;
+    public $bookPost;
 
 	public function __construct()
 	{
@@ -50,7 +55,7 @@ DELETE r
 CREATE (user)-[:CURRENTPOST]->(p:Status { title:{title}, date_time:{timestamp}, statusId:{statusId} })
 WITH p, collect(currentpost) as currentposts
 FOREACH (x IN currentposts | CREATE p-[:NEXTPOST]->x)
-RETURN p, {u} as username, true as owner
+RETURN p, p.first_name + ' ' + p.last_name as username, true as owner
 CYPHER;
         $CI = get_instance();
         $result = $CI->neo->execute_query($queryString,array(
@@ -214,9 +219,11 @@ CYPHER;
     {
         $queryString = <<<CYPHER
 MATCH (usr:User { email: { u }})
-WITH usr
+WITH u
 MATCH (p:Status { statusId: { statusId }})-[:NEXTPOST*0..]-(l)-[:CURRENTPOST]-(u)
-RETURN p, u.email AS username, u = usr AS owner
+OPTIONAL MATCH u-[r:LIKES]-p
+OPTIONAL MATCH (b:Book {title:p.title})
+RETURN p, u.first_name+' '+u.last_name AS username, u = usr AS owner, b
 CYPHER;
         $CI = get_instance();
         $result = $CI->neo->execute_query($queryString,array(
@@ -256,7 +263,9 @@ return $result = $CI->neo->execute_query($queryString,array(
 MATCH (u:User { email: { u }})-[:FOLLOWS*0..1]->f
 WITH DISTINCT f, u
 MATCH f-[:CURRENTPOST]-lp-[:NEXTPOST*0..]-p
-RETURN p, f.first_name as username, f=u as owner
+OPTIONAL MATCH u-[r:LIKES]-p
+OPTIONAL MATCH (b:Book {title:p.title})
+RETURN p, f.first_name+ ' ' + f.last_name as username, ID(f) as userid, f.profile_image as userimage, f=u as owner, r, b
 ORDER BY p.timestamp desc SKIP {skip} LIMIT {limit}
 CYPHER;
         $CI = get_instance();
@@ -279,14 +288,18 @@ CYPHER;
         foreach ($results as $row) {
             $mappedContentArray[] = self::createFromNode(
                 $row['p'],
-                $row['email'],
-                $row['owner']
+                $row['username'],
+                $row['userid'],
+                $row['userimage'],
+                $row['owner'],
+                $row['r'],
+                $row['b']
             );
         }
 
         return $mappedContentArray;
     }
-	protected static function createFromNode(Everyman\Neo4j\Node $node, $email = null, $owner = false)
+	protected static function createFromNode(Everyman\Neo4j\Node $node, $username = null, $userid = null, $userimage = null, $owner = false, $likes = null, $book=null)
     {
         $status = new Status();
         $status->node = $node;
@@ -297,8 +310,11 @@ CYPHER;
         // $status->tagstr = $node->getProperty('tagstr');
         $status->date_time = gmdate("F j, Y g:i a", $node->getProperty('date_time'));
         $status->owner = $owner;
-        // $status->userNameForPost = $username;
-
+        $status->userNameForPost = $username;
+        $status->userIdForPost = $userid;
+        $status->userImageForPost = $userimage;
+        $status->likes = $likes;
+        $status->bookPost = $book;
         return $status;
     }
 }

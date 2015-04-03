@@ -36,7 +36,7 @@ $(document).ready(function(){
 		source: url,
 	});
 	// edit profile load div of edit profiles
-	$('.edit-link').on("click", function(e){
+	/*$('.edit-link').on("click", function(e){
 		e.preventDefault();
 		var link=$(this).attr('href');
 		$('#content-loader').load(link, function( response, status, xhr ){
@@ -45,7 +45,7 @@ $(document).ready(function(){
 			$( "#content-loader" ).html( msg + xhr.status + " " + xhr.statusText );
 			}
 		});
-	});
+	});*/
 	$('#load_messages').on("click", function(e){
 		e.preventDefault();
 		var link=$(this).attr('href');
@@ -109,8 +109,151 @@ $(document).ready(function(){
 
 	});*/
 });
+$('.btnBorrow').click(function(event){
+	var url=$('.btnBorrow').attr('href');
+	var obj={
+		"bookId":$('.btnBorrow').attr('bookid'),
+		"to":$('.btnBorrow').attr('to'),
+		"bookTitle":$('.btnBorrow').attr('booktitle')
+	};
+	$.ajax({
+		type:"POST",
+		url:url,
+		data: obj,
+		dataType:'json',
+		success:function(data){
+			console.log(data);
+		},
+		error:function( xhr, status, errorThrown ){
+			alert( "Sorry, there was a problem!" );
+			console.log( "Error: " + errorThrown );
+			console.log( "Status: " + status );
+			console.dir( xhr );	
+		},
+	});
+	event.preventDefault();
+	
+});
+$('#followBtn').click(function(event){
+	var id=$('#followBtn').attr('usertobefollowed');
+	var url=$('#followBtn').attr('href');
+	newurl=url.substring(0,url.lastIndexOf('/')+1);
+	newurl=url.concat("unfollow");
+	var link='<a class="btn btn-xs btn-default" usertobeunfollowed="'+id+'" id="unfollowBtn" href="'+newurl+'"><span class="glyphicon glyphicon-ban-circle"></span> Unfollow</a>';
+	$.ajax({
+		type : "POST",
+		url : url,
+		data : { usertobefollowed : id },
+		dataType:'json',
+		success:function(data){
+			$('#followBtn').replaceWith(link);
+			console.log(data);
+		},
+		error:function( xhr, status, errorThrown ){
+			alert( "Sorry, there was a problem!" );
+			console.log( "Error: " + errorThrown );
+			console.log( "Status: " + status );
+			console.dir( xhr );	
+		},
+	});
+	event.preventDefault();
+	event.unbind();
+});
+$('.comment-button').click(function(){
+	var id = this.id;
+	var selector = '#commentbar_'+id;
+	$(selector).toggle();
+});
+$('.commentsloader').click(function(event){
+	event.preventDefault();
+	var url = $(this).attr('href');
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType:'json',
+		success:function(data){
+			console.log(data);
+		},
+		error:function( xhr, status, errorThrown ){
+			alert( "Sorry, there was a problem!" );
+			console.log( "Error: " + errorThrown );
+			console.log( "Status: " + status );
+			console.dir( xhr );	
+		},
+	});
+});
+$('.like-button').click(function(event){
+	event.preventDefault();
+	var url = $(this).attr('href');
+	var newurl = url.replace('like','unlike');
+	var link = '<a href="'+newurl+'" class="unlike-button">Unlike</a>'
+	var selector = $(this);
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType:'json',
+		success:function(data){
+			$(selector).replaceWith(link);
+		},
+		error:function( xhr, status, errorThrown ){
+			alert( "Sorry, there was a problem!" );
+			console.log( "Error: " + errorThrown );
+			console.log( "Status: " + status );
+			console.dir( xhr );	
+		},
+		complete:function(){
+			location.href = self.href;
+		},
+	});
+});
+$('.unlike-button').click(function(event){
+	event.preventDefault();
+	var url = $(this).attr('href');
+	var newurl = url.replace('unlike','like');
+	var link = '<a href="'+newurl+'" class="like-button">Like</a>'
+	var selector = $(this);
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType:'json',
+		success:function(data){
+			$(selector).replaceWith(link);
+		},
+		error:function( xhr, status, errorThrown ){
+			alert( "Sorry, there was a problem!" );
+			console.log( "Error: " + errorThrown );
+			console.log( "Status: " + status );
+			console.dir( xhr );	
+		},
+		complete:function(){
+			location.href = self.href;
+		},
+	});
+});
+/*
+$('#edit-information').click(function(event){
+		var link=$(this).attr('href');
+		$('#content-loader').load(link, function( link,response, status, xhr ){
+			 if ( status == "error" ) {
+			var msg = "Sorry but there was an error: ";
+			$( "#content-loader" ).html( msg + xhr.status + " " + xhr.statusText );
+			}
+		});
+event.preventDefault();
+
+});
+$('#edit-contact').click(function(event){
+		var link=$(this).attr('href');
+		$('#content-loader').load(link, function( link,response, status, xhr ){
+			 if ( status == "error" ) {
+			var msg = "Sorry but there was an error: ";
+			$( "#content-loader" ).html( msg + xhr.status + " " + xhr.statusText );
+			}
+		});
+event.preventDefault();
+});*/
 // replace labels with textbox and back to labels
-function label_to_textbox(){
+/*function label_to_textbox(){
 	    $( ".edit-label" ).replaceWith( function() {
 	    	$('.edit-btns').show();
 	        return "<input type=\"text\" class=\"form-control edit-text\" value=\"" + $( this ).html() + "\" />";
@@ -121,12 +264,7 @@ function textbox_to_label(){
 	        $('.edit-btns').hide();
 	        return "<label class=\"col-sm-4 col-md-4 col-lg-4 control-label edit-label\">" + $( this ).val() + "</label>";
 	    });
-}
-function showcommentbox(id)
-{
-	var selector='#commentbar_'+id;
-	$(selector).toggle();	
-}
+}*/
 // add books in wishlist and shelf
 function add_books()
 {
@@ -230,4 +368,50 @@ function delete_node(id){
 	}
 	else
 		return false;
+}
+/*$('.commentfield').keypress(function (e) {
+  console.log("helloss");
+  if (e.which == 13) {
+    var p = $(this).parent();
+    $(p).submit();
+    e.preventDefault();
+	e.unbind();
+    return false;    //<---- Add this line
+	}
+});*/
+function postComment(id)
+{
+	var form = '#'+id;
+	$(form).submit(function (event){
+		$.ajax({
+			type:"POST",
+			url:$(form).attr('action'),
+			data:$(form).serialize(),
+			dataType:'json',
+			encode:true,
+			success:function(data){
+				displayComment(data);
+			},
+			error:function( xhr, status, errorThrown ) {
+			alert( "Sorry, there was a problem!" );
+			console.log( "Error: " + errorThrown );
+			console.log( "Status: " + status );
+			console.dir( xhr );
+			},
+			complete:function(){
+			location.href = self.href;
+			},
+		});
+		 event.preventDefault();
+		 event.unbind();
+	});
+}
+function displayComment(data)
+{
+	var commentHTML = createComment(data);
+}
+function createComment(data)
+{
+	var html='<div class="col-sm-12 col-md-12 col-lg-12">'+data+'</div>';
+	return html;
 }

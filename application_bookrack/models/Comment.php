@@ -10,10 +10,21 @@ Class Comment extends CI_Model
 	public $date_time;
 	
 	public function __construct()
-	{
-		parent::__construct();
-		$this->load->library('neo');
-	}
+    {
+        parent::__construct();
+        $this->load->library(array('neo'));
+
+    }
+    public function setComment($userId)
+    {   
+        //die(print_r($_POST));
+        $statusId = $this->input->post('statusId');
+        $comment = new Comment();
+        $comment->commentId = uniqid();
+        $comment->userId = $userId;
+        $comment->commentText = $this->input->post('comment');
+        return Comment::add($statusId, $comment);
+    }
     protected static function add($statusId, Comment $comment)
     {
         $queryString = <<<CYPHER
@@ -25,13 +36,15 @@ WITH c, collect(currentcomment) as currentcomment
 FOREACH (x IN currentcomment | CREATE c-[:NEXTCOMMENT]->x)
 RETURN c, {s} as status
 CYPHER;
-        $results = $this->neo->execute_query($queryString,array(
+        $CI = get_instance();
+        $CI->neo->execute_query($queryString,array(
             's'=>$statusId,
             'commentText'=>$comment->commentText,
             'userId'=>$comment->userId,
-            'commentId'=>uniqid();
-            'timestamp'=>time();
+            'commentId'=>uniqid(),
+            'timestamp'=>time(),
             ));
+        return $comment; 
     }
     public static function edit(Comment $comment)
     {
@@ -46,9 +59,9 @@ CYPHER;
 
         $comment->updated = $updatedAt;
 
-        return $content;
+        return $comment;
     }
-    public static function delete($statusId, commentId)
+    public static function delete($statusId, $commentId)
     {
         $queryString = self::getDeleteQueryString($email, $statusId);
 
@@ -85,7 +98,7 @@ CYPHER;
             ));
         return count($result) !== 0;
     }
-    protected static function getDeleteQueryString($statusId, commentId)
+    protected static function getDeleteQueryString($statusId, $commentId)
     {
         if (self::isLeafPost($statusId, $commentId)) {
             return <<<CYPHER
@@ -111,13 +124,45 @@ CREATE UNIQUE (before)-[:NEXTCOMMENT]->(after)
 DELETE del, delBefore, delAfter
 CYPHER;
     }
+
+    public static function getContentCount($statusId)
+    {
+        $queryString = <<<CYPHER
+MATCH (s:Status { statusId: { statusId }})
+WITH s
+MATCH (c:Comment)-[:NEXTCOMMENT*0..]-(l)-[:CURRENTCOMMENT]-(s)
+RETURN COUNT(c) as total
+CYPHER;
+        $result = $this->neo->execute_query($queryString,array(
+                'statusId' => $statusId,
+            ));
+        return self::returnMappedContent($result);
+    }
+
+    public static function getContent($statusId, $skip, $limit)
+    {
+        $queryString = <<<CYPHER
+MATCH (s:Status { statusId: { statusId }})
+WITH s
+MATCH (c:Comment)-[:NEXTCOMMENT*0..]-(l)-[:CURRENTCOMMENT]-(s)
+RETURN c ORDER BY c.timestamp desc SKIP {skip} LIMIT {limit}
+CYPHER;
+        $CI = get_instance();
+        $result = $CI->neo->execute_query($queryString,array(
+                'skip' => intval($skip),
+                'limit' => intval($limit),
+                'statusId' => $statusId,
+            ));
+        return self::returnMappedContent($result);
+    }
+
     public static function getContentById($statusId, $commentId)
     {
         $queryString = <<<CYPHER
 MATCH (s:Status { statusId: { statusId }})
 WITH s
-MATCH (c:Comment { commentId: { commentId }})-[:NEXTCOMMENT*0..]-(l)-[:CURRENTCOMMENT]-(u)
-RETURN p
+MATCH (c:Comment { commentId: { commentId }})-[:NEXTCOMMENT*0..]-(l)-[:CURRENTCOMMENT]-(s)
+RETURN c
 CYPHER;
         $result = $this->neo->execute_query($queryString,array(
                 'commentId' => $commentId,
@@ -128,9 +173,9 @@ CYPHER;
 	protected static function returnMappedContent(Everyman\Neo4j\Query\ResultSet $results)
     {
         $mappedContentArray = array();
-        foreach ($results as $row) {
+        foreach($results as $row) {
             $mappedContentArray[] = self::createFromNode(
-                $row['p'],
+                $row['c']
             );
         }
 

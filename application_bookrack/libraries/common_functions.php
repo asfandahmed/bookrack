@@ -24,5 +24,16 @@ class common_functions
 				return true;
 		return false;
 	}
-	
+	public function convert_distance($dist, $unit="M")
+	{
+		$miles=$dist * 60 * 1.1515;
+		if ($unit == "K") {
+		    return ($miles * 1.609344);
+		  } else if ($unit == "N") {
+		      return ($miles * 0.8684);
+		    } else {
+		        return round($miles,2,PHP_ROUND_HALF_UP);
+		      }
+
+	}
 }

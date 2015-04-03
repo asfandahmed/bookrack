@@ -30,17 +30,20 @@ class Users extends CI_Controller
 		$data['user_info']=$this->user->get_basic_info($id);
 		$data['user']=$this->user->get($id);
 		$data['owner']=TRUE;
+		$data['page']='edit_information';
+		$data['post_url']="profile/save";
+
 		$this->load->view('templates/header.php',$data);
 		$this->load->view('user/profile_upper_section.php',$data);
-		$this->load->view('user/edit.php');
+		$this->load->view('user/edit.php',$data);
 		$this->load->view('templates/footer.php');
 	}
-	public function follow($follower,$leader)
+	public function follow()
 	{
-		$data=array(
-			'date_time'=>'val'
-			);
-		$this->user->add_user_relation($follower,$leader,"FOLLOWS");
+		$userToBeFollowed=intval($this->input->post('usertobefollowed'));
+		$id=intval($this->session->userdata['user_id']);
+		$response=$this->user->follow($id,$userToBeFollowed);
+		echo json_encode($response);
 	}
 	public function unfollow($follower,$leader)
 	{
@@ -111,17 +114,61 @@ class Users extends CI_Controller
 			$this->send_password();
 		}
 	}
-	public function edit_information()
+	/*public function view_information()
 	{
 		$id=$this->session->userdata['user_id'];
 		$data['user']=$this->user->get($id);
-		$this->load->view('user/edit_information.php',$data);
+		$this->load->view('user/view_information.php',$data);
+	}	
+	public function view_contact()
+	{
+		$id=$this->session->userdata['user_id'];
+		$data['user']=$this->user->get($id);
+		$this->load->view('user/view_contact.php',$data);	
+	}*/
+	public function edit_information()
+	{
+		$data['title'] = "Edit profile";
+		$data['post_url']="profile/save";
+		$data['page']='edit_information';
+
+		$id=$this->session->userdata['user_id'];
+		$data['user_info']=$this->user->get_basic_info($id);
+		$data['user']=$this->user->get($id);
+		$data['owner']=TRUE;
+		
+		$this->load->view('templates/header.php',$data);
+		$this->load->view('user/profile_upper_section.php',$data);
+		$this->load->view('user/edit.php',$data);
+		$this->load->view('templates/footer.php');
 	}	
 	public function edit_contact()
 	{
+		$data['title'] = "Edit profile";
+		$data['post_url']="profile/save";
+		$data['page']='edit_contact';
+
 		$id=$this->session->userdata['user_id'];
+		$data['user_info']=$this->user->get_basic_info($id);
 		$data['user']=$this->user->get($id);
-		$this->load->view('user/edit_contact.php',$data);	
+		$data['owner']=TRUE;
+		
+		$this->load->view('templates/header.php',$data);
+		$this->load->view('user/profile_upper_section.php',$data);
+		$this->load->view('user/edit.php',$data);
+		$this->load->view('templates/footer.php');
+	}
+	public function save()
+	{
+		$this->load->library('user_agent');
+		$id=$this->session->userdata['user_id'];
+		$data=$this->input->post('user');
+		$this->user->update_user_properties($id,$data);
+		$this->session->set_flashdata('success_msg', 'Profile updated successfully!');
+	    if ($this->agent->is_referral())
+	    {
+	    	redirect($this->agent->referrer());
+	    }
 	}
 	public function load_user_pic_uploader()
 	{
@@ -174,7 +221,13 @@ class Users extends CI_Controller
 		}
 		else
 		{
+			$this->load->model('Status');
 			$data=$this->user->add_to_shelf($id);
+			// post status on timeline
+			$status = new Status();
+			$email = $this->session->userdata('email');
+			$status->title=$data[0]['m']->title;
+			$status::add($email,$status);
 			echo json_encode($data);
 		}
 	}
@@ -252,16 +305,16 @@ class Users extends CI_Controller
 	private function resize_image($path)
 	{	
 		$config=array();
-		$config['image_library'] = 'gd';
+		$config['image_library'] = 'gd2';
 		$config['source_image'] = $path;
-		$config['create_thumb'] = TRUE;
+		//$config['create_thumb'] = TRUE;
 		$config['maintain_ratio'] = TRUE;
 		$config['width'] = 50;
 		$config['height'] = 43;
 		$config['new_image']=str_replace('profile_images', 'thumbs', $path);
 
 		$this->image_lib->initialize($config);
-		$this->image_lib->clear();
+		//$this->image_lib->clear();
 		if ( ! $this->image_lib->resize())
 		{
 		    return $data = array('error'=>$this->image_lib->display_errors());

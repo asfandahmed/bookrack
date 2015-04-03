@@ -2,14 +2,14 @@
 if(isset($user)){
 	$full_name=ucfirst($user->first_name).' '.ucfirst($user->last_name);
 	if(!empty($user->profile_image))
-		$image_path=base_url().'assets/uploads/profile_images/'.$user->profile_image;
+		$image_path=base_url().'assets/uploads/thumbs/'.$user->profile_image;
 	else
 		$image_path=base_url().'assets/images/user-pic.jpg';
 }
 else{
 	$full_name=ucfirst($this->session->userdata('first_name')).' '.ucfirst($this->session->userdata('last_name'));
 	if($this->session->userdata('profile_image'))
-		$image_path=base_url().'assets/uploads/profile_images/'.$this->session->userdata('profile_image');
+		$image_path=base_url().'assets/uploads/thumbs/'.$this->session->userdata('profile_image');
 	else
 		$image_path=base_url().'assets/images/user-pic.jpg';
 }

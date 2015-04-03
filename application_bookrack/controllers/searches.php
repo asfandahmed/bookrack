@@ -34,6 +34,17 @@ class Searches extends CI_Controller
 			$this->load->view('templates/footer.php');
 		//}
 	}
+	public function nearest_users($id,$title)
+	{
+		$data['title']="List nearest users";
+		$email=$this->session->userdata('email');
+		$data['users']=$this->search->get_nearest_users(urldecode($title),$email);
+		$data['bookId']=$id;
+		$data['bookTitle']=$title;
+		$this->load->view('templates/header.php',$data);
+		$this->load->view('search/users-list.php',$data);
+		$this->load->view('templates/footer.php');
+	}
 	public function get_suggestions()
 	{
 		$data=array();

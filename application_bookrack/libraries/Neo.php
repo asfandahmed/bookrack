@@ -24,6 +24,8 @@ class Neo {
 	public function __construct()
 	{
 		$this->client = new Client();
+        $this->client->getTransport()
+        ->setAuth('neo4j', 'bookrack');
 	}
     public function add_index($name)
     {	
@@ -58,7 +60,7 @@ class Neo {
             $relation->setType($name);
             if(!empty($data)){
                 foreach ($data as $key => $value) {
-                if($value != "")
+                if($value != NULL)
                     $relation->setProperty($key,$value)->save();
                 }    
             }

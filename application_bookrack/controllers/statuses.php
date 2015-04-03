@@ -25,6 +25,10 @@ Class Statuses extends CI_Controller{
 		}
 		echo json_encode($data);	
 	}
+	public function show_post($id)
+	{
+		$this->status->getContentById		
+	}
 	public function loadContent()
 	{
 		//$id = ($this->uri->segment(2)) ? $this->uri->segment(2) : 0;

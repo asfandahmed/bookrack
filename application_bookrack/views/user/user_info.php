@@ -1,7 +1,7 @@
 <?php 
 	$fullname=ucfirst($this->session->userdata('first_name')).' '.ucfirst($this->session->userdata('last_name'));
 	if($this->session->userdata('profile_image'))
-		$image_path=base_url().'assets/uploads/profile_images/'.$this->session->userdata('profile_image');
+		$image_path=base_url().'assets/uploads/thumbs/'.$this->session->userdata('profile_image');
 	else
 		$image_path=base_url().'assets/images/user-pic.jpg';
 ?>
@@ -26,7 +26,7 @@
 				<th>Books</th><th>Following</th><th>Followers</th>
 			</tr>
 			<tr>
-				<td><a href="<?=site_url('shelf')?>"><?=$user_info[1][0]['books']?></a></td><td><a href="<?=site_url('following')?>"><?=$user_info[0][0]['following']?></a></td><td><a href="<?=site_url('followers')?>"><?=$user_info[0][0]['followers']?></a></td>
+				<td><a href="<?=site_url('shelf')?>"><?=$user_info[2][0]['books']?></a></td><td><a href="<?=site_url('following')?>"><?=$user_info[0][0]['following']?></a></td><td><a href="<?=site_url('followers')?>"><?=$user_info[1][0]['followers']?></a></td>
 			</tr>
 		</table>
 	</div>

@@ -83,7 +83,7 @@ class Site extends CI_Controller
 			redirect(site_url());
 
 		$this->session->sess_destroy();
-		redirect(site_url());
+		redirect(site_url('login'));
 	}
 	public function register()
 	{

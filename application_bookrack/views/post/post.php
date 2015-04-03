@@ -1,27 +1,40 @@
 
 <?php 
+/*
+when image and user were comming from session or passed user
 if(isset($user)){
 	$full_name=ucfirst($user->first_name).' '.ucfirst($user->last_name);
 	if(!empty($user->profile_image))
-		$image_path=base_url().'assets/uploads/profile_images/'.$user->profile_image;
+		$image_path=base_url().'assets/uploads/thumbs/'.$user->profile_image;
 	else
 		$image_path=base_url().'assets/images/user-pic.jpg';
 }
 else{
 	$full_name=ucfirst($this->session->userdata('first_name')).' '.ucfirst($this->session->userdata('last_name'));
 	if($this->session->userdata('profile_image'))
-		$image_path=base_url().'assets/uploads/profile_images/'.$this->session->userdata('profile_image');
+		$image_path=base_url().'assets/uploads/thumbs/'.$this->session->userdata('profile_image');
 	else
 		$image_path=base_url().'assets/images/user-pic.jpg';
 }
+*/
+$base_url=base_url();
+$profile_url=site_url('profile');
+$comments_url=site_url('showcomments');
+$site_url=site_url();
+$full_name=ucfirst($this->session->userdata('first_name')).' '.ucfirst($this->session->userdata('last_name'));
+if($this->session->userdata('profile_image'))
+	$image_path=$base_url.'assets/uploads/thumbs/'.$this->session->userdata('profile_image');
+else
+	$image_path=$base_url.'assets/images/user-pic.jpg';
+
 if(isset($posts)):
 foreach ($posts as $post):
 ?>
-<div class="col-sm-12 col-md-12 col-lg-12 custom-panel post posts">
+<div class="col-sm-12 col-md-12 col-lg-12 custom-panel post posts" id="post_<?=$post->statusId?>">
 	<div class="col-sm-12 col-md-12 col-lg-12">
-		<div class="row">
-			<div class="col-sm-2 col-md-2 col-lg-2"><a  href="<?=site_url('profile/')?>" rel="nofollow"><img src="<?=$image_path?>" alt="" title="" style="width:50px;height:43px;"></a></div>
-			<div class="col-sm-10 col-md-10 col-lg-10"><a  href="<?=site_url('profile/')?>"><b class="post-username"><?=$full_name?></b></a> <!--<em>is reading</em>-->
+		<div clas-s="row">
+			<div class="col-sm-2 col-md-2 col-lg-2"><a  href="<?=$profile_url.'/'.$post->userIdForPost?>" rel="nofollow"><img src="<?=$base_url.'assets/uploads/thumbs/'.$post->userImageForPost?>" alt="" title="" style="width:50px;height:43px;"></a></div>
+			<div class="col-sm-10 col-md-10 col-lg-10"><a  href="<?=$profile_url.'/'.$post->userIdForPost?>"><b class="post-username"><?=$post->userNameForPost?></b></a> <?php if($post->bookPost !== null):?><em>added a book.</em><?php endif;?>
 				<div class="dropdown pull-right">
 		          <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <span class="caret"></span></a>
 		          <ul class="dropdown-menu" role="menu">
@@ -33,31 +46,52 @@ foreach ($posts as $post):
 			</div>
 		</div>
 		
-		<div class="row" id="post_<?=$post->statusId?>">
-			<!--<div class="col-sm-offset-2 col-md-offset-2 col-lg-offset-2 col-sm-2 col-md-2 col-lg-2"><img src="<?=base_url().'assets/images/user-pic.jpg'?>" alt="" title=""></div>
+		<div class="row">
+			<?php if($post->bookPost !== null):?>
+			<div class="col-sm-offset-2 col-md-offset-2 col-lg-offset-2 col-sm-2 col-md-2 col-lg-2"><img src="<?=base_url().'assets/images/user-pic.jpg'?>" alt="" title=""></div>
 			<div class="col-sm-8 col-md-8 col-lg-8 post-book-info">
 				<ul>
-					<li>The fault in our stars</li>
-					<li>by</li>
+					<li><a class="username" href="<?=$site_url.'/book/'.$post->bookPost->getId()?>"><?=$post->bookPost->getProperty('title');?></a></li>
+					<li>by </li>
 					<li>Ratings</li>
 				</ul>
-			</div>-->
+			</div>
+			<?php else:?>
 			<div class="col-sm-offset-2 col-md-offset-2 col-lg-offset-2 col-sm-10 col-md-10 col-lg-10">
 				<?=$post->title;?>
 			</div>
+			<?php endif;?>
 		</div>
 	</div>
 	<div class="col-sm-12 col-md-12 col-lg-12 social-bar">
 		<ul>
-			<li><a href="#" class="like-button">Like</a></li><li><a href="#" onclick="showcommentbox(<?=$post->statusId?>)">Comment</a></li><li><a href="#">Favorite</a></li><li><a href="#">Wishlist</a></li><li><a href="#">Share</a></li>
+			<li><?php if(empty($post->likes)):?>
+					<a href="<?=$site_url.'/like/'.$post->statusId?>" class="like-button">Like</a>
+				<?php else:?>
+					<a href="<?=$site_url.'/unlike/'.$post->statusId?>" class="unlike-button">Unlike</a>
+				<?php endif;?>
+			</li>
+			<li><a href="#" class="comment-button" id="<?=$post->statusId?>">Comment</a></li>
+			<!--<li><a href="#">Favorite</a></li>-->
+			<li><a href="#">Wishlist</a></li>
+			<!--<li><a href="#">Share</a></li>-->
 		</ul>
 	</div>
 	<hr>
 	<div class="col-sm-12 col-md-12 col-lg-12 comment_bar" id="commentbar_<?=$post->statusId?>">
-		<div class="row"><div class="col-sm-12 col-md-12 col-lg-12">view all comments</div></div>
+		<div class="row"><div class="col-sm-12 col-md-12 col-lg-12"><a class="commentsloader" href="<?=$comments_url.'/'.$post->statusId?>">view comments</a></div></div>
 		<div class="row">
 			<div class="col-sm-2 col-md-2 col-lg-2"><img src="<?=$image_path?>" alt="" title="" style="width:50px;height:43px;"></div>
 			<div class="col-sm-10 col-md-10 col-lg-10">
+				<form id="form_<?=$post->statusId?>" action="<?=$site_url.'/post/comment'?>" accept-charset="utf-8" method="POST">
+					<input type="hidden" name="statusId" value="<?=$post->statusId?>">
+					<div class="input-group">
+					<input type="text" name="comment" placeholder="Comment" class="form-control" value="" autocomplete="off">
+						<div class="input-group-btn">
+						<input type="submit" name="submitcomment" value="comment" onclick="postComment(form_<?=$post->statusId?>)" class="btn btn-primary">
+						</div>
+					</div>
+				</form>
 			</div>
 		</div>
 	</div>

@@ -13,23 +13,32 @@ Class Like extends CI_Model
 	{
 		return $id;
 	}
-	public function setLike($userId,$postId)
+	public function setLike($email,$postId)
 	{
-		$this->load->helper('date');
-		$datestring = "%Y-%m-%d %h:%i %a";
-		$time = time();
-		$date_time=mdate($datestring, $time);
-		$data=array(
-			'date_time'=>$date_time,
-			);
-		return $this->neo->add_relation($userId,$postId,"LIKES",$data);
+		$cypher = '
+		MATCH (u:User {email:{u}})
+		MATCH (s:Status {statusId:{s}})
+		CREATE UNIQUE (u)-[r:LIKES {date_time:{d}}]->(s)
+		RETURN r';
+		return $this->neo->execute_query($cypher, array(
+				'u' => $email,
+				's' => $postId,
+				'd' => time(),
+			));
 	}
 	public function updateLike($id)
 	{
 		return $id;
 	}
-	public function deleteLike($id)
+	public function deleteLike($email, $postId)
 	{
-		$this->neo->delete_relation($id);
+		$cypher = '
+		MATCH (u:User {email:{u}})-[r:LIKES]->(s:Status {statusId:{s}})
+		DELETE r
+		';
+		$this->neo->execute_query($cypher,array(
+			'u' => $email,
+			's' => $postId
+			));
 	}
 }
