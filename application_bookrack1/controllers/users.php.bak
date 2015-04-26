@@ -1,0 +1,95 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+class Users extends CI_Controller
+{
+	public function __construct()
+	{
+		parent::__construct();
+		$this->load->model('user');
+		$this->load->helper(array('url','form'));
+		$this->load->library(array('common_functions','session'));
+	}
+	public function index($id="")
+	{
+		if(!$this->common_functions->is_logged_in())
+			redirect(site_url());
+		
+		$data['title']='Profile - Bookrack';
+		$data['user_info']=$this->user->get_basic_info($this->session->userdata['user_id']);
+		$this->load->view('templates/header.php',$data);
+		$this->load->view('user/index.php',$data);
+		$this->load->view('templates/footer.php');
+	}
+	public function follow($follower,$leader)
+	{
+		$data=array(
+			'date_time'=>'val'
+			);
+		$this->user->add_user_relation($follower,$leader,"FOLLOWS");
+	}
+	public function unfollow($follower,$leader)
+	{
+		$this->user->remove_user_relation($id);
+	}
+	public function followers()
+	{
+		if(!$this->common_functions->is_logged_in())
+			redirect(site_url());
+		
+		$id=$this->session->userdata['user_id'];
+		$data['title']='Followers - Bookrack';
+		$data['user_info']=$this->user->get_basic_info($id);
+		$data['followers']=$this->user->get_followers($id);
+
+		$this->load->view('templates/header.php',$data);
+		$this->load->view('user/followers_following.php',$data);
+		$this->load->view('templates/footer.php');
+	}
+	public function following()
+	{
+		if(!$this->common_functions->is_logged_in())
+			redirect(site_url());
+		
+		$id=$this->session->userdata['user_id'];
+		$data['title']='Following - Bookrack';
+		$data['user_info']=$this->user->get_basic_info($id);
+		$data['following']=$this->user->get_following($id);
+
+		$this->load->view('templates/header.php',$data);
+		$this->load->view('user/followers_following.php',$data);
+		$this->load->view('templates/footer.php');
+	}
+	public function forgot()
+	{
+		$this->load->library('form_validation');
+
+		$this->form_validation->set_rules('email', 'Email', 'trim|required|min_length[3]|max_length[60]|valid_email|xss_clean');
+
+		if($this->form_validation->run() === FALSE)
+		{
+			$data['title']='Forgot Password - Bookrack';
+			$this->load->view('templates/header.php',$data);
+			$this->load->view('user/forgot.php');
+			$this->load->view('templates/footer.php');
+		}
+		else
+		{
+			$user = $this->user->check_user_exists($email);
+			$this->send_password();
+		}
+	}
+	public function edit()
+	{
+		echo 'hello';
+	}
+	private function load_profile()
+	{
+		/*need to minimize requests here*/
+		$id = $this->session->get_userdata('user_id');
+		$user = $this->user->get_user($id);
+	}
+
+	private function send_password()
+	{
+
+	}
+}

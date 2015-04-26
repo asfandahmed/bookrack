@@ -58,7 +58,7 @@ class Neo {
             $relation->setType($name);
             if(!empty($data)){
                 foreach ($data as $key => $value) {
-                if($value != "")
+                if($value != NULL)
                     $relation->setProperty($key,$value)->save();
                 }    
             }

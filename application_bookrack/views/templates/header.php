@@ -4,10 +4,19 @@
 <title><?=$title?></title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Bootstrap -->
+
 <link href="<?=base_url('assets/css/bootstrap.min.css')?>" rel="stylesheet" media="screen">
+<link href="<?=base_url('assets/css/bootstrap.mintest.css')?>" rel="stylesheet" media="screen">
 <link href="<?=base_url('assets/css/jquery-ui.min.css')?>" rel="stylesheet" media="screen">
 <link href="<?=base_url('assets/css/capSlide.min.css')?>" rel="stylesheet" media="screen">
+<link href="<?=base_url('assets/css/templatemo-style.css')?>" rel="stylesheet" media="screen">
 <link href="<?=base_url('assets/css/style.css')?>" rel="stylesheet" media="screen">
+<link href="<?=base_url('assets/css/circle.css')?>" rel="stylesheet" media="screen">
+<link href="<?=base_url('assets/css/userbox.css')?>" rel="stylesheet" media="screen">
+
+<link href="<?=base_url('assets/css/styleG2.css')?>" rel="stylesheet" media="screen">
+<link href="<?=base_url('assets/css/stylesG3.css')?>" rel="stylesheet" media="screen">
+<link href="<?=base_url('assets/css/owl-carousel.css')?>" rel="stylesheet" media="screen">
 <script src="<?=base_url('assets/js/jquery-latest.min.js')?>"></script>
 </head>
 <body>
@@ -30,7 +39,7 @@
       <?php if($this->common_functions->is_logged_in()):?>
       <ul class="nav navbar-nav">
         <li <?=($this->router->class=="site")?'class="active"':""?>><a href="<?=site_url('home')?>"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-        <li><a href="notification.html"><span class="glyphicon glyphicon-bell"></span>Notifications</a></li>
+        <li <?=($this->router->class=="notifications")?'class="active"':""?>><a href="<?=site_url('notifications')?>"><span class="glyphicon glyphicon-bell"></span>Notifications</a></li>
         <li><a href="<?=site_url('messages/load_message_panel')?>" data-toggle="modal" data-target="#contentModal" id="load_messages"><span class="glyphicon glyphicon-envelope"></span> Messages</a></li>
       </ul>
       <form name="search_form" id="search-form" action="<?=site_url('search')?>" method="GET" class="navbar-form navbar-left" role="search">

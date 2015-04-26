@@ -48,8 +48,11 @@ $route['logout'] = 'site/logout';
 /* users controller routes*/
 $route['profile'] = 'users/index';
 $route['profile/edit']='users/edit';
+$route['profile/view_information']='users/view_information';
+$route['profile/view_contact']='users/view_contact';
 $route['profile/edit_information']='users/edit_information';
 $route['profile/edit_contact']='users/edit_contact';
+$route['profile/save']='users/save';
 
 $route['profile/(:any)'] = 'users/index/$1';
 $route['forgot'] = 'users/forgot';
@@ -74,15 +77,25 @@ $route['publisher'] = 'publishers/index';
 $route['publisher/(:any)'] = 'publishers/index/$1';
 /* status controller routes*/
 $route['post'] = 'statuses/post';
+$route['load/posts'] = 'statuses/loadContent';
 /* search controller routes*/
 $route['search'] = 'searches/index';
-$route['search/(:any)'] = 'searches/index';
 $route['get_suggested_searches'] = 'searches/get_suggestions';
 $route['search/books'] = 'searches/books';
 $route['search/authors'] = 'searches/authors';
 $route['search/publishers'] = 'searches/publishers';
+$route['search/book/(:num)/(:any)'] = 'searches/nearest_users/$1/$2';
+$route['search/(:any)'] = 'searches/index';
+
+/* folllow and unfollow routes*/
+$route['user/follow'] = 'users/follow';
+$route['user/unfollow'] = 'users/unfollow';
 /* messages controller routes*/
 $route['messages/load_message_panel'] = 'messages/load_message_panel';
+/* notification controller routes*/
+$route['notifications'] = 'notifications/index';
+/* borrow controller routes*/
+$route['borrow/request'] = 'borrows/insert';
 /* admin default controller routes */
 $route['admin'] = 'admin/defaultController/index';
 /* admin books controller routes */

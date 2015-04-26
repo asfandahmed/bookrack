@@ -18,6 +18,9 @@ class User extends CI_Model
 	public $verified_email="";
 	public $verified_account="";
 	public $register_date="";
+	public $ip_address="";
+	public $latitude="";
+	public $longitude="";
 	public $last_login="";
 	public $is_admin="";
 	public $active="";
@@ -32,7 +35,7 @@ class User extends CI_Model
 		return $this->neo->get_node($id);
 	}
 	public function get_user($id){
-		return self::fromNode($this->get($id));
+		return self::createFromNode($this->get($id));
 	}
 	/**
 	* @param int $id
@@ -58,7 +61,9 @@ class User extends CI_Model
 			'dob'=>$this->input->post('dob'),
 			'about'=>$this->input->post('about'),
 			'location'=>'',
+			'ip_address'=>$this->input->ip_address(),
 			'profile_url'=>'',
+			'profile_image'=>'user-pic.jpg',
 			'skype'=>$this->input->post('skype'),
 			'facebook'=>$this->input->post('facebook'),
 			'twitter'=>$this->input->post('twitter'),
@@ -120,10 +125,19 @@ class User extends CI_Model
 				return $result;
 			return false;
 	}
-	public function follow_user($username, $userToFollow){
-		return $currentNode->relateTo($userNodeToBeFollowed, 'FOLLOWS')->save();
+	/**
+	* Follow a user
+     *
+     * @param  int       $userId     User taking the follow action
+     * @param  int       $userToFollow User to follow
+     * @return Relationship New follows relationship
+	*/
+	public function follow($userId, $userToFollow){
+		$currentNode=$this->get($userId);
+		$userNodeToBeFollowed=$this->get($userToFollow);
+		return $currentNode->relateTo($userNodeToBeFollowed, 'FOLLOWS')->setProperty('date_time',time())->save();
 	}
-	public function unfollow_user($username, $userToUnfollow){
+	public function unfollow($username, $userToUnfollow){
 		$queryString = "MATCH (n1:User { username: {u} }) WITH n1 MATCH (n1)-[r:FOLLOWS]-(n2 { username: {f} }) DELETE  r";
         $query = $this->neo->execute_query($queryString,array(
                 'u' => $username,
@@ -146,7 +160,9 @@ class User extends CI_Model
 	public function get_basic_info($id)
 	{
 		$result=array();
-		$query="START n=node({id}) MATCH (n:User)-[r1:FOLLOWS]->(), (n:User)<-[r2:FOLLOWS]-() RETURN COUNT(r1) AS Following, COUNT(r2) AS Followers";
+		$query="START n=node({id}) MATCH (n:User)-[r1:FOLLOWS]->() RETURN COUNT(r1) AS Following";
+		$result[]=$this->neo->execute_query($query,array('id'=>intval($id)));
+		$query="START n=node({id}) MATCH (n:User)<-[r1:FOLLOWS]-() RETURN COUNT(r1) AS Followers";
 		$result[]=$this->neo->execute_query($query,array('id'=>intval($id)));
 		$query="START n=node({id}) MATCH (n)-[r:OWNS]->() RETURN COUNT(r) AS books";
 		$result[]=$this->neo->execute_query($query,array('id'=>intval($id)));
@@ -226,55 +242,7 @@ class User extends CI_Model
 		}		
 		return $this->neo->execute_query($query,array('id'=>intval($id)));
 	}
-	/*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-	/*::                                                                         :*/
-	/*::  This routine calculates the distance between two points (given the     :*/
-	/*::  latitude/longitude of those points). It is being used to calculate     :*/
-	/*::  the distance between two locations using GeoDataSource(TM) Products    :*/
-	/*::                                                                         :*/
-	/*::  Definitions:                                                           :*/
-	/*::    South latitudes are negative, east longitudes are positive           :*/
-	/*::                                                                         :*/
-	/*::  Passed to function:                                                    :*/
-	/*::    lat1, lon1 = Latitude and Longitude of point 1 (in decimal degrees)  :*/
-	/*::    lat2, lon2 = Latitude and Longitude of point 2 (in decimal degrees)  :*/
-	/*::    unit = the unit you desire for results                               :*/
-	/*::           where: 'M' is statute miles (default)                         :*/
-	/*::                  'K' is kilometers                                      :*/
-	/*::                  'N' is nautical miles                                  :*/
-	/*::  Worldwide cities and other features databases with latitude longitude  :*/
-	/*::  are available at http://www.geodatasource.com                          :*/
-	/*::                                                                         :*/
-	/*::  For enquiries, please contact sales@geodatasource.com                  :*/
-	/*::                                                                         :*/
-	/*::  Official Web site: http://www.geodatasource.com                        :*/
-	/*::                                                                         :*/
-	/*::         GeoDataSource.com (C) All Rights Reserved 2015		   		     :*/
-	/*::                                                                         :*/
-	/*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-	protected static function calculate_distance($lat1, $lon1, $lat2, $lon2, $unit="K")
-	{
-		  $theta = $lon1 - $lon2;
-		  $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) +  cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
-		  $dist = acos($dist);
-		  $dist = rad2deg($dist);
-		  $miles = $dist * 60 * 1.1515;
-		  $unit = strtoupper($unit);
-
-		  if ($unit == "K") {
-		    return ($miles * 1.609344);
-		  } else if ($unit == "N") {
-		      return ($miles * 0.8684);
-		    } else {
-		        return $miles;
-		      }
-
-		//echo distance(32.9697, -96.80322, 29.46786, -98.53506, "M") . " Miles<br>";
-		//echo distance(32.9697, -96.80322, 29.46786, -98.53506, "K") . " Kilometers<br>";
-		//echo distance(32.9697, -96.80322, 29.46786, -98.53506, "N") . " Nautical Miles<br>";
-
-	}
-	protected static function fromNode(Everyman\Neo4j\Node $node){
+	protected static function createFromNode(Everyman\Neo4j\Node $node){
 		$user=new User();
 		$user->id=$node->getId();
 		$user->first_name=$node->getProperty('first_name');
@@ -290,6 +258,9 @@ class User extends CI_Model
 		$user->twitter=$node->getProperty('twitter');
 		$user->googlePlus=$node->getProperty('googlePlus');
 		$user->register_date=$node->getProperty('register_date');
+		$user->ip=$node->getProperty('ip_address');
+		$user->latitude=$node->getProperty('latitude');
+		$user->longitude=$node->getProperty('longitude');
 		$user->last_login=$node->getProperty('last_login');
 		$user->active=$node->getProperty('active');
 		return $user;
