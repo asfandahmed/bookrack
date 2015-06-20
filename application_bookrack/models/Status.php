@@ -31,9 +31,9 @@ class Status extends CI_Model{
 
         return self::add($email, $status);
 	}
-	public function deleteStatus()
+	public function deleteStatus($email,$statusId)
 	{
-
+        return self::delete($email, $statusId);
 	}
 	public function updateStatus()
 	{
@@ -89,7 +89,7 @@ CYPHER;
 
         $status->updated = $updatedAt;
 
-        return $content;
+        return $status;
     }
 
     /**
@@ -106,8 +106,8 @@ CYPHER;
             'email' => $email,
             'statusId' => $statusId,
         );
-
-        $this->neo->execute_query($queryString,$params);
+        $CI = get_instance();
+        return $CI->neo->execute_query($queryString,$params);
     }
 
     /**
@@ -122,18 +122,8 @@ CYPHER;
         $queryString = <<<CYPHER
 MATCH (u:User { email: { email }})-[:CURRENTPOST]->(c:Status { statusId: { statusId }}) RETURN c
 CYPHER;
-
-        /*$query = new Query(
-            Neo4jClient::client(),
-            $queryString,
-            array(
-                'username' => $username,
-                'contentId' => $contentId,
-            )
-        );*/
-
-        // $result = $query->getResultSet();
-		$result = $this->neo->execute_query($queryString,array(
+        $CI = get_instance();
+		$result = $CI->neo->execute_query($queryString,array(
 				'email' => $email,
                 'statusId' => $statusId,
 			));
@@ -155,19 +145,8 @@ MATCH (u:User { email: { email }})-[:CURRENTPOST|NEXTPOST*0..]->(c:Status { stat
 WHERE NOT (c)-[:NEXTPOST]->()
 RETURN c
 CYPHER;
-
-        /*$query = new Query(
-            Neo4jClient::client(),
-            $queryString,
-            array(
-                'username' => $username,
-                'contentId' => $contentId,
-            )
-        );
-
-        $result = $query->getResultSet();
-*/
-        $result = $this->neo->execute_query($queryString,array(
+        $CI = get_instance();
+        $result = $CI->neo->execute_query($queryString,array(
         		'email' => $email,
                 'statusId' => $statusId,
         	));
@@ -308,7 +287,7 @@ CYPHER;
         $status->title = $node->getProperty('title');
         //$status->url = $node->getProperty('url');
         // $status->tagstr = $node->getProperty('tagstr');
-        $status->date_time = gmdate("F j, Y g:i a", $node->getProperty('date_time'));
+        $status->date_time = gmdate("F j, Y g:i a", strtotime($node->getProperty('date_time')));
         $status->owner = $owner;
         $status->userNameForPost = $username;
         $status->userIdForPost = $userid;

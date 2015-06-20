@@ -10,15 +10,18 @@ class Site extends CI_Controller
 	}
 	public function home()
 	{
+		//$this->output->enable_profiler(TRUE);
 		if(!$this->common_functions->is_logged_in())
 			redirect(site_url());
 
-		$this->load->model(array('user','status'));
+		$this->load->model(array('user','status','recommendation'));
 		$id=$this->session->userdata('user_id');
 		$email=$this->session->userdata('email');
 		$data['title']='Home - Bookrack';
 		$data['user_info']=$this->user->get_basic_info($id);
-		
+		$data['suggestions']=$this->recommendation->friendSuggestions($email);
+
+
 		$count=$this->status->getContentCount($email)->offsetGet(0);
 		$config['base_url']=site_url('home');
 		$config['total_rows']=$count['total'];
@@ -27,10 +30,12 @@ class Site extends CI_Controller
 		$skip=$page*$config["per_page"];
 		
 		$data['posts']=$this->status->getContent($email,$skip,$config["per_page"]);
+		
 
 		$this->load->view('templates/header.php',$data);
 		$this->load->view('site/home.php',$data);
 		$this->load->view('templates/footer.php');
+		//$this->output->enable_profiler(FALSE);
 	}
 	public function index()
 	{
@@ -41,9 +46,9 @@ class Site extends CI_Controller
 		$data['signin_post_url']='login';
 		$data['register_post_url']='register';
 
-		$this->load->view('templates/header.php',$data);
+		$this->load->view('templates/header-index.php',$data);
 		$this->load->view('site/index.php',$data);
-		$this->load->view('templates/footer.php');
+		$this->load->view('templates/footer-index.php');
 	}
 	public function login()
 	{
@@ -97,9 +102,10 @@ class Site extends CI_Controller
 		$this->form_validation->set_rules('first_name', 'First name', 'trim|required|min_length[3]|max_length[15]|xss_clean');
 		$this->form_validation->set_rules('last_name', 'Last name', 'trim|required|min_length[1]|max_length[15]|xss_clean');
 		$this->form_validation->set_rules('gender', 'Gender', 'trim|required|max_length[8]|xss_clean');
-		$this->form_validation->set_rules('email', 'Email', 'trim|required|min_length[3]|max_length[60]|valid_email|xss_clean');
+		$this->form_validation->set_rules('email', 'Email', 'trim|required|min_length[3]|max_length[60]|valid_email|callback_email_check|xss_clean');
 		$this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[6]|max_length[25]|xss_clean');
-		
+		$this->form_validation->set_message('email_check','Email already exists.');
+
 		if($this->form_validation->run() === FALSE)
 		{
 			$this->load->view('templates/header.php',$data);
@@ -116,7 +122,7 @@ class Site extends CI_Controller
 						'user_id'=>$user_id,
 						'first_name'=>$this->input->post('first_name'),
 						'last_name'=>$this->input->post('last_name'),
-						'email'=>$this->input->post('email'),
+						'email'=>strtolower($this->input->post('email')),
 						'logged_in'=>true,
 						'is_admin'=>0
 					));
@@ -170,5 +176,11 @@ class Site extends CI_Controller
 			echo '<h3>'.$e->getMessage().'</h3>';
 		}
 		
+	}
+	public function email_check($value)
+	{
+		if(!$this->user->check_user_exists($value))
+			return TRUE;
+		return FALSE;
 	}
 }

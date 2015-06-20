@@ -21,7 +21,7 @@ else{
 			<div class="col-sm-10 col-md-10 col-lg-10 status-post-control">
 				<?php echo form_open(site_url('post'), array('id'=>'statusForm','name'=>'status_form','class'=>'form-horizontal', 'role'=>'form'));?>
 					<div class="input-group">
-						<input type="text" name="status" value="" class="form-control" placeholder="What are you reading?">
+						<input type="text" name="status" value="" class="form-control" placeholder="What are you reading?" autocomplete="off">
 						<div class="input-group-btn"><button type="submit" name="post-status" onclick="postStatus()" class="btn btn-primary">Post</button></div>
 					</div>
 				</form>

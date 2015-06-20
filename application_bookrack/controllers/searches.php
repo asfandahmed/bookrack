@@ -36,9 +36,12 @@ class Searches extends CI_Controller
 	}
 	public function nearest_users($id,$title)
 	{
+		$title = urldecode($title);
 		$data['title']="List nearest users";
 		$email=$this->session->userdata('email');
-		$data['users']=$this->search->get_nearest_users(urldecode($title),$email);
+		if ($this->search->check_lat_lon($email)) {
+			$data['users']=$this->search->get_nearest_users($title,$email);	
+		}
 		$data['bookId']=$id;
 		$data['bookTitle']=$title;
 		$this->load->view('templates/header.php',$data);

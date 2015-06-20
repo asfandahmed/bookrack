@@ -29,7 +29,6 @@ class User extends CI_Model
 	{
 		parent::__construct();
 		$this->load->library('neo');
-		$this->load->helper('date');
 	}
 	public function get($id){
 		return $this->neo->get_node($id);
@@ -47,12 +46,11 @@ class User extends CI_Model
 	}
 	public function set_user()
 	{
+		$time = time();
+		$regDate = time();
 		$admin=$this->input->post('admin');
 		if(empty($admin))
 			$admin=0;
-		$datestring = "%Y-%m-%d %h:%i %a";
-		$time = time();
-		$regDate=time();
 		$data = array(
 			'first_name'=>$this->input->post('first_name'),
 			'last_name'=>$this->input->post('last_name'),
@@ -194,14 +192,11 @@ class User extends CI_Model
 	public function add_to_shelf($userId)
 	{
 		$name=$this->input->post('add_shelf');
-		//echo $userId;
-		//die($name);
 		$query="MATCH (n:User)
 				WHERE ID(n) = {id} 
 				MERGE (m:Book {title:{name}})
 				CREATE UNIQUE (n)-[r:OWNS]->(m)
 				RETURN r,n,m";
-		//die($query);
 		return $this->neo->execute_query($query,array('id'=>intval($userId),'name'=>$name));
 	}
 	public function add_to_wishlist($userId)
@@ -242,8 +237,9 @@ class User extends CI_Model
 		}		
 		return $this->neo->execute_query($query,array('id'=>intval($id)));
 	}
+	
 	protected static function createFromNode(Everyman\Neo4j\Node $node){
-		$user=new User();
+		$user = new User();
 		$user->id=$node->getId();
 		$user->first_name=$node->getProperty('first_name');
 		$user->last_name=$node->getProperty('last_name');

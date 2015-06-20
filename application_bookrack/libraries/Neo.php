@@ -21,11 +21,20 @@ spl_autoload_register(function ($sClass) {
 class Neo {
 
 	protected $client;
+    private $local=true;
 	public function __construct()
 	{
-		$this->client = new Client();
-        $this->client->getTransport()
-        ->setAuth('neo4j', 'bookrack');
+        if($this->local){
+            $this->client = new Client();
+            $this->client->getTransport()
+            ->setAuth('neo4j', 'bookrack');    
+        }else{
+            $this->client = new Client('bookrack.sb02.stations.graphenedb.com', 24789);
+            $this->client->getTransport()
+            ->setAuth('bookrack', 'sgd991UcxP2tVd3zzOkc');
+        }
+		
+        
 	}
     public function add_index($name)
     {	
@@ -51,7 +60,7 @@ class Neo {
     public function add_relation($nodeId1, $nodeId2, $name, $data=array())
     {
         try{
-            $node1=$this->client->getNode($nodeId1); // get fisrt node
+            $node1=$this->client->getNode($nodeId1); // get first node
             $node2=$this->client->getNode($nodeId2); // get second node
             /* node1 relates to node2*/
             $relation = $this->client->makeRelationship();

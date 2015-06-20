@@ -5,14 +5,15 @@ class Likes extends CI_Controller
 	{
 		parent::__construct();
 		$this->load->helper('url');
-		$this->load->model('like');
+		$this->load->model(array('like','notification'));
 		$this->load->library(array('session','common_functions'));
 	}
 	public function like_post($postId)
 	{
 		if(isset($postId)){
 			$email = $this->session->userdata['email'];
-			echo json_encode($this->like->setLike($email,$postId));	
+			$result = $this->like->setLike($email,$postId);
+			echo json_encode($result);	
 		}
 		return null;
 	}

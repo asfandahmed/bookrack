@@ -38,11 +38,10 @@
 			function getData() {
 				
 				// Post data to ajax.php
-				$.post('http://localhost:8080/bookrack/index.php/load/posts', {
+				var url = 'http://localhost/bookrack/index.php/load/posts/'+offset+'/'+$settings.nop;
+				$.get(url, {
 						
-					action        : 'scrollpagination',
-				    number        : $settings.nop,
-				    offset        : offset,
+					
 					    
 				}, function(data) {
 						
@@ -59,7 +58,7 @@
 					    offset = offset+$settings.nop; 
 						    
 						// Append the data to the content div
-					   	$this.find('#content_post').append(data);
+					   	$this.find('.middle-content').append(data);
 						
 						// No longer busy!	
 						busy = false;
