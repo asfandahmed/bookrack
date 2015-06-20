@@ -1,8 +1,7 @@
 $(document).ready(function(){
-	$('.comment_bar').hide();
-	$('#post_content').scrollPagination({
+	$('.middle-content').scrollPagination({
 
-		nop     : 3, // The number of posts per scroll to be loaded
+		nop     : 10, // The number of posts per scroll to be loaded
 		offset  : 0, // Initial offset, begins at 0 in this case
 		error   : 'No More Posts!', // When the user reaches the end this is the message that is
 		                            // displayed. You can change this if you want.
@@ -12,6 +11,7 @@ $(document).ready(function(){
 		               // but will still load if the user clicks.
 		
 	});
+	$('.comment_bar').hide();
 	$("#profile_pic_box").capslide({
                     caption_color	: '#bfedfa',
                     caption_bgcolor	: '#000',
@@ -56,6 +56,29 @@ $(document).ready(function(){
 			}
 		});
 	});
+	$(document).on("click","#load_message_compose", function(e){
+		
+		var link=$(this).attr('url');
+		$('.modal-dialog').load(link, function( response, status, xhr ){
+			if ( status == "error" ) {
+			var msg = "Sorry but there was an error: ";
+			$( "#contentModal" ).html( msg + xhr.status + " " + xhr.statusText );
+			}
+		});
+	});
+	$(document).on("click",".show-messages", function(e){
+		
+		var link=$(this).attr('data-url');
+		$('.modal-dialog').load(link, function( response, status, xhr ){
+			 if ( status == "error" ) {
+			var msg = "Sorry but there was an error: ";
+			$( "#contentModal" ).html( msg + xhr.status + " " + xhr.statusText );
+			}else{
+				var objDiv = $("#conversation").get(0);
+				objDiv.scrollTop = objDiv.scrollHeight;
+			}
+		});
+	});
 	$('#upload_image_loader').on("click", function(e){
 		e.preventDefault();
 		var link=$(this).attr('href');
@@ -66,54 +89,13 @@ $(document).ready(function(){
 			}
 		});
 	});
-	/*$('likes').live("click", function(){
-		var element=$(this);
-		var per=$(this).parents(".sparkdiv");
-		var sid=per.attr("id");
-		var htm=$(this).html();
-		if(htm=="Like")
-		{
-		$.ajax({
-		type: "POST",
-		url: "like.php",
-		data: 'sid=' + sid + '&sta=like',
-		success: function(reslike){
-		if(reslike==1)
-		{
-		var numlikes=$("#lik"+sid).html();
-		numlikes=parseInt(numlikes);
-		element.html("Unlike");
-		$("#lik"+sid).html(numlikes+1);
-		}
-		}
-		});
-		}
-		else if(htm=="Unlike")
-		{
-		$.ajax({
-		type: "POST",
-		url: "like.php",
-		data: 'sid=' + sid + '&sta=unlike',
-		success: function(reslike){
-		if(reslike==1)
-		{
-		var numlikes=$("#lik"+sid).html();
-		numlikes=parseInt(numlikes);
-		element.html("Like");
-		$("#lik"+sid).html(numlikes-1);
-		}
-		}
-		});
-		}
-		return false;
+});// document ready
 
-	});*/
-});
 $('.btnBorrow').click(function(event){
-	var url=$('.btnBorrow').attr('href');
+	var url=$(this).attr('href');
 	var obj={
-		"bookId":$('.btnBorrow').attr('bookid'),
-		"to":$('.btnBorrow').attr('to'),
+		"bookId":$(this).attr('bookid'),
+		"to":$(this).attr('to'),
 		"bookTitle":$('.btnBorrow').attr('booktitle')
 	};
 	$.ajax({
@@ -125,7 +107,7 @@ $('.btnBorrow').click(function(event){
 			console.log(data);
 		},
 		error:function( xhr, status, errorThrown ){
-			alert( "Sorry, there was a problem!" );
+			humane.log( "Sorry, there was a problem!" );
 			console.log( "Error: " + errorThrown );
 			console.log( "Status: " + status );
 			console.dir( xhr );	
@@ -147,10 +129,11 @@ $('#followBtn').click(function(event){
 		dataType:'json',
 		success:function(data){
 			$('#followBtn').replaceWith(link);
+			humane.log('You followed a user');
 			console.log(data);
 		},
 		error:function( xhr, status, errorThrown ){
-			alert( "Sorry, there was a problem!" );
+			humane.log( "Sorry, there was a problem!" );
 			console.log( "Error: " + errorThrown );
 			console.log( "Status: " + status );
 			console.dir( xhr );	
@@ -159,11 +142,44 @@ $('#followBtn').click(function(event){
 	event.preventDefault();
 	event.unbind();
 });
+$('.SuggfollowBtn').click(function(event){
+	var id=$(this).data('user');
+	var url=$(this).attr('href');
+	$.ajax({
+		type : "POST",
+		url : url,
+		data : { usertobefollowed : id },
+		dataType:'json',
+		success:function(data){
+			$('#row-'+id).fadeOut();
+			humane.log('You followed a user');
+			console.log(data);
+		},
+		error:function( xhr, status, errorThrown ){
+			humane.log( "Sorry, there was a problem!" );
+			console.log( "Error: " + errorThrown );
+			console.log( "Status: " + status );
+			console.dir( xhr );	
+		},
+	});
+	event.preventDefault();
+});
 $('.comment-button').click(function(){
 	var id = this.id;
 	var selector = '#commentbar_'+id;
 	$(selector).toggle();
 });
+$('.commentsloader').on("click", function(e){
+		e.preventDefault();
+		var link=$(this).attr('href');
+		$(this).load(link, function( response, status, xhr ){
+			 if ( status == "error" ) {
+			var msg = "Sorry but there was an error: ";
+			$( "#contentModal" ).html( msg + xhr.status + " " + xhr.statusText );
+			}
+		});
+	});
+/*
 $('.commentsloader').click(function(event){
 	event.preventDefault();
 	var url = $(this).attr('href');
@@ -173,15 +189,20 @@ $('.commentsloader').click(function(event){
 		dataType:'json',
 		success:function(data){
 			console.log(data);
+			view_comments(data);
 		},
 		error:function( xhr, status, errorThrown ){
-			alert( "Sorry, there was a problem!" );
+			humane.log( "Sorry, there was a problem!" );
 			console.log( "Error: " + errorThrown );
 			console.log( "Status: " + status );
 			console.dir( xhr );	
 		},
 	});
-});
+});*/
+function view_comments(data)
+{
+	
+}
 $('.like-button').click(function(event){
 	event.preventDefault();
 	var url = $(this).attr('href');
@@ -196,7 +217,7 @@ $('.like-button').click(function(event){
 			$(selector).replaceWith(link);
 		},
 		error:function( xhr, status, errorThrown ){
-			alert( "Sorry, there was a problem!" );
+			humane.log( "Sorry, there was a problem!" );
 			console.log( "Error: " + errorThrown );
 			console.log( "Status: " + status );
 			console.dir( xhr );	
@@ -220,7 +241,7 @@ $('.unlike-button').click(function(event){
 			$(selector).replaceWith(link);
 		},
 		error:function( xhr, status, errorThrown ){
-			alert( "Sorry, there was a problem!" );
+			humane.log( "Sorry, there was a problem!" );
 			console.log( "Error: " + errorThrown );
 			console.log( "Status: " + status );
 			console.dir( xhr );	
@@ -277,11 +298,11 @@ function add_books()
 			encode:true,
 			success:function(data){
 				console.log(data);
-				alert('Book added!');
+				humane.log("Book Added");
 			},
 			error:function( xhr, status, errorThrown ) {
-			alert( "Sorry, there was a problem!" );
-			console.log( "Error: " + errorThrown );
+			humane.log("Add a book name");
+			console.log=( "Error: " + errorThrown );
 			console.log( "Status: " + status );
 			console.dir( xhr );
 			},
@@ -301,11 +322,11 @@ function postStatus()
 			encode:true,
 			success:function(data){
 				console.log(data);
-				alert(data.error);
+				humane.log(data.error);
 				$('input[name=status]').val()='';
 			},
 			error:function( xhr, status, errorThrown ) {
-			alert( "Sorry, there was a problem!" );
+			humane.log( "Sorry, there was a problem!" );
 			console.log( "Error: " + errorThrown );
 			console.log( "Status: " + status );
 			console.dir( xhr );
@@ -335,7 +356,7 @@ function like_unlike()
 				$('.like-button').replaceWith(link);
 			},
 			error:function( xhr, status, errorThrown ) {
-			alert( "Sorry, there was a problem!" );
+			humane.log( "Sorry, there was a problem!" );
 			console.log( "Error: " + errorThrown );
 			console.log( "Status: " + status );
 			console.dir( xhr );
@@ -359,7 +380,7 @@ function delete_node(id){
 				location.reload();
 			},
 			error:function( xhr, status, errorThrown ) {
-			alert( "Sorry, there was a problem!" );
+			humane.log( "Sorry, there was a problem!" );
 			console.log( "Error: " + errorThrown );
 			console.log( "Status: " + status );
 			console.dir( xhr );
@@ -390,22 +411,145 @@ function postComment(id)
 			dataType:'json',
 			encode:true,
 			success:function(data){
-				displayComment(data);
+				humane.log(data.error);
 			},
 			error:function( xhr, status, errorThrown ) {
-			alert( "Sorry, there was a problem!" );
+			humane.log( "Sorry, there was a problem!" );
 			console.log( "Error: " + errorThrown );
 			console.log( "Status: " + status );
 			console.dir( xhr );
-			},
-			complete:function(){
-			location.href = self.href;
 			},
 		});
 		 event.preventDefault();
 		 event.unbind();
 	});
 }
+$('.btn-hide').click(function(event){
+
+});
+$('.btn-remove').click(function(event){
+	var postId = $(this).attr('data-postId');
+	var url = $(this).attr('data-url');
+	$.ajax({
+		type:"POST",
+		url:url,
+		data:{statusId:postId},
+		dataType:'json',
+		encode:true,
+		success:function(data){
+			console.log(data);
+			humane.log(data.error);
+		},
+		error:function( xhr, status, errorThrown ) {
+			humane.log( "Sorry, there was a problem!" );
+			console.log( "Error: " + errorThrown );
+			console.log( "Status: " + status );
+			console.dir( xhr );
+			},
+		complete:function(){
+			$('#post_'+postId).fadeOut();
+		//location.href = self.href;
+		},
+	});
+	event.preventDefault();
+	event.unbind();
+});
+$('.btn-wishlist').click(function(event){
+	var url = $(this).attr('href');
+	var btn = $(this);
+	var postId = btn.data('post');
+	$.ajax({
+		type:"POST",
+		url:url,
+		data:{statusId:postId},
+		dataType:'json',
+		encode:true,
+		success:function(data){
+			console.log(data);
+		},
+		error:function( xhr, status, errorThrown ) {
+			humane.log( "Sorry, there was a problem!" );
+			console.log( "Error: " + errorThrown );
+			console.log( "Status: " + status );
+			console.dir( xhr );
+			},
+		complete:function(){
+		//location.href = self.href;
+		},
+	});
+	event.preventDefault();
+	event.unbind();
+});
+/*
+function ajax_post_get(type="POST", url, dataType="json", data_obj){
+	var result=null;
+	$.ajax({
+		type : type,
+		url : url,
+		dataType:'json',
+		data:data_obj,
+		success:function(data){
+			result=data;
+		},
+		error:function( xhr, status, errorThrown ){
+			alert( "Sorry, there was a problem!" );
+			console.log( "Error: " + errorThrown );
+			console.log( "Status: " + status );
+			console.dir( xhr );	
+		},
+		complete:function(){
+			location.href = self.href;
+		},
+	});
+	return result;
+}*/
+$('.btn-approve-borrow-request').click(function(event){
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType:'json',
+		success:function(data){
+			
+		},
+		error:function( xhr, status, errorThrown ){
+			alert( "Sorry, there was a problem!" );
+			console.log( "Error: " + errorThrown );
+			console.log( "Status: " + status );
+			console.dir( xhr );	
+		},
+		complete:function(){
+			location.href = self.href;
+		},
+	});
+	event.preventDefault();
+	event.unbind();
+});
+$('.btn-ignore-borrow-request').click(function(event){
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType:'json',
+		success:function(data){
+
+		},
+		error:function( xhr, status, errorThrown ){
+			alert( "Sorry, there was a problem!" );
+			console.log( "Error: " + errorThrown );
+			console.log( "Status: " + status );
+			console.dir( xhr );	
+		},
+		complete:function(){
+			location.href = self.href;
+		},
+	});
+	event.preventDefault();
+	event.unbind();
+});
+/*
+function request_borrow()
+{
+
+}*/
 function displayComment(data)
 {
 	var commentHTML = createComment(data);
@@ -414,4 +558,49 @@ function createComment(data)
 {
 	var html='<div class="col-sm-12 col-md-12 col-lg-12">'+data+'</div>';
 	return html;
+}
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(savePosition,showError);
+    }
+}
+function savePosition(position){
+	var url = 'http://localhost/bookrack/index.php/users/save_lat_lon';
+	$.post(url, {
+		lat : position.coords.latitude,
+		lon : position.coords.longitude
+	},
+	function(data,status,xhr){
+			switch(status){
+			case "success":
+				location.reload();
+			break;
+			case "error":
+				humane.log("Your request can't be completed. Try later.");
+			break;
+			case "timeout":
+				humane.log("Request time out. Try later.");
+			break;
+			default:
+				humane.log("Unknown error occured please submit your issue at support.");
+			break;
+			}
+		}
+	);
+}
+function showError(error){
+	switch(error.code)
+    {
+        case error.PERMISSION_DENIED: humane.log("user did not share geolocation data");
+        break;
+
+        case error.POSITION_UNAVAILABLE: humane.log("could not detect current position");
+        break;
+
+        case error.TIMEOUT: humane.log("retrieving position timed out");
+        break;
+
+        default: humane.log("unknown error");
+        break;
+    }
 }

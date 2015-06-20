@@ -10,10 +10,11 @@ class Comments extends CI_Controller
 	}
 	public function get_all_comments($postId)
 	{
-		$limit=10;
+		$limit=20;
 		$skip=0;
 		$data['comments'] = $this->comment->getContent($postId,$skip,$limit);
-		echo json_encode($data);
+		$this->load->view('dialogs/comments.php',$data);
+		//echo json_encode($data);
 	}
 	public function get_comment()
 	{
@@ -26,7 +27,7 @@ class Comments extends CI_Controller
 		$this->form_validation->set_rules('statusId','StatusId','trim|required|xss_clean');
 		if($this->form_validation->run() === FALSE){
 			$data['success']=false;
-			$data['error']="Seems like your post is empty.";
+			$data['error']="Seems like your comment is empty.";
 		}
 		else{
 			$data['comment']=$this->comment->setComment($id);

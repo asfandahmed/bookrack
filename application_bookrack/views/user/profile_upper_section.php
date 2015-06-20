@@ -1,43 +1,54 @@
 <div class="container" style="margin-top: 20px; margin-bottom: 20px;">
 	<div class="row panel">
 		<div class="col-md-4 bg_blur ">
-    	    <a href="#" class="follow_btn hidden-xs">Follow</a>
+    	    <!--<a href="#" class="follow_btn hidden-xs">Follow</a>-->
 		</div>
         <div class="col-md-8  col-xs-12">
-        <div class="img-thumbnail picture hidden-xs" >
-          
-
-           <?php if($owner) {
+            <div class="img-thumbnail picture hidden-xs" >
+                <?php if($owner) {
            		if(!empty($user->profile_image))
 					$image_path=base_url().'assets/uploads/profile_images/'.$user->profile_image;
 				else
 					$image_path=base_url().'assets/images/user-pic.jpg';
-           	?>
-				<div id="profile_pic_box" class="ic_container">
-                    <img src="<?=$image_path?>" height="130px">
-                    <div class="overlay" style="display:none;"></div>
-                    <a href="<?=site_url('users/load_user_pic_uploader')?>" data-target="#contentModal" data-toggle="modal" id="upload_image_loader">
+           	    ?>
+				
+                <img src="<?=$image_path?>" height="140px" width="140px">
+                <div class="overlay" style="display:none;"></div>
+                <a href="<?=site_url('users/load_user_pic_uploader')?>" data-target="#contentModal" data-toggle="modal" id="upload_image_loader">
                     <div class="ic_caption">
-						&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-camera"></span>&nbsp;&nbsp;<span style="font-size:0.8em">Update Picture</span><br><br>
+    					&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-camera"></span>&nbsp;&nbsp;<span style="font-size:0.8em">Update Picture</span><br><br>
                     </div>
-                	</a>	
-                </div>
+                </a>	
+            
                 <?php }else{?>
-                <img src="<?=base_url().'assets/images/user-pic.jpg'?>" height="130px">	
+                <img src="<?=base_url().'assets/images/user-pic.jpg'?>" height="140px" width="140px">	
                 <?php }?>
 
+            </div>    
+            </div>
 
-                </div>
 
+         <div class="headerInfo">
 
-           
-           <div class="header">
-                <h1>&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;<?=ucfirst($user->first_name).' '.ucfirst($user->last_name)?></h1>
+                <h1><?=ucfirst($user->first_name).' '.ucfirst($user->last_name)?></h1>
                 <!--<h4>&nbsp;&nbsp;&nbsp;&nbsp;Web Developer</h4>-->
-                <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?=$user->about?></span>
+                <span><?=$user->about?></span>
+                <br>
+
+                <table class="tableForCover">
+            <tr>
+                <th <?=($this->router->method=="shelf")?'class="active"':""?>>Books</th><th<?=($this->router->method=="following")?' class="active"':""?>>Following</th><th<?=($this->router->method=="followers")?' class="active"':""?>>Followers</th>
+            </tr>
+            <tr>
+                <td <?=($this->router->method=="shelf")?'class="active"':""?>><a href="<?=site_url('shelf').'/'.$user->getId()?>"><?=$user_info[2][0]['books']?></a></td>
+                <td<?=($this->router->method=="following")?' class="active"':""?>><a href="<?=site_url('following').'/'.$user->getId()?>"><?=$user_info[0][0]['following']?></a></td>
+                <td<?=($this->router->method=="followers")?' class="active"':""?>><a href="<?=site_url('followers').'/'.$user->getId()?>"><?=$user_info[1][0]['followers']?></a></td>
+            </tr>
+            </table>
+
            </div>
         </div>
-    </div>   
+      
     
 	<div class="row nav">    
         <div class="col-md-4"></div>
@@ -48,26 +59,11 @@
         </div>
     </div>
 
+   
+    </div>
+</div>
+</div>
 <!-- testing new thing-->
 
 
 
-	<div class="col-sm-12 col-md-12 col-lg-12">
-			<div class="col-sm-3 col-md-3 col-lg-3">
-			<table class="table table-responsive">
-			<tr>
-				<th <?=($this->router->method=="shelf")?'class="active"':""?>>Books</th><th<?=($this->router->method=="following")?' class="active"':""?>>Following</th><th<?=($this->router->method=="followers")?' class="active"':""?>>Followers</th>
-			</tr>
-			<tr>
-				<td <?=($this->router->method=="shelf")?'class="active"':""?>><a href="<?=site_url('shelf').'/'.$user->getId()?>"><?=$user_info[2][0]['books']?></a></td>
-				<td<?=($this->router->method=="following")?' class="active"':""?>><a href="<?=site_url('following').'/'.$user->getId()?>"><?=$user_info[0][0]['following']?></a></td>
-				<td<?=($this->router->method=="followers")?' class="active"':""?>><a href="<?=site_url('followers').'/'.$user->getId()?>"><?=$user_info[1][0]['followers']?></a></td>
-			</tr>
-			</table>
-			</div>
-		</div>
-	<div class="col-sm-9 col-md-9 col-lg-9 user-basic-info-section">
-		
-		
-	</div>
-</div>

@@ -14,23 +14,49 @@ class Borrow extends CI_Model
 		parent::__construct();
 		$this->load->library(array('neo'));
 	}
+	public function getAll($email)
+	{
+		$cypher = "MATCH (u {email:{email}})<-[r:BORROW]-(s) WHERE r.approved='0' RETURN ID(s) as id, s.first_name + ' ' + s.last_name as username, r, ID(r) as rel_id";
+		return $this->neo->execute_query($cypher,array('email'=>$email));	
+	}
 	public function get_borrow($id)
 	{
 		$node = $this->neo->get_node($id);
 		return self::createFromRelationship($node);
 	}
+	public function set_approve($id="")
+	{
+		// set 1 for approved
+		if($id>0){
+			$cypher = "START r=rel({id}) SET r.approved=1 RETURN r";
+			return $this->neo->execute_query($cypher,array('id'=>intval($id)));
+		}
+		
+	}
+	public function set_ignore($id="")
+	{
+		// set 2 for ignore
+		if($id>0){
+			$cypher = "START r=rel({id}) SET r.approved=2 RETURN r";
+			return $this->neo->execute_query($cypher,array('id'=>intval($id)));
+		}
+	}
 	public function set_borrow($from)
 	{
 		$to = $this->input->post('to');
 		$data = array(
+				'to'=>intval($to),
+				'from'=>intval($from),
 				'requestId'=>uniqid(),
 				'bookId'=>$this->input->post('bookId'),
 				'bookTitle'=>$this->input->post('bookTitle'),
-				'approved'=>"1",
+				'approved'=>"0",
 				'date_time'=>time(),
 			);
-		//die(print_r($data));
-		return $this->neo->add_relation($from,$to,'BORROW',$data);
+		$cypher = "START n=node({to}), b=node({from})
+					CREATE UNIQUE (b)-[r:BORROW {requestId:{requestId}, bookId:{bookId}, bookTitle:{bookTitle}, approved:{approved}, date_time:{date_time}}]->(n)
+					RETURN n,b,r";
+		return $this->neo->execute_query($cypher,$data);
 	}
 	protected static function createFromRelationship(Everyman\Neo4j\Relationship $relation)
     {

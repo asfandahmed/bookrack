@@ -10,7 +10,6 @@ Class Statuses extends CI_Controller{
 	}
 	public function post()
 	{
-		//die(print_r($_POST));
 		$data=array();
 		$this->form_validation->set_rules('status','Post','trim|required|xss_clean');
 		if($this->form_validation->run() === FALSE){
@@ -27,23 +26,39 @@ Class Statuses extends CI_Controller{
 	}
 	public function show_post($id)
 	{
-		$this->status->getContentById		
+		
 	}
-	public function loadContent()
+	public function loadContent($skip,$limit)
 	{
-		//$id = ($this->uri->segment(2)) ? $this->uri->segment(2) : 0;
-		/*
-		if($this->has_current_profile($id))
-			$email=$this->session->userdata['email'];	
-		else{
-			$data['user']=$this->user->get($id);
-			$email=$data['user']->email;		
-		}*/
 		$email=$this->session->userdata('load_profile_email');
-		$skip=is_numeric($_POST['offset']) ? $_POST['offset'] : die();
-		$limit=is_numeric($_POST['number']) ? $_POST['number'] : die();
+		$skip=is_numeric($skip) ? $skip : die();
+		$limit=is_numeric($limit) ? $limit : die();
+		$data['limit']=$limit;
+		$data['skip']=$skip;
 		$data['posts']=$this->status->getContent($email,$skip,$limit);
 		$this->load->view('post/post.php',$data);
+	}
+	public function delete()
+	{
+		//die(print_r($_POST));
+		$data = array();
+		$this->form_validation->set_rules('statusId','Post','trim|required|xss_clean');
+		if($this->form_validation->run() === FALSE){
+			$data['success']=false;
+			$data['error']="Error occurred.";
+		}else{
+
+			$email = $this->session->userdata('email');
+			$statusId = $this->input->post('statusId');
+			$data['post'] = $this->status->deleteStatus($email,$statusId);
+			$data['success']=true;
+			$data['error']="Post deleted!";
+		}
+		return json_encode($data);
+	}
+	protected static function is_owner()
+	{
+
 	}
 	private function has_current_profile($id)
 	{

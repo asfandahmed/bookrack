@@ -21,7 +21,7 @@
 		            <div class="well well-sm">
 		                <div class="media">
 		                    <a class="thumbnail pull-left" href="<?=$site_url?>/profile/<?=$key["id"]?>">
-		                        <img class="media-object" src="<?=base_url('assets/uploads/profile_images')?>/<?=($key["image"])?$key["image"]:"user-pic.jpg"?>" height="72px" width="72px">
+		                        <img class="media-object" src="<?=base_url('assets/uploads/thumbs')?>/<?=($key["image"])?$key["image"]:"user-pic.jpg"?>" height="72px" width="72px">
 		                    </a>
 		                    <div class="media-body">
 		                        <h4 class="media-heading"><a class="username" href="<?=$site_url?>/profile/<?=$key["id"]?>"><?=$key["name"]?></a></h4>

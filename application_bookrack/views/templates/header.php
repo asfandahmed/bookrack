@@ -3,6 +3,7 @@
 <head>
 <title><?=$title?></title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
 <!-- Bootstrap -->
 
 <link href="<?=base_url('assets/css/bootstrap.min.css')?>" rel="stylesheet" media="screen">
@@ -10,11 +11,17 @@
 <link href="<?=base_url('assets/css/capSlide.min.css')?>" rel="stylesheet" media="screen">
 <link href="<?=base_url('assets/css/templatemo-style.css')?>" rel="stylesheet" media="screen">
 <link href="<?=base_url('assets/css/style.css')?>" rel="stylesheet" media="screen">
+<link href="<?=base_url('assets/css/styleGroups.css')?>" rel="stylesheet" media="screen">				
 <link href="<?=base_url('assets/css/owl-carousel.css')?>" rel="stylesheet" media="screen">
-<script src="<?=base_url('assets/js/jquery-latest.min.js')?>"></script>
+<link href="<?=base_url('assets/css/stylesbook.css')?>" rel="stylesheet" media="screen">
+<link href="<?=base_url('assets/css/jquery-ui.css')?>" rel="stylesheet" media="screen">
+
+<link href="<?=base_url('assets/css/libnotify.css')?>" rel="stylesheet" media="screen">
+
+<script src="<?=base_url('assets/js/jquery-2.1.4.min.js')?>"></script>
 </head>
 <body>
-<script>
+<!--<script>
   window.fbAsyncInit = function() {
     FB.init({
       appId      : '1628567297365505',
@@ -30,7 +37,7 @@
      js.src = "//connect.facebook.net/en_US/sdk.js";
      fjs.parentNode.insertBefore(js, fjs);
    }(document, 'script', 'facebook-jssdk'));
-</script>
+</script>-->
 <div class="header">
 <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container-fluid">
@@ -50,7 +57,8 @@
       <?php if($this->common_functions->is_logged_in()):?>
       <ul class="nav navbar-nav">
         <li <?=($this->router->class=="site")?'class="active"':""?>><a href="<?=site_url('home')?>"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-        <li <?=($this->router->class=="notifications")?'class="active"':""?>><a href="<?=site_url('notifications')?>"><span class="glyphicon glyphicon-bell"></span>Notifications</a></li>
+        <li <?=($this->router->class=="notifications")?'class="active"':""?>><a href="<?=site_url('notifications')?>"><span class="glyphicon glyphicon-bell"></span> Notifications</a></li>
+        <li <?=($this->router->class=="borrows")?'class="active"':""?>><a href="<?=site_url('borrows')?>"><span class="glyphicon glyphicon-book"></span> Requests</a></li>
         <li><a href="<?=site_url('messages/load_message_panel')?>" data-toggle="modal" data-target="#contentModal" id="load_messages"><span class="glyphicon glyphicon-envelope"></span> Messages</a></li>
       </ul>
       <form name="search_form" id="search-form" action="<?=site_url('search')?>" method="GET" class="navbar-form navbar-left" role="search">

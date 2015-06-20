@@ -26,7 +26,7 @@ echo form_open($signin_post_url,array('id'=>'login-form','name'=>'login_form','c
 		</label>
 		</div>
 		</div>
-		<div class="col-sm-6 col-md-6 col-lg-6"><a href="<?=site_url('forgot')?>">Forgot passowrd?</a></div>
+		<div class="col-sm-6 col-md-6 col-lg-6"><a href="<?=site_url('forgot')?>">Forgot password?</a></div>
 	</div>
 
 </form>

@@ -111,6 +111,17 @@ class Search extends CI_Model
 				RETURN n.company AS company LIMIT 10";
 		return $this->neo->execute_query($query);
 	}
+
+	public function check_lat_lon($email)
+	{
+		$query = "MATCH (n:User {email:{email}}) RETURN n.lat IS NOT NULL AND n.lon IS NOT NULL as hasLatLon";
+		$result = $this->neo->execute_query($query,array('email'=>$email));
+		if(isset($result[0])){
+			if($result[0]['hasLatLon']==true)
+				return true;
+		}
+		return false;
+	}
 	public function get_nearest_users($title,$email)
 	{
 		$nearestBookCypher='MATCH (u2:User)-[:OWNS]->(b:Book {title:{t} })

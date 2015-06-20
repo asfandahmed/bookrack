@@ -66,6 +66,9 @@ $route['wishlist']='users/wishlist';
 $route['wishlist/(:any)']='users/wishlist/$1';
 $route['users/load_user_pic_uploader']='users/load_user_pic_uploader';
 $route['users/update_profile_picture']='users/update_profile_picture';
+$route['users/save_lat_lon']='users/save_lat_lon';
+/* group controller routes*/
+$route['groups']='groups/index';
 /* books controller routes*/
 $route['book'] = 'books/index';
 $route['book/(:any)'] = 'books/index/$1';
@@ -77,8 +80,9 @@ $route['publisher'] = 'publishers/index';
 $route['publisher/(:any)'] = 'publishers/index/$1';
 /* status controller routes*/
 $route['post'] = 'statuses/post';
-$route['load/posts'] = 'statuses/loadContent';
+$route['load/posts/(:num)/(:num)'] = 'statuses/loadContent/$1/$2';
 $route['posts/(:any)'] = 'statuses/show_post/$1';
+$route['post/delete'] = 'statuses/delete';
 
 /* search controller routes*/
 $route['search'] = 'searches/index';
@@ -94,12 +98,20 @@ $route['user/follow'] = 'users/follow';
 $route['user/unfollow'] = 'users/unfollow';
 /* messages controller routes*/
 $route['messages/load_message_panel'] = 'messages/load_message_panel';
+$route['messages/load_compose_panel'] = 'messages/load_compose_panel';
+$route['messages/send'] = 'messages/send_message';
+$route['messages/send/(:any)'] = 'messages/send_message/$1';
+$route['messages/show/(:any)'] = 'messages/show/$1';
+
 
 /* notification controller routes*/
 $route['notifications'] = 'notifications/index';
 
 /* borrow controller routes*/
+$route['borrows'] = 'borrows/index';
 $route['borrow/request'] = 'borrows/insert';
+$route['borrow/approve/(:any)'] = 'borrows/approve/$1';
+$route['borrow/ignore/(:any)'] = 'borrows/ignore/$1';
 
 /* comments controller routes*/
 $route['showcomments/(:any)'] = 'comments/get_all_comments/$1';
