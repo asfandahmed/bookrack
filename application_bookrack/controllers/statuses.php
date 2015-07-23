@@ -66,24 +66,6 @@ Class Statuses extends CI_Controller{
 		}
 		echo json_encode($data);
 	}
-	public function delete()
-	{
-		//die(print_r($_POST));
-		$data = array();
-		$this->form_validation->set_rules('statusId','Post','trim|required|xss_clean');
-		if($this->form_validation->run() === FALSE){
-			$data['success']=false;
-			$data['error']="Error occurred.";
-		}else{
-
-			$email = $this->session->userdata('email');
-			$statusId = $this->input->post('statusId');
-			$data['post'] = $this->status->deleteStatus($email,$statusId);
-			$data['success']=true;
-			$data['error']="Post deleted!";
-		}
-		return json_encode($data);
-	}
 	protected static function is_owner()
 	{
 

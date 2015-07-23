@@ -122,11 +122,7 @@ class Search extends CI_Model
 		}
 		return false;
 	}
-<<<<<<< HEAD
 	public function get_nearest_users($title,$email, $skip=0, $limit=1)
-=======
-	public function get_nearest_users($title,$email)
->>>>>>> ffc33d3a8b38ccc9ac7459f323a637861e65b57e
 	{
 		$nearestBookCypher='MATCH (u2:User)-[:OWNS]->(b:Book {title:{t} })
 WITH DISTINCT u2
