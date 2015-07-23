@@ -13,11 +13,8 @@
 <link href="<?=base_url('assets/css/style.css')?>" rel="stylesheet" media="screen">
 <link href="<?=base_url('assets/css/styleGroups.css')?>" rel="stylesheet" media="screen">				
 <link href="<?=base_url('assets/css/owl-carousel.css')?>" rel="stylesheet" media="screen">
-<link href="<?=base_url('assets/css/stylesbook.css')?>" rel="stylesheet" media="screen">
 <link href="<?=base_url('assets/css/jquery-ui.css')?>" rel="stylesheet" media="screen">
-
 <link href="<?=base_url('assets/css/libnotify.css')?>" rel="stylesheet" media="screen">
-
 <script src="<?=base_url('assets/js/jquery-2.1.4.min.js')?>"></script>
 </head>
 <body>
@@ -49,13 +46,13 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="<?=site_url()?>">BOOKRACK</a>
+      <a class="navbar-brand" href="<?=site_url()?>"><?=APP_NAME?></a>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+    <div class="collapse navbar-collapse" id="top-navbar">
       <?php if($this->common_functions->is_logged_in()):?>
-      <ul class="nav navbar-nav">
+      <ul class="nav navbar-nav navitems">
         <li <?=($this->router->class=="site")?'class="active"':""?>><a href="<?=site_url('home')?>"><span class="glyphicon glyphicon-home"></span> Home</a></li>
         <li <?=($this->router->class=="notifications")?'class="active"':""?>><a href="<?=site_url('notifications')?>"><span class="glyphicon glyphicon-bell"></span> Notifications</a></li>
         <li <?=($this->router->class=="borrows")?'class="active"':""?>><a href="<?=site_url('borrows')?>"><span class="glyphicon glyphicon-book"></span> Requests</a></li>

@@ -1,8 +1,12 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-
+/**
+ * Site controller class (default controller)
+ *
+ * @author  Asfand yar Ahmed
+ */
 class Site extends CI_Controller
 {
-	public function __construct()
+	function __construct()
 	{
 		parent::__construct();
 		$this->load->helper(array('form','url'));
@@ -17,20 +21,10 @@ class Site extends CI_Controller
 		$this->load->model(array('user','status','recommendation'));
 		$id=$this->session->userdata('user_id');
 		$email=$this->session->userdata('email');
-		$data['title']='Home - Bookrack';
+		$data['title']='Home - '.APP_NAME;
 		$data['user_info']=$this->user->get_basic_info($id);
-		$data['suggestions']=$this->recommendation->friendSuggestions($email);
-
-
-		$count=$this->status->getContentCount($email)->offsetGet(0);
-		$config['base_url']=site_url('home');
-		$config['total_rows']=$count['total'];
-		$config["per_page"]=5;
-		$page = ($this->uri->segment(2)) ? $this->uri->segment(2) : 0;
-		$skip=$page*$config["per_page"];
-		
-		$data['posts']=$this->status->getContent($email,$skip,$config["per_page"]);
-		
+		$data['folllow_suggestions']=$this->recommendation->friend_suggestions($email);
+		$data['book_suggestions']=$this->recommendation->book_suggestions($email);
 
 		$this->load->view('templates/header.php',$data);
 		$this->load->view('site/home.php',$data);
@@ -42,10 +36,10 @@ class Site extends CI_Controller
 		if($this->common_functions->is_logged_in())
 			redirect(site_url('/home'));
 		
-		$data['title']='Bookrack';
+		$data['title'] = APP_NAME;
 		$data['signin_post_url']='login';
 		$data['register_post_url']='register';
-
+		
 		$this->load->view('templates/header-index.php',$data);
 		$this->load->view('site/index.php',$data);
 		$this->load->view('templates/footer-index.php');
@@ -65,9 +59,9 @@ class Site extends CI_Controller
 			$email=$this->input->post('email');
 			$password=$this->input->post('password');
 			$error=$this->authenticate($email,$password);
-			if($error==0)
+			if($error===0)
 				redirect(site_url('/home'));
-			elseif($error==2)
+			elseif($error===2)
 				$this->load_login_form("Invalid password for this account.");
 			else
 				$this->load_login_form("User with {$email} does not exists.");
@@ -75,7 +69,7 @@ class Site extends CI_Controller
 	}
 	private function load_login_form($msg="")
 	{
-		$data['title']='Login - Bookrack';
+		$data['title']='Login - '.APP_NAME;
 		$data['signin_post_url']='login';
 		$data['msg']=$msg;
 		$this->load->view('templates/header.php',$data);
@@ -95,7 +89,7 @@ class Site extends CI_Controller
 		if($this->common_functions->is_logged_in())
 			redirect(site_url('/home'));
 
-		$data['title']='Sign up - Bookrack';
+		$data['title']='Sign up - '.APP_NAME;
 		$data['register_post_url']='register';
 		$this->load->model('user');
 
@@ -114,7 +108,6 @@ class Site extends CI_Controller
 		}
 		else
 		{
-			//print_r($_POST);
 			try{
 				$user_id=$this->user->set_user();
 				$this->session->set_userdata(
@@ -123,7 +116,8 @@ class Site extends CI_Controller
 						'first_name'=>$this->input->post('first_name'),
 						'last_name'=>$this->input->post('last_name'),
 						'email'=>strtolower($this->input->post('email')),
-						'logged_in'=>true,
+						'username'=>substr($email, 0, strpos($email, '@')),
+						'logged_in'=>TRUE,
 						'is_admin'=>0
 					));
 				redirect(site_url('/home'));
@@ -133,6 +127,67 @@ class Site extends CI_Controller
 				echo '<h3>'.$e->getMessage().'</h3>';		
 			}
 			
+		}
+	}
+	public function about(){
+		$data['title'] = 'About - '.APP_NAME;
+		if($this->common_functions->is_logged_in()){
+			$this->load->view('templates/header.php', $data);
+			$this->load->view('site/about.php', $data);
+			$this->load->view('templates/footer.php');	
+		}else{
+			$this->load->view('templates/header-index.php', $data);
+			$this->load->view('site/about.php', $data);
+			$this->load->view('templates/footer-index.php');	
+		}
+		
+	}
+	public function privacy(){
+		$data['title'] = 'Privacy - '.APP_NAME;
+		if($this->common_functions->is_logged_in()){
+			$this->load->view('templates/header.php', $data);
+			$this->load->view('site/privacy.php', $data);
+			$this->load->view('templates/footer.php');	
+		}else{
+			$this->load->view('templates/header-index.php', $data);
+			$this->load->view('site/privacy.php', $data);
+			$this->load->view('templates/footer-index.php');	
+		}
+	}
+	public function help(){
+		$data['title'] = 'Help - '.APP_NAME;
+		if($this->common_functions->is_logged_in()){
+			$this->load->view('templates/header.php', $data);
+			$this->load->view('site/help.php', $data);
+			$this->load->view('templates/footer.php');	
+		}else{
+			$this->load->view('templates/header-index.php', $data);
+			$this->load->view('site/help.php', $data);
+			$this->load->view('templates/footer-index.php');	
+		}
+	}
+	public function feedback(){
+		$data['title'] = 'Feedback - '.APP_NAME;
+		if($this->common_functions->is_logged_in()){
+			$this->load->view('templates/header.php', $data);
+			$this->load->view('site/feedback.php', $data);
+			$this->load->view('templates/footer.php');	
+		}else{
+			$this->load->view('templates/header-index.php', $data);
+			$this->load->view('site/feedback.php', $data);
+			$this->load->view('templates/footer-index.php');	
+		}
+	}
+	public function advertise(){
+		$data['title'] = 'Advertise - '.APP_NAME;
+		if($this->common_functions->is_logged_in()){
+			$this->load->view('templates/header.php', $data);
+			$this->load->view('site/advertise.php', $data);
+			$this->load->view('templates/footer.php');	
+		}else{
+			$this->load->view('templates/header-index.php', $data);
+			$this->load->view('site/advertise.php', $data);
+			$this->load->view('templates/footer-index.php');	
 		}
 	}
 	private function authenticate($email,$password)
@@ -151,7 +206,7 @@ class Site extends CI_Controller
 				$error=1;
 			else
 			{
-				if(sha1($password)!=$result[0]['n.password'])
+				if(sha1($password)!==$result[0]['n.password'])
 					 $error=2;
 				else
 				{
@@ -162,9 +217,10 @@ class Site extends CI_Controller
 							'first_name'=>$result[0]['n.first_name'],
 							'last_name'=>$result[0]['n.last_name'],
 							'email'=>$email,
+							'username'=>$result[0]['n.username'],
 							'admin'=>$result[0]['n.is_admin'],
 							'profile_image'=>$result[0]['n.profile_image'],
-							'logged_in'=>true,
+							'logged_in'=>TRUE,
 						));
 				}
 					 
@@ -184,3 +240,6 @@ class Site extends CI_Controller
 		return FALSE;
 	}
 }
+
+/* End of file site.php */
+/* Location: ./application/controllers/site.php */

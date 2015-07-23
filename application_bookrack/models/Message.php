@@ -25,7 +25,7 @@ class Message extends CI_Model
 		$msg->senderId = self::getIdByEmail($senderEmail);
 		$msg->receiverId = self::getIdByEmail($receiverEmail);
 		$msg->message = $this->input->post('message');
-		self::add($msg, $senderEmail, $receiverEmail);
+		return self::add($msg, $senderEmail, $receiverEmail);
 	}
 
 	public static function add(Message $msg, $e1, $e2)
@@ -172,7 +172,7 @@ WITH DISTINCT u,f
 MATCH u-[:CURRENTMESSAGE]-lp-[:NEXTMESSAGE*0..]-p
 WHERE (lp.u1=ID(u) AND lp.u2=ID(f)) OR (lp.u2=ID(u) AND lp.u1=ID(f))
 RETURN p, u.first_name+ ' ' + u.last_name as u1_name, f.first_name+ ' ' + f.last_name as u2_name, ID(u) as u1_id, f.profile_image as userimage
-ORDER BY p.timestamp desc SKIP {skip} LIMIT {limit}
+ORDER BY p.date_time desc SKIP {skip} LIMIT {limit}
 CYPHER;
         $CI = get_instance();
         $result = $CI->neo->execute_query($queryString,array(
@@ -188,7 +188,7 @@ CYPHER;
     {
     	$queryString = <<<CYPHER
 match(u1:User {email: {email} })-[:CURRENTMESSAGE]->(m:Message)<-[:CURRENTMESSAGE]-(u2:User)
-RETURN u2.first_name + ' ' + u2.last_name as username, u2.email as email, m.message
+RETURN u2.first_name + ' ' + u2.last_name as username, u2.email as email, m.message ORDER BY m.date_time desc
 CYPHER;
 		$CI = get_instance();
 		return $result = $CI->neo->execute_query($queryString,array(

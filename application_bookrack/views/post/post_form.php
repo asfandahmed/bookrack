@@ -17,7 +17,7 @@ else{
 <div class="col-sm-12 col-md-12 col-lg-12 custom-panel post">
 	<div class="col-sm-12 col-md-12 col-lg-12">
 		<div class="row">
-			<div class="col-sm-2 col-md-2 col-lg-2"><img src="<?=$image_path?>" style="width:50px;height:43px;" alt="" title=""></div>
+			<div class="col-xs-3 col-sm-2 col-md-2 col-lg-2"><img src="<?=$image_path?>" style="width:50px;height:43px;" alt="" title=""></div>
 			<div class="col-sm-10 col-md-10 col-lg-10 status-post-control">
 				<?php echo form_open(site_url('post'), array('id'=>'statusForm','name'=>'status_form','class'=>'form-horizontal', 'role'=>'form'));?>
 					<div class="input-group">

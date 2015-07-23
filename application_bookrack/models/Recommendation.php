@@ -1,19 +1,82 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+/**
+ * Recommendation Class
+ *
+ * @author  Asfand yar Ahmed
+ */
 class Recommendation extends CI_Model
 {
-	public function __construct()
+	function __construct()
 	{
 		parent::__construct();
 		$this->load->library('neo');
-		$this->load->model('user');
+		$this->load->model(array('user','book'));
 	}
+    /**
+     * Ask books suggestions from a user
+     *
+     * @access public
+     * @param  string $username_to Username to whom we're asking book recommendations
+     * @param  string $username_from Username who is asking for book recommendations
+     */
+    public static function ask_book_suggestions($username_from, $username_to)
+    {
+        $queryString = <<<CYPHER
+MATCH (user:User { email:{email_from}}), (u:User { email:{email_to}}) 
+CREATE (user)-[r:ASKD_REC {date_time:{timestamp}}]-(u)
+RETURN r
+CYPHER;
+        $CI = get_instance();
+        $result = $CI->neo->execute_query($queryString, array(
+            'email_from' => $username_from, 
+            'email_to' => $username_to,
+            'timestamp' => time()
+            ));
+    }
+    /**
+     * Find books the provided user is not already having
+     *
+     * @access public
+     * @param  string $username Username to whom we're providing book recommendations
+     * @return Books[] Array of books
+     */
+    public static function suggest_book($username)
+    {
+        $queryString = <<<CYPHER
+MATCH (user:User { email:{email}})
+CYPHER;
+        $CI = get_instance();
+        $result = $CI->neo->execute_query($queryString, array('email' => $username));
+    }
+    /**
+     * Find books the provided user is not already having
+     *
+     * @access public
+     * @param  string $username Username to whom we're providing book recommendations
+     * @return Books[] Array of books
+     */
+    public static function book_suggestions($username)
+    {
+        $queryString = <<<CYPHER
+MATCH (user:User { email:{username}})
+OPTIONAL MATCH (user)-[:FOLLOWS]->(u:User)-[:OWNS]->(b)
+WHERE (NOT (user)-[:OWNS]->(b))
+RETURN b, count(u) as common
+ORDER BY common DESC
+LIMIT 2
+CYPHER;
+        $CI = get_instance();
+        $result = $CI->neo->execute_query($queryString, array('username' => $username));
+        return (count($result)!==0)?self::returnAsBooks($result):NULL;
+    }
 	/**
      * Find friends the provided user is not already following
      *
+     * @access public
      * @param  string $username Username to whom we're providing friend recommendations
      * @return User[] Array of users
      */
-    public static function friendSuggestions($email)
+    public static function friend_suggestions($username)
     {
         $queryString = <<<CYPHER
 MATCH (u:User), (user:User { email:{email}})
@@ -26,13 +89,14 @@ ORDER BY common DESC
 LIMIT 2
 CYPHER;
 		$CI = get_instance();
-        $result = $CI->neo->execute_query($queryString, array('email' => $email));
-
-        return self::returnAsUsers($result);
+        $result = $CI->neo->execute_query($queryString, array('email' => $username));
+        if($result)
+            return self::returnAsUsers($result);
     }
 	/**
      * WIP: Suggest friends using collaborative recommendation
      *
+     * @access public
      * @param  string $username Username to whom we're providing friend recommendations
      * @return User[] Array of users
      */
@@ -57,12 +121,13 @@ CYPHER;
         );
 
         $result = $query->getResultSet();
-
-        return self::returnAsUsers($result);
+        if($result)
+            return self::returnAsUsers($result);
     }
     /**
      * Creates an array of users from a ResultSet
      *
+     * @access protected
      * @param  ResultSet $results Query results
      * @return User[]    Array of users
      */
@@ -70,7 +135,7 @@ CYPHER;
     {
         $userArray = array();
         foreach ($results as $row) {
-            $user = self::createfromNode($row['x']);
+            $user = self::createfromNode($row['x'],"user");
             if (isset($row['common'])) {
                 $user->commonFriends = $row['common'];
             }
@@ -79,15 +144,45 @@ CYPHER;
 
         return $userArray;
     }
-    protected static function createFromNode(Everyman\Neo4j\Node $node){
-		$user=new User();
-		$user->id=$node->getId();
-		$user->first_name=$node->getProperty('first_name');
-		$user->last_name=$node->getProperty('last_name');
-		$user->email=$node->getProperty('email');
-		$user->profile_image=$node->getProperty('profile_image');
-		$user->profile_url=$node->getProperty('profile_url');
+    /**
+     * Creates an array of books from a ResultSet
+     *
+     * @access protected
+     * @param  ResultSet $results Query results
+     * @return Book[]    Array of books
+     */
+    protected static function returnAsBooks(Everyman\Neo4j\Query\ResultSet $results)
+    {
+        $book_array = array();
+        foreach ($results as $row) {
+            $book = self::createfromNode($row['x'],"book");
+            if (isset($row['common'])) {
+                $book->commonReaders = $row['common'];
+            }
+            $book_array[] = $book;
+        }
+
+        return $book_array;
+    }
+    protected static function createFromNode(Everyman\Neo4j\Node $node, $type)
+    {
+        if($type==="user")
+        {
+            $obj=new User();
+            $obj->id=$node->getId();
+            $obj->first_name=$node->getProperty('first_name');
+            $obj->last_name=$node->getProperty('last_name');
+            $obj->email=$node->getProperty('email');
+            $obj->profile_image=$node->getProperty('profile_image');
+            $obj->profile_url=$node->getProperty('profile_url');
+        }
+        elseif ($type==="book")
+        {
+            $obj = new Book();
+            $obj->id = $node->getId();
+            $obj->title = $node->getProperty('title');
+        }
 		
-		return $user;
+		return $obj;
 	}
 }

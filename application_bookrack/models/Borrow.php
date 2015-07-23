@@ -14,10 +14,13 @@ class Borrow extends CI_Model
 		parent::__construct();
 		$this->load->library(array('neo'));
 	}
-	public function getAll($email)
+	public function getRequests($email,$skip=0,$limit=1,$requestType=0)
 	{
-		$cypher = "MATCH (u {email:{email}})<-[r:BORROW]-(s) WHERE r.approved='0' RETURN ID(s) as id, s.first_name + ' ' + s.last_name as username, r, ID(r) as rel_id";
-		return $this->neo->execute_query($cypher,array('email'=>$email));	
+		if($requestType==0)
+			$cypher = "MATCH (u {email:{email}})<-[r:BORROW]-(s) WHERE r.approved='0' RETURN ID(s) as id, s.first_name + ' ' + s.last_name as username, r, ID(r) as rel_id SKIP {skip} LIMIT {limit}";
+		else if($requestType==1)
+			$cypher = "MATCH (u {email:{email}})-[r:BORROW]->(s) WHERE r.approved='0' RETURN ID(s) as id, s.first_name + ' ' + s.last_name as username, r, ID(r) as rel_id SKIP {skip} LIMIT {limit}";
+		return $this->neo->execute_query($cypher,array('email'=>$email,'skip'=>intval($skip),'limit'=>intval($limit)));	
 	}
 	public function get_borrow($id)
 	{
@@ -40,6 +43,10 @@ class Borrow extends CI_Model
 			$cypher = "START r=rel({id}) SET r.approved=2 RETURN r";
 			return $this->neo->execute_query($cypher,array('id'=>intval($id)));
 		}
+	}
+	public function delete($id)
+	{
+		return $this->neo->remove_relation(intval($id));
 	}
 	public function set_borrow($from)
 	{

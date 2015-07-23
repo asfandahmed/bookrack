@@ -20,22 +20,24 @@ spl_autoload_register(function ($sClass) {
 
 class Neo {
 
-	protected $client;
+	protected $client=null;
     private $local=true;
 	public function __construct()
 	{
-        if($this->local){
-            $this->client = new Client();
-            $this->client->getTransport()
-            ->setAuth('neo4j', 'bookrack');    
-        }else{
-            $this->client = new Client('bookrack.sb02.stations.graphenedb.com', 24789);
-            $this->client->getTransport()
-            ->setAuth('bookrack', 'sgd991UcxP2tVd3zzOkc');
-        }
-		
-        
+            if($this->local){
+                $this->client = new Client();
+                $this->client->getTransport()
+                ->setAuth(LOCAL_USER, LOCAL_PASS);    
+            }else{
+                $this->client = new Client(REMOTE_URL, REMOTE_PORT);
+                $this->client->getTransport()
+                ->setAuth(REMOTE_USER, REMOTE_PASS);
+            }
 	}
+    public function __destruct()
+    {
+        $this->client = null;
+    }
     public function add_index($name)
     {	
 		return $name = new NodeIndex($this->client, $name);
@@ -88,7 +90,7 @@ class Neo {
         $node=$this->client->getNode($nodeId);
         return $node->getRelationships();
     }
-    public function delete_relation($id)
+    public function remove_relation($id)
     {
         $relation = $this->client->getRelationship($id);
         return $relation->delete();

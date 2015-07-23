@@ -7,7 +7,7 @@
 ?>
 <div class="col-sm-12 col-md-12 col-lg-12 custom-panel user-info-div">
 	<div class="col-sm-12 col-md-12 col-lg-12">
-		<div class="col-sm-4 col-md-4 col-lg-4">
+		<div class="col-xs-3 col-sm-4 col-md-4 col-lg-4">
 			<img src="<?=$image_path?>" style="width:50px;height:43px" alt="<?=$fullname?>" title="<?=$fullname?>">
 		</div>
 		<div class="col-sm-8 col-md-8 col-lg-8"><?=$fullname?></div>

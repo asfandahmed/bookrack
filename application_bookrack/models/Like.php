@@ -1,9 +1,9 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 Class Like extends CI_Model
 {
-	var $user="";
-	var $post="";
-	var $date_time="";
+	public $user;
+	public $post;
+	public $date_time;
 	public function __construct()
 	{
 		parent::__construct();

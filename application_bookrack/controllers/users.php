@@ -1,7 +1,7 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 class Users extends CI_Controller
 {
-	public function __construct()
+	function __construct()
 	{
 		parent::__construct();
 		$this->load->model(array('user','status','notification'));
@@ -110,7 +110,7 @@ class Users extends CI_Controller
 
 		if($this->form_validation->run() === FALSE)
 		{
-			$data['title']='Forgot Password - Bookrack';
+			$data['title']='Forgot Password - '.APP_NAME;
 			$this->load->view('templates/header.php',$data);
 			$this->load->view('user/forgot.php');
 			$this->load->view('templates/footer.php');
@@ -183,10 +183,11 @@ class Users extends CI_Controller
 	}
 	private function load_user_profile($id,$owner)
 	{
-		$data['title']='Profile - Bookrack';
+		$data['title']='Profile - '.APP_NAME;
 		$data['user_info']=$this->user->get_basic_info($id);
 		$data['user']=$this->user->get($id);
 		$data['owner']=$owner;
+		/*
 		// change this to username in future instead of email
 		$this->session->set_userdata(array(
 			'load_profile_email'=>$data['user']->email
@@ -202,8 +203,9 @@ class Users extends CI_Controller
 		$skip=$page*$config["per_page"];
 		$this->pagination->initialize($config); 
 
-		$data['posts']=$this->status->getContent($email,$skip,$config["per_page"]);
+		$data['posts']=$this->status->getContent($email,$skip,$config["per_page"],true);
 		//die(print_r($data['posts']));
+		*/
 		$this->load->view('templates/header.php',$data);
 		$this->load->view('user/profile_upper_section.php',$data);
 		$this->load->view('user/index.php',$data);
@@ -211,7 +213,7 @@ class Users extends CI_Controller
 	}
 	private function load_user_shelf($id,$owner)
 	{
-		$data['title']='Shelf - Bookrack';
+		$data['title']='Shelf - '.APP_NAME;
 		$data['user_info']=$this->user->get_basic_info($id);
 		$data['user']=$this->user->get($id);
 		$data['books']=$this->user->get_books($id,"OWNS");
@@ -240,7 +242,7 @@ class Users extends CI_Controller
 	}
 	private function load_user_wishlist($id,$owner)
 	{
-		$data['title']='Wishlist - Bookrack';
+		$data['title']='Wishlist - '.APP_NAME;
 		$data['user_info']=$this->user->get_basic_info($id);
 		$data['user']=$this->user->get($id);
 		$data['books']=$this->user->get_books($id,"WISHES");
@@ -263,7 +265,7 @@ class Users extends CI_Controller
 	}
 	private function load_user_followers($id,$owner)
 	{
-		$data['title']='Followers - Bookrack';
+		$data['title']='Followers - '.APP_NAME;
 		$data['user_info']=$this->user->get_basic_info($id);
 		$data['followers']=$this->user->get_followers($id);
 		$data['user']=$this->user->get($id);
@@ -275,7 +277,7 @@ class Users extends CI_Controller
 	}
 	private function load_user_following($id,$owner)
 	{
-		$data['title']='Following - Bookrack';
+		$data['title']='Following - '.APP_NAME;
 		$data['user_info']=$this->user->get_basic_info($id);
 		$data['followings']=$this->user->get_following($id);
 		$data['user']=$this->user->get($id);
@@ -290,6 +292,8 @@ class Users extends CI_Controller
 		$this->load->library(array('upload','image_lib'));
 		$data=array();
 		$error=array();
+		$thumb_height=32;
+		$thumb_width=32;
 		$config['upload_path'] = './assets/uploads/profile_images';
 		$config['allowed_types'] = 'gif|jpg|png';
 		$config['max_size']	= '5000';
@@ -303,9 +307,10 @@ class Users extends CI_Controller
 		else
 		{
 			$data = array('upload_data' => $this->upload->data());
-			$error = $this->resize_image($data['upload_data']['full_path']);
+			$error = $this->resize_image($data['upload_data']['full_path'],$thumb_height,$thumb_width);
 			$id=$this->session->userdata['user_id'];
 			$this->user->update_user_properties($id,array('profile_image'=>$data['upload_data']['file_name']));
+			$error = array('error' => 'success', 'msg' => 'Picture updated', 'path'=>base_url('assets/uploads/profile_images').'/'.$data['upload_data']['file_name']);
 		}
 		echo json_encode($error);
 	}
@@ -318,23 +323,23 @@ class Users extends CI_Controller
 		$id=$this->session->userdata['user_id'];
 		$this->user->update_user_properties($id,$data);
 	}
-	private function resize_image($path)
+	private function resize_image($path,$height,$width)
 	{	
 		$config=array();
 		$config['image_library'] = 'gd2';
 		$config['source_image'] = $path;
 		//$config['create_thumb'] = TRUE;
 		$config['maintain_ratio'] = TRUE;
-		$config['width'] = 50;
-		$config['height'] = 43;
+		$config['width'] = $width;
+		$config['height'] = $height;
 		$config['new_image']=str_replace('profile_images', 'thumbs', $path);
 
 		$this->image_lib->initialize($config);
-		//$this->image_lib->clear();
+
 		if ( ! $this->image_lib->resize())
-		{
 		    return $data = array('error'=>$this->image_lib->display_errors());
-		}
+		else
+			$this->image_lib->clear();	
 	}
 	private function send_password()
 	{

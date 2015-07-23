@@ -7,7 +7,7 @@
             <div class="welcome-text">
                 <div class="container text-center white-text">
                 	<div class="col-xs-8 col-xs-offset-2">
-                        <h1>Hello, Welcome to TheBookLib</h1>
+                        <h1>Hello, Welcome to <?=APP_NAME?></h1>
                         <h4>Its the site for Book readers to share search and read the books    
                         </h4>
                         <a href="<?=site_url('login')?>" class="button default">Login</a>

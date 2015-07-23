@@ -11,7 +11,8 @@
 <script src="<?=base_url('assets/js/script.js')?>"></script>
 <script src="<?=base_url('assets/js/jquery.capSlide.min.js')?>"></script>
 <script src="<?=base_url('assets/js/humane.js')?>"></script>
+<script src="<?=base_url('assets/js/jquery.form.min.js')?>"></script>
   </body>
-<!-- page rendered in {elapsed_time} seconds-->
+<!-- page rendered in {elapsed_time} seconds. Memory used {memory_usage} -->
 
 </html>

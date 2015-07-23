@@ -39,8 +39,14 @@
 */
 /*$route['url_request'] = 'controller path' */
 $route['default_controller'] = "site";
+
 /* site controller routes */
 $route['home'] = 'site/home';
+$route['about'] = 'site/about';
+$route['help'] = 'site/help';
+$route['privacy'] = 'site/privacy';
+$route['advertise'] = 'site/advertise';
+$route['feedback'] = 'site/feedback';
 $route['login'] = 'site/login';
 $route['register'] = 'site/register';
 $route['logout'] = 'site/logout';
@@ -91,6 +97,8 @@ $route['search/books'] = 'searches/books';
 $route['search/authors'] = 'searches/authors';
 $route['search/publishers'] = 'searches/publishers';
 $route['search/book/(:num)/(:any)'] = 'searches/nearest_users/$1/$2';
+$route['list/owners/(:num)/(:any)/(:num)/(:num)'] = 'searches/load_nearest_users/$1/$2/$3/$4';
+$route['search/results/(:any)/(:any)/(:num)/(:num)'] = 'searches/get_results/$1/$2/$3/$4';
 $route['search/(:any)'] = 'searches/index';
 
 /* folllow and unfollow routes*/
@@ -106,12 +114,16 @@ $route['messages/show/(:any)'] = 'messages/show/$1';
 
 /* notification controller routes*/
 $route['notifications'] = 'notifications/index';
+$route['check_notification'] = 'notifications/check_new';
 
 /* borrow controller routes*/
 $route['borrows'] = 'borrows/index';
 $route['borrow/request'] = 'borrows/insert';
 $route['borrow/approve/(:any)'] = 'borrows/approve/$1';
 $route['borrow/ignore/(:any)'] = 'borrows/ignore/$1';
+$route['borrow/cancel/(:any)'] = 'borrows/cancel/$1';
+$route['borrow/load/sent/(:num)/(:num)'] = 'borrows/loadsent/$1/$2';
+$route['borrow/load/received/(:num)/(:num)'] = 'borrows/loadreceived/$1/$2';
 
 /* comments controller routes*/
 $route['showcomments/(:any)'] = 'comments/get_all_comments/$1';

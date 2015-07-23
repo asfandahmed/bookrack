@@ -39,7 +39,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="<?=site_url()?>">BOOKRACK</a>
+      <a class="navbar-brand" href="<?=site_url()?>"><?=APP_NAME?></a>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->

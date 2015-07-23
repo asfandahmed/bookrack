@@ -4,6 +4,6 @@
 	</div>
 
 </body>
-<!-- page rendered in {elapsed_time} seconds-->
+<!-- page rendered in {elapsed_time} seconds. Memory used {memory_usage} -->
 
 </html>

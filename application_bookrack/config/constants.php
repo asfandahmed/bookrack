@@ -35,7 +35,33 @@ define('FOPEN_WRITE_CREATE',					'ab');
 define('FOPEN_READ_WRITE_CREATE',				'a+b');
 define('FOPEN_WRITE_CREATE_STRICT',				'xb');
 define('FOPEN_READ_WRITE_CREATE_STRICT',		'x+b');
+/*
+|--------------------------------------------------------------------------
+| Neo4j Database 
+|--------------------------------------------------------------------------
+|
+| Constants for Neo4j db
+|
+*/
 
+define('LOCAL_USER', 'neo4j');
+define('LOCAL_PASS', 'bookrack');
+define('LOCAL_URL', 'localhost');
+define('LOCAL_PORT', 7474);
+define('REMOTE_USER', 'bookrack');
+define('REMOTE_PASS', 'sgd991UcxP2tVd3zzOkc');
+define('REMOTE_URL', 'bookrack.sb02.stations.graphenedb.com');
+define('REMOTE_PORT', 24789);
+/*
+|--------------------------------------------------------------------------
+| Application
+|--------------------------------------------------------------------------
+|
+| Constants for application
+|
+*/
+
+define('APP_NAME', 'TheBookLib');
 
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */

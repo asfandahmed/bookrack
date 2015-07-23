@@ -7,15 +7,28 @@ body
     background-color: rgb(233, 234, 237);
 }
 em{
-    font-size: 0.9em;
+    font-size: 0.85em;
     font-weight: bold;
     letter-spacing: 0.04em;
     color: #A4B7BB;
+}
+img{
+    margin:  auto auto;
+    display: block;
+    width: 100%;
+}
+.no-responsive-image{
+    width: auto;
+    height: 100%;
 }
 .low-attention
 {
     color: #A4B7BB;
     font-size: 0.85em;   
+}
+.loading{
+    background-image: url(../images/giphy.gif);
+    background-size: 100% 100%;
 }
 .navbar-default
 {
@@ -162,7 +175,7 @@ padding: 2% 0;
 	padding-left: 0;
 }
 .list-group-item{
-	background-color: #e8eced;
+	background-color: rgb(245, 245, 245);
 }
 .list-group-item.active, .list-group-item.active:hover, .list-group-item.active:focus {
 	background-color: #76a0b0;
@@ -238,7 +251,7 @@ padding: 2% 0;
 	clear: both;
 }
 .user-box{
-	background-color: #E8ECED;
+	background-color: rgb(245, 245, 245);
 	border-radius: 5px;
 	margin: 0.5% 0.2% 0.5% 0.2%;
 	padding: 1% 1%;
@@ -253,6 +266,7 @@ padding: 2% 0;
 
     border: 1px solid rgb(216, 216, 216);
 	font-size: 0.85em;
+    background-color: rgb(245, 245, 245);
 }
 #search-results{
 	z-index: 10;
@@ -375,29 +389,22 @@ width: 15%
 @media (max-width: 767px) {
     .header{
         text-align : center;
-    }
-    
-    
-    
+    }   
     .nav{
         margin-top : 30px;
     }
 }
 
-.well {
+.container .nav .well {
     margin-top:-20px;
-    
-   
     text-align:center;
     cursor:pointer;
     font-size: 25px;
     padding: 15px;
     border-radius: 0px !important;
 }
-
-.well:hover {
+.container .nav .well:hover {
     margin-top:-20px;
-   
     text-align:center;
     cursor:pointer;
     font-size: 25px;
@@ -448,11 +455,12 @@ width: 15%
 .suggestion{
 
     border: 1px solid rgb(216, 216, 216);
-    padding: 3% 0 0 0;
+    padding: 1% 0 0 0;
     margin: 0;
     background-color: rgb(245, 245, 245);
+    line-height: 14px;
 }
-/*  msg panel */
+/*  msg panel css starts here*/
 .msg_container_base{
   background: #e5e5e5;
   margin: 0;
@@ -460,7 +468,6 @@ width: 15%
   max-height:300px;
   overflow-x:hidden;
 }
-
 .top-bar {
   background: #666;
   color: white;
@@ -499,10 +506,6 @@ width: 15%
     overflow: hidden;
     display: flex;
 }
-img {
-    display: block;
-    width: 100%;
-}
 .avatar {
     position: relative;
 }
@@ -517,7 +520,6 @@ img {
     border-left-color: rgba(0, 0, 0, 0);
     border-bottom-color: rgba(0, 0, 0, 0);
 }
-
 .base_sent {
   justify-content: flex-end;
   align-items: flex-end;
@@ -534,29 +536,41 @@ img {
     border-top-color: transparent;
     box-shadow: 1px 1px 2px rgba(black, 0.2); // not quite perfect but close
 }
-
 .msg_sent > time{
     float: right;
 }
-
-
-
 .msg_container_base::-webkit-scrollbar-track
 {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
     background-color: #F5F5F5;
 }
-
 .msg_container_base::-webkit-scrollbar
 {
     width: 12px;
     background-color: #F5F5F5;
 }
-
 .msg_container_base::-webkit-scrollbar-thumb
 {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
     background-color: #555;
 }
+/*  msg panel css ends here*/
+.comment_bar{
+    display: none;
+}
+.comment{
+    font-size: 0.89em;    
+    vertical-align: middle;
+    line-height: 15px;
 
-/*  msg panel */
+}
+.comment img{
+    width:45px;
+    height:35px;
+    margin:0px;
+}
+.comment hr{
+    margin:0px;
+    padding: 0px;
+    line-height: 0px;
+}

@@ -214,7 +214,7 @@ CYPHER;
     public static function getContentCount($email)
     {
 $queryString = <<<CYPHER
-MATCH (u:User { email: { u }})-[:FOLLOWS*0..1]->f
+MATCH (u:User { email: { u }})-[:FOLLOWS*0..]->f
 WITH DISTINCT f, u
 MATCH f-[:CURRENTPOST]-lp-[:NEXTPOST*0..]-p
 RETURN COUNT(p) as total
@@ -233,27 +233,43 @@ return $result = $CI->neo->execute_query($queryString,array(
      *
      * @param  string    $username
      * @param  int       $skip     Records to skip
+     * @param  int       $limit    Records to limit
+     * @param  boolean   $personal Fetch user posts only
      * @return Content[]
      */
-    public static function getContent($email, $skip, $limit)
+    public static function getContent($email, $skip, $limit,$personal=FALSE)
     {
-        //die($email.' | '.$skip. ' | '. $limit);
-        $queryString = <<<CYPHER
+        if($personal){
+            $queryString = <<<CYPHER
+MATCH (u:User { email: { u }})
+WITH DISTINCT u
+MATCH u-[:CURRENTPOST]-lp-[:NEXTPOST*0..]-p
+OPTIONAL MATCH u-[r:LIKES]-p
+OPTIONAL MATCH (b:Book {title:p.title})
+RETURN p, u.first_name+ ' ' + u.last_name as username, ID(u) as userid, u.profile_image as userimage, u=u as owner, r, b
+ORDER BY p.date_time desc SKIP {skip} LIMIT {limit}
+CYPHER;
+        }
+        else{
+            $queryString = <<<CYPHER
 MATCH (u:User { email: { u }})-[:FOLLOWS*0..1]->f
 WITH DISTINCT f, u
 MATCH f-[:CURRENTPOST]-lp-[:NEXTPOST*0..]-p
 OPTIONAL MATCH u-[r:LIKES]-p
 OPTIONAL MATCH (b:Book {title:p.title})
 RETURN p, f.first_name+ ' ' + f.last_name as username, ID(f) as userid, f.profile_image as userimage, f=u as owner, r, b
-ORDER BY p.timestamp desc SKIP {skip} LIMIT {limit}
+ORDER BY p.date_time desc SKIP {skip} LIMIT {limit}
 CYPHER;
+        }
+        
         $CI = get_instance();
         $result = $CI->neo->execute_query($queryString,array(
         		'u' => $email,
                 'skip' => intval($skip),
                 'limit'=>intval($limit),
         	));
-        return self::returnMappedContent($result);
+        if($result)
+            return self::returnMappedContent($result);
     }
 	/**
      * Creates array of Content from ResultSet
@@ -278,7 +294,7 @@ CYPHER;
 
         return $mappedContentArray;
     }
-	protected static function createFromNode(Everyman\Neo4j\Node $node, $username = null, $userid = null, $userimage = null, $owner = false, $likes = null, $book=null)
+	protected static function createFromNode(Everyman\Neo4j\Node $node, $username = NULL, $userid = NULL, $userimage = NULL, $owner = FALSE, $likes = NULL, $book=NULL)
     {
         $status = new Status();
         $status->node = $node;

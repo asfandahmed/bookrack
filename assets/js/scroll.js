@@ -9,8 +9,10 @@
 			                            // displayed. You can change this if you want.
 			delay   : 500, // When you scroll down the posts will load after a delayed amount of time.
 			               // This is mainly for usability concerns. You can alter this as you see fit
-			scroll  : true // The main bit, if set to false posts will not load as the user scrolls. 
+			scroll  : true, // The main bit, if set to false posts will not load as the user scrolls. 
 			               // but will still load if the user clicks.
+			url		: 'localhost', //request url
+			showMessage : false
 		}
 		
 		// Extend the options so they work with the plugin
@@ -33,18 +35,18 @@
 			else $initmessage = 'Click for more';
 			
 			// Append custom messages and extra UI
-			$this.append('<div class="content"></div><div class="loading-bar">'+$initmessage+'</div>');
+			if($settings.showMessage == true) $this.append('<div class="content"></div><div class="loading-bar">'+$initmessage+'</div>');
 			
 			function getData() {
 				
 				// Post data to ajax.php
-				var url = 'http://localhost/bookrack/index.php/load/posts/'+offset+'/'+$settings.nop;
+				var url = $settings.url+'/'+offset+'/'+$settings.nop;
 				$.get(url, {
 						
 					
 					    
 				}, function(data) {
-						
+					
 					// Change loading bar content (it may have been altered)
 					$this.find('.loading-bar').html($initmessage);
 						
@@ -58,8 +60,7 @@
 					    offset = offset+$settings.nop; 
 						    
 						// Append the data to the content div
-					   	$this.find('.middle-content').append(data);
-						
+					   	$this.append(data)
 						// No longer busy!	
 						busy = false;
 					}	
@@ -76,7 +77,7 @@
 				$(window).scroll(function() {
 					
 					// Check the user is at the bottom of the element
-					if($(window).scrollTop() + $(window).height() > $this.height() && !busy) {
+					if($(window).scrollTop() + $(window).height() > $(document).height() - 100 && !busy) {
 						
 						// Now we are working, so busy is true
 						busy = true;

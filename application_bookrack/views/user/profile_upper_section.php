@@ -12,7 +12,7 @@
 					$image_path=base_url().'assets/images/user-pic.jpg';
            	    ?>
 				
-                <img src="<?=$image_path?>" height="140px" width="140px">
+                <img id="profilePicture" src="<?=$image_path?>" height="140px" width="140px">
                 <div class="overlay" style="display:none;"></div>
                 <a href="<?=site_url('users/load_user_pic_uploader')?>" data-target="#contentModal" data-toggle="modal" id="upload_image_loader">
                     <div class="ic_caption">

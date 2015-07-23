@@ -6,12 +6,12 @@
     	</div>
     </div>
     <div class="row">
-    	<div class="col-sm-6 col-md-6 col-lg-6"><button type="button" class="btn btn-default" id="load_message_compose" url="<?=site_url('messages/load_compose_panel')?>"><span class="glyphicon glyphicon-envelope"></span>Back</button></div>
+    	<div class="col-sm-6 col-md-6 col-lg-6"><button type="button" class="btn btn-default" id="back_messages" url="<?=site_url('messages/load_message_panel')?>">Back</button></div>
     	<div class="col-sm-6 col-md-6 col-lg-6"><h4 class="modal-title" id="BookrackInbox">Compose Message</h4></div>
     	
     </div>
   </div>
-  <?php echo form_open(site_url('messages/send'),array('name'=>'message_form','class'=>'form-horizontal', 'role'=>'form')) ?>
+  <?php echo form_open(site_url('messages/send'),array('id'=>'message-form','name'=>'message_form','class'=>'form-horizontal', 'role'=>'form')) ?>
   <div class="modal-body msg_container_base">
   <?php if(isset($email)):?>
     <input type="hidden" name="email" value="<?=urldecode($email)?>" required>
@@ -19,6 +19,7 @@
     <div id="conversation" style="overflow:auto;max-height:220px;">
     <?php
         if(!empty($messages)):
+          $messages = array_reverse($messages);
           $base_url = base_url();
           $userimage = $this->session->userdata('profile_image');
           foreach ($messages as $message): ?>
@@ -51,7 +52,7 @@
     <?php endif;?>
     </div>
   <?php else:?>
-      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+      <div class="col-xs-offset-1 col-sm-offset-1 col-md-offset-1 col-lg-offset-1 col-xs-10 col-sm-10 col-md-10 col-lg-10">
       <div class="form-group">
         <input type="text" name="email" autocomplete="off" class="form-control" placeholder="email" value="" required>
       </div>

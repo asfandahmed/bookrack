@@ -1,4 +1,9 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+/**
+ * Notification Class
+ *
+ * @author  Asfand yar Ahmed
+ */
 class Notification extends CI_Model
 {
 	public $node;
@@ -7,7 +12,7 @@ class Notification extends CI_Model
 	public $notificationText;
 	public $date_time;
 
-	public function __construct()
+	function __construct()
 	{
 		parent::__construct();
 		$this->load->library('neo');
@@ -131,6 +136,47 @@ CYPHER;
             ));
         return self::returnMappedContent($result);
     }
+    public static function getContent($email,$skip=0,$limit=10)
+    {
+        $queryString = <<<CYPHER
+MATCH (u:User { email: { u }})
+WITH DISTINCT u
+MATCH u-[:CURRENTNOTIFICATION]-lp-[:NEXTNOTIFICATION*0..]-p
+RETURN p
+ORDER BY p.timestamp desc SKIP {skip} LIMIT {limit}
+CYPHER;
+        $CI = get_instance();
+        $result = $CI->neo->execute_query($queryString,array(
+                'u' => $email,
+                'skip' => intval($skip),
+                'limit'=>intval($limit),
+            ));
+        if($result)
+            return self::returnMappedContent($result);
+    }
+    /**
+    * @param email address of user
+    * @return node 
+    **/
+    public static function check_unread($email)
+    {
+        $queryString = <<<CYPHER
+MATCH (u:User { email: { u }})
+MATCH u-[:CURRENTNOTIFICATION]-p
+MATCH u-[:CURRENTMESSAGE]-m
+MATCH u<-[r:BORROW]-b
+WHERE p.read = FALSE OR m.read = FALSE OR  r.read =FALSE
+RETURN p.read = FALSE as has_notification, m.read=FALSE as has_message, r.read=FALSE as has_request
+CYPHER;
+        $CI = get_instance();
+        $result = $CI->neo->execute_query($queryString,array(
+                'u' => $email,
+            ));
+        if($result)
+            return self::returnMappedContent($result);
+    }
+    public static function mark_read()
+    {}
 	protected static function returnMappedContent(Everyman\Neo4j\Query\ResultSet $results)
     {
         $mappedContentArray = array();

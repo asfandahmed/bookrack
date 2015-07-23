@@ -1,16 +1,7 @@
+var notify_timer=0;
 $(document).ready(function(){
-	$('.middle-content').scrollPagination({
-
-		nop     : 10, // The number of posts per scroll to be loaded
-		offset  : 0, // Initial offset, begins at 0 in this case
-		error   : 'No More Posts!', // When the user reaches the end this is the message that is
-		                            // displayed. You can change this if you want.
-		delay   : 500, // When you scroll down the posts will load after a delayed amount of time.
-		               // This is mainly for usability concerns. You can alter this as you see fit
-		scroll  : true // The main bit, if set to false posts will not load as the user scrolls. 
-		               // but will still load if the user clicks.
-		
-	});
+	notify();
+	notify_timer = setTimeout(notify,60000); //60 secs
 	$('.comment_bar').hide();
 	$("#profile_pic_box").capslide({
                     caption_color	: '#bfedfa',
@@ -56,7 +47,18 @@ $(document).ready(function(){
 			}
 		});
 	});
+
 	$(document).on("click","#load_message_compose", function(e){
+		
+		var link=$(this).attr('url');
+		$('.modal-dialog').load(link, function( response, status, xhr ){
+			if ( status == "error" ) {
+			var msg = "Sorry but there was an error: ";
+			$( "#contentModal" ).html( msg + xhr.status + " " + xhr.statusText );
+			}
+		});
+	});
+	$(document).on("click","#back_messages", function(e){
 		
 		var link=$(this).attr('url');
 		$('.modal-dialog').load(link, function( response, status, xhr ){
@@ -90,8 +92,7 @@ $(document).ready(function(){
 		});
 	});
 });// document ready
-
-$('.btnBorrow').click(function(event){
+$(document).on("click",".btnBorrow",function(event){
 	var url=$(this).attr('href');
 	var obj={
 		"bookId":$(this).attr('bookid'),
@@ -114,9 +115,9 @@ $('.btnBorrow').click(function(event){
 		},
 	});
 	event.preventDefault();
-	
+	$(this).unbind();
 });
-$('#followBtn').click(function(event){
+$(document).on("click","#followBtn",function(event){
 	var id=$('#followBtn').attr('usertobefollowed');
 	var url=$('#followBtn').attr('href');
 	newurl=url.substring(0,url.lastIndexOf('/')+1);
@@ -140,7 +141,7 @@ $('#followBtn').click(function(event){
 		},
 	});
 	event.preventDefault();
-	event.unbind();
+	$(this).unbind();
 });
 $('.SuggfollowBtn').click(function(event){
 	var id=$(this).data('user');
@@ -164,47 +165,46 @@ $('.SuggfollowBtn').click(function(event){
 	});
 	event.preventDefault();
 });
-$('.comment-button').click(function(){
-	var id = this.id;
+$(document).on('click','.comment-button', function(){
+	var id = $(this).attr('data-post');
 	var selector = '#commentbar_'+id;
-	$(selector).toggle();
+	$(selector).toggle("slow");
 });
-$('.commentsloader').on("click", function(e){
-		e.preventDefault();
+$(document).on("click",".commentsloader",function(e){
+	e.preventDefault();
 		var link=$(this).attr('href');
-		$(this).load(link, function( response, status, xhr ){
-			 if ( status == "error" ) {
+		$(this).parent().load(link, function( response, status, xhr ){
+			if ( status == "error" ) {
 			var msg = "Sorry but there was an error: ";
 			$( "#contentModal" ).html( msg + xhr.status + " " + xhr.statusText );
 			}
 		});
-	});
-/*
-$('.commentsloader').click(function(event){
-	event.preventDefault();
-	var url = $(this).attr('href');
+});
+function notify()
+{
 	$.ajax({
 		type : "GET",
-		url : url,
+		url : 'http://localhost/bookrack/index.php/check_notification',
 		dataType:'json',
 		success:function(data){
-			console.log(data);
-			view_comments(data);
+			if(data.success){
+				$('#top-navbar .navitems li:nth-child(2) a').append('<span class="glyphicon glyphicon-exclamation-sign"> </span>');
+				$('#top-navbar .navitems li:nth-child(2) a').attr('title','You have new notifications.');
+				clearTimeout(notify_timer);
+			}
 		},
 		error:function( xhr, status, errorThrown ){
-			humane.log( "Sorry, there was a problem!" );
 			console.log( "Error: " + errorThrown );
 			console.log( "Status: " + status );
-			console.dir( xhr );	
-		},
+			console.dir( xhr );
+		}
 	});
-});*/
+}
 function view_comments(data)
 {
 	
 }
-$('.like-button').click(function(event){
-	event.preventDefault();
+$(document).on("click",".like-button",function(event){
 	var url = $(this).attr('href');
 	var newurl = url.replace('like','unlike');
 	var link = '<a href="'+newurl+'" class="unlike-button">Unlike</a>'
@@ -221,14 +221,12 @@ $('.like-button').click(function(event){
 			console.log( "Error: " + errorThrown );
 			console.log( "Status: " + status );
 			console.dir( xhr );	
-		},
-		complete:function(){
-			location.href = self.href;
-		},
+		}
 	});
-});
-$('.unlike-button').click(function(event){
 	event.preventDefault();
+	$(this).unbind();
+});
+$(document).on("click",".unlike-button",function(event){
 	var url = $(this).attr('href');
 	var newurl = url.replace('unlike','like');
 	var link = '<a href="'+newurl+'" class="like-button">Like</a>'
@@ -245,11 +243,10 @@ $('.unlike-button').click(function(event){
 			console.log( "Error: " + errorThrown );
 			console.log( "Status: " + status );
 			console.dir( xhr );	
-		},
-		complete:function(){
-			location.href = self.href;
-		},
+		}
 	});
+	event.preventDefault();
+	$(this).unbind();
 });
 /*
 $('#edit-information').click(function(event){
@@ -311,6 +308,74 @@ function add_books()
 		event.unbind();
 	});
 }
+function uploadProfileImage()
+{
+	var options = {
+		target:   '#output',   // target element(s) to be updated with server response
+        beforeSubmit:  beforeSubmit,  // pre-submit callback
+        resetForm: true,        // reset the form after successful submit 
+        dataType: 'json',
+        success: successProfileImage,
+	};
+	$(document).on("submit",'#profile_image_form', function (event){
+		$(this).ajaxSubmit(options);
+		return false;
+		});
+}
+function successProfileImage(data) {
+	var html = '<img class="no-resposive-image" src="'+data.path+'" alt="Profile picture" title="">';
+	$('#loading-img').css("display","none");
+	$('input#submit-btn').css("display","block");
+	if(data.error=="success"){
+		$('#profilePicture').attr("src",data.path);
+		$('#pictureStatus').html(data.msg);
+	}
+	$('#output').html(html);
+}
+//function to check file size before uploading.
+function beforeSubmit(){
+    //check whether browser fully supports all File API
+   if (window.File && window.FileReader && window.FileList && window.Blob)
+    {
+       
+        if( !$('#imageInput').val()) //check empty input filed
+        {
+            $("#output").html("Are you kidding me?");
+            return false
+        }
+       
+        var fsize = $('#imageInput')[0].files[0].size; //get file size
+        var ftype = $('#imageInput')[0].files[0].type; // get file type
+       
+
+        //allow only valid image file types
+        switch(ftype)
+        {
+            case 'image/png': case 'image/gif': case 'image/jpeg': case 'image/pjpeg':
+                break;
+            default:
+                $("#output").html("<b>"+ftype+"</b> Unsupported file type!");
+                return false
+        }
+       
+        //Allowed file size is less than 1 MB (2048576)
+        if(fsize>2048576)
+        {
+            $("#output").html("<b>"+fsize +"</b> Too big Image file! <br />Please reduce the size of your photo using an image editor.");
+            return false
+        }
+               
+        $('#submit-btn').hide(); //hide submit button
+        $('#loading-img').show(); //hide submit button
+        $("#output").html("");  
+    }
+    else
+    {
+        //Output error to older browsers that do not support HTML5 File API
+        $("#output").html("Please upgrade your browser, because your current browser lacks some new features we need!");
+        return false;
+    }
+}
 function postStatus()
 {
 	$('#statusForm').submit(function (event){
@@ -321,9 +386,7 @@ function postStatus()
 			dataType:'json',
 			encode:true,
 			success:function(data){
-				console.log(data);
-				humane.log(data.error);
-				$('input[name=status]').val()='';
+				after_status_post(data);
 			},
 			error:function( xhr, status, errorThrown ) {
 			humane.log( "Sorry, there was a problem!" );
@@ -331,38 +394,22 @@ function postStatus()
 			console.log( "Status: " + status );
 			console.dir( xhr );
 
-			},
+			}
 		});
 		 event.preventDefault();
-		 event.unbind();
+		 $(this).unbind();
 	});
+}
+function after_status_post(data){
+	if(data.success==true){
+		$('#statusForm').find("input[name=status]").val('');
+		//post = create_post(data); 
+		//$('#post-content').prepend(post);
+	}
+	humane.log(data.error);
 }
 function search_submit(){
 	$('#search-form').submit();
-}
-function like_unlike()
-{
-	link='<a href="" onClick="return like()">Unlike</a>';
-	$('.like-button').live('click', function(e){
-		e.preventDefault();
-		$.ajax({
-			url:$(this).attr('href'),
-			method:"POST",
-			data:"data",
-			dataType:'json',
-			encode:true,
-			success:function(data)
-			{
-				$('.like-button').replaceWith(link);
-			},
-			error:function( xhr, status, errorThrown ) {
-			humane.log( "Sorry, there was a problem!" );
-			console.log( "Error: " + errorThrown );
-			console.log( "Status: " + status );
-			console.dir( xhr );
-			},
-		});
-	});
 }
 function delete_node(id){
 	if(window.confirm("Are you sure you want to delete this?"))
@@ -390,28 +437,25 @@ function delete_node(id){
 	else
 		return false;
 }
-/*$('.commentfield').keypress(function (e) {
-  console.log("helloss");
-  if (e.which == 13) {
-    var p = $(this).parent();
-    $(p).submit();
-    e.preventDefault();
-	e.unbind();
-    return false;    //<---- Add this line
-	}
-});*/
 function postComment(id)
 {
-	var form = '#'+id;
-	$(form).submit(function (event){
+	var form = $(id)[0];
+	$(form).bind('submit',function(event){
+		if(!event) event = window.event;
 		$.ajax({
 			type:"POST",
 			url:$(form).attr('action'),
 			data:$(form).serialize(),
 			dataType:'json',
 			encode:true,
+			cache: false,
 			success:function(data){
-				humane.log(data.error);
+				if(data.success){
+					var html = createComment(data);
+					$(form).parents().eq(1).before(html).fadeIn(2000);
+					$(form).find("input[name=comment]").val('');
+				}else
+					humane.log(data.error);
 			},
 			error:function( xhr, status, errorThrown ) {
 			humane.log( "Sorry, there was a problem!" );
@@ -420,14 +464,58 @@ function postComment(id)
 			console.dir( xhr );
 			},
 		});
-		 event.preventDefault();
-		 event.unbind();
+		event.preventDefault();
+		$(this).unbind();
 	});
+}
+$(document).on("submit","#message-form",function(event){
+
+	$.ajax({
+		type:"POST",
+		url:$('#message-form').attr('action'),
+		data:$('#message-form').serialize(),
+		dataType:'json',
+		encode:true,
+		cache: false,
+		success:function(data){
+			if(data.success){
+				after_message_sent('#message-form');	
+			}else
+				humane.log(data.error);
+		},
+		error:function( xhr, status, errorThrown ) {
+		humane.log( "Sorry, there was a problem!" );
+		console.log( "Error: " + errorThrown );
+		console.log( "Status: " + status );
+		console.dir( xhr );
+		},
+	});
+	event.preventDefault();
+	$(this).unbind();
+});
+	
+function after_message_sent(id)
+{
+	var url=$(id).attr('action');
+	var email=$(id+' input[name="email"]').val();
+		url=url.substring(0,url.lastIndexOf('/')+1);
+		url=url.concat("show/");
+		url = url+encodeURIComponent(email); 
+		console.log(url);
+	$('.modal-dialog').load(url, function( response, status, xhr ){
+			 if ( status == "error" ) {
+			var msg = "Sorry but there was an error: ";
+			$( "#contentModal" ).html( msg + xhr.status + " " + xhr.statusText );
+			}else{
+				var objDiv = $("#conversation").get(0);
+				objDiv.scrollTop = objDiv.scrollHeight;
+			}
+		});
 }
 $('.btn-hide').click(function(event){
 
 });
-$('.btn-remove').click(function(event){
+$(document).on("click",".btn-remove",function(event){
 	var postId = $(this).attr('data-postId');
 	var url = $(this).attr('data-url');
 	$.ajax({
@@ -437,7 +525,8 @@ $('.btn-remove').click(function(event){
 		dataType:'json',
 		encode:true,
 		success:function(data){
-			console.log(data);
+			if(data.success)
+				$('#post_'+postId).fadeOut();	
 			humane.log(data.error);
 		},
 		error:function( xhr, status, errorThrown ) {
@@ -445,14 +534,10 @@ $('.btn-remove').click(function(event){
 			console.log( "Error: " + errorThrown );
 			console.log( "Status: " + status );
 			console.dir( xhr );
-			},
-		complete:function(){
-			$('#post_'+postId).fadeOut();
-		//location.href = self.href;
-		},
+		}
 	});
 	event.preventDefault();
-	event.unbind();
+	$(this).unbind();
 });
 $('.btn-wishlist').click(function(event){
 	var url = $(this).attr('href');
@@ -481,69 +566,88 @@ $('.btn-wishlist').click(function(event){
 	event.unbind();
 });
 /*
-function ajax_post_get(type="POST", url, dataType="json", data_obj){
-	var result=null;
-	$.ajax({
-		type : type,
-		url : url,
-		dataType:'json',
-		data:data_obj,
-		success:function(data){
-			result=data;
-		},
-		error:function( xhr, status, errorThrown ){
-			alert( "Sorry, there was a problem!" );
-			console.log( "Error: " + errorThrown );
-			console.log( "Status: " + status );
-			console.dir( xhr );	
-		},
-		complete:function(){
-			location.href = self.href;
-		},
-	});
+function ajax_post_get(
+	type="POST", url, 
+	dataType="json", 
+	data_obj, 
+	func_success(data){}, 
+	func_error( xhr, status, errorThrown ) { humane.log( "Sorry, there was a problem!" ); console.log( "Error: " + errorThrown ); console.log( "Status: " + status ); console.dir( xhr );}, 
+	func_complete(){}
+	{
+		var result=null;
+		$.ajax({
+			type : type,
+			url : url,
+			dataType:'json',
+			data:data_obj,
+			success:function(data){
+				func_success(data);
+			},
+			error:function( xhr, status, errorThrown ){
+				func_error( xhr, status, errorThrown );
+			},
+			complete:function(){
+				func_complete();
+			},
+		});
 	return result;
 }*/
-$('.btn-approve-borrow-request').click(function(event){
+$(document).on("click",".btn-approve-borrow-request",function(event){
+	var element = $(this);
 	$.ajax({
 		type : "GET",
-		url : url,
+		url : $(this).attr('href'),
 		dataType:'json',
 		success:function(data){
-			
+			$(element).fadeOut();
 		},
 		error:function( xhr, status, errorThrown ){
 			alert( "Sorry, there was a problem!" );
 			console.log( "Error: " + errorThrown );
 			console.log( "Status: " + status );
 			console.dir( xhr );	
-		},
-		complete:function(){
-			location.href = self.href;
-		},
+		}
 	});
 	event.preventDefault();
-	event.unbind();
+	$(this).unbind();
 });
-$('.btn-ignore-borrow-request').click(function(event){
+$(document).on("click",".btn-ignore-borrow-request",function(event){
+	var element  = $(this);
 	$.ajax({
 		type : "GET",
-		url : url,
+		url : $(this).attr('href'),
 		dataType:'json',
 		success:function(data){
-
+			$(element).fadeOut();
 		},
 		error:function( xhr, status, errorThrown ){
 			alert( "Sorry, there was a problem!" );
 			console.log( "Error: " + errorThrown );
 			console.log( "Status: " + status );
 			console.dir( xhr );	
-		},
-		complete:function(){
-			location.href = self.href;
-		},
+		}
 	});
 	event.preventDefault();
-	event.unbind();
+	$(this).unbind();
+});
+$(document).on("click",".btn-cancel-borrow-request",function(event){
+	var element = $(this);
+	$.ajax({
+		type : "GET",
+		url : $(this).attr('href'),
+		dataType:'json',
+		success:function(data){
+			$(element).fadeOut();
+		},
+		error:function( xhr, status, errorThrown ){
+			alert( "Sorry, there was a problem!" );
+			console.log( "Error: " + errorThrown );
+			console.log( "Status: " + status );
+			console.dir( xhr );	
+		}
+	});
+	event.preventDefault();
+	$(this).unbind();
 });
 /*
 function request_borrow()
@@ -556,8 +660,11 @@ function displayComment(data)
 }
 function createComment(data)
 {
-	var html='<div class="col-sm-12 col-md-12 col-lg-12">'+data+'</div>';
-	return html;
+	//$(data.comment).each(function(){
+		var html='<div class="row"><div class="col-xs-3 col-sm-2 col-md-2 col-lg-2"><img style="width:45px;height:35px;" title="'+data.comment.fullname+'" alt="'+data.comment.fullname+'" src="'+data.comment.image+'"></div>';
+		html+='<div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">'+data.comment.commentText+'</div></div>';	
+		return html;
+	//});
 }
 function getLocation() {
     if (navigator.geolocation) {

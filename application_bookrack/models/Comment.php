@@ -5,24 +5,29 @@ Class Comment extends CI_Model
 	public $nodeId;
 	public $commentId;
 	public $userId;
-	public $postId;
+    public $postId;
+    public $username;
+    public $fullname;
+    public $image;
 	public $commentText;
 	public $date_time;
 	
 	public function __construct()
     {
         parent::__construct();
-        $this->load->library(array('neo'));
+        $this->load->library(array('neo','session'));
 
     }
     public function setComment($userId)
     {   
-        //die(print_r($_POST));
         $statusId = $this->input->post('statusId');
         $comment = new Comment();
         $comment->commentId = uniqid();
         $comment->userId = $userId;
         $comment->commentText = $this->input->post('comment');
+        $comment->image = base_url().'assets/uploads/thumbs/'.$this->session->userdata('profile_image');
+        $comment->fullname = $this->session->userdata('first_name').' '.$this->session->userdata('last_name');
+        $comment->username = $this->session->userdata('username');
         return Comment::add($statusId, $comment);
     }
     protected static function add($statusId, Comment $comment)
@@ -145,7 +150,9 @@ CYPHER;
 MATCH (s:Status { statusId: { statusId }})
 WITH s
 MATCH (c:Comment)-[:NEXTCOMMENT*0..]-(l)-[:CURRENTCOMMENT]-(s)
-RETURN c ORDER BY c.timestamp desc SKIP {skip} LIMIT {limit}
+OPTIONAL MATCH(u:User)
+WHERE ID(u)=c.userId
+RETURN c, u.first_name+' '+u.last_name as full_name, u.profile_image as image, u.username as username ORDER BY c.timestamp SKIP {skip} LIMIT {limit}
 CYPHER;
         $CI = get_instance();
         $result = $CI->neo->execute_query($queryString,array(
@@ -175,19 +182,26 @@ CYPHER;
         $mappedContentArray = array();
         foreach($results as $row) {
             $mappedContentArray[] = self::createFromNode(
-                $row['c']
+                $row['c'],
+                $row['username'],
+                $row['full_name'],
+                $row['image']
             );
         }
 
         return $mappedContentArray;
     }
-	protected static function createFromNode(Everyman\Neo4j\Node $node)
+	protected static function createFromNode(Everyman\Neo4j\Node $node, $username="null", $fullname="null", $image="null")
     {
         $comment = new Comment();
         $comment->node = $node;
         $comment->nodeId = $node->getId();
         $comment->commentId = $node->getProperty('commentId');
         $comment->commentText = $node->getProperty('commentText');
+        $comment->userId = $node->getProperty('userId');
+        $comment->username = $username;
+        $comment->fullname = $fullname;
+        $comment->image = $image;
         $comment->date_time = gmdate("F j, Y g:i a", $node->getProperty('date_time'));
         return $comment;
     }

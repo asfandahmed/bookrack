@@ -25,8 +25,7 @@ class User extends CI_Model
 	public $is_admin="";
 	public $active="";
 	
-	public function __construct()
-	{
+	public function __construct(){
 		parent::__construct();
 		$this->load->library('neo');
 	}
@@ -40,12 +39,10 @@ class User extends CI_Model
 	* @param int $id
 	* @param array $data  contains key value pairs
 	*/
-	public function update_user_properties($id,$data)
-	{
+	public function update_user_properties($id,$data){
 		$this->neo->update($id,$data);
 	}
-	public function set_user()
-	{
+	public function set_user(){
 		$time = time();
 		$regDate = time();
 		$admin=$this->input->post('admin');
@@ -75,8 +72,7 @@ class User extends CI_Model
 			);
 		return $this->neo->insert('User',$data);
 	}
-	public function update_user()
-	{
+	public function update_user(){
 		$id=$this->input->post('id');
 		$admin=$this->input->post('admin');
 		if(empty($admin))
@@ -106,19 +102,9 @@ class User extends CI_Model
 			);
 		return $this->neo->update($id,$data);	
 	}
-	public function get_feed($userId,$skip,$limit=10)
-	{
-		$query="MATCH (u:User)-[r:POSTED]->(s:Status) WHERE ID(u) = {id} RETURN s ORDER BY r.date_time DESC";
-		return $this->neo->execute_query($query,array('id'=>intval($userId)));
-	}
-	public function get_feed_count($userId)
-	{
-		$query="MATCH (u:User)-[r:POSTED]->(s:Status) WHERE ID(u) = {id} RETURN COUNT(s) as total";
-		return $this->neo->execute_query($query,array('id'=>intval($userId)));
-	}
 	public function check_user_exists($email)
 	{
-			$result=$this->neo->execute_query("MATCH (n:User {email:{email}}) RETURN ID(n) AS id, n.first_name, n.last_name, n.password, n.is_admin, n.profile_image LIMIT 1",array('email'=>$email));
+			$result=$this->neo->execute_query("MATCH (n:User {email:{email}}) RETURN ID(n) AS id, n.first_name, n.last_name, n.password, n.is_admin, n.profile_image, n.username LIMIT 1",array('email'=>$email));
 			if(isset($result[0]))
 				return $result;
 			return false;
@@ -142,7 +128,6 @@ class User extends CI_Model
                 'f' => $userToUnfollow,
             )
         );
-
         return $query->getResultSet();
 	}
 	public function add_user_relation($n1,$n2,$relationName,$data)
@@ -209,8 +194,7 @@ class User extends CI_Model
 				RETURN r,n,m";
 		return $this->neo->execute_query($query,array('id'=>intval($userId),'name'=>$name));
 	}
-	public function get_books($id,$type)
-	{
+	public function get_books($id,$type){
 		switch ($type) {
 			case "OWNS": // owns
 				$query="START a=node({id}) 
