@@ -8,7 +8,7 @@
 	foreach ($folllow_suggestions as $usr):?>
 		<div class="row" id="row-<?=$usr->id?>">
 			<div class="col-sm-4 col-md-4 col-lg-4">
-			<img src="<?=empty($usr->profile_image)?$image_path.'user-pic.jpg':$image_path.$usr->profile_image?>" alt="<?=$usr->first_name.' '.$usr->last_name?>" title="<?=$usr->first_name.' '.$usr->last_name?>">
+			<a href="<?=$site_url.'/profile/'.$usr->id?>"><img src="<?=empty($usr->profile_image)?$image_path.'user-pic.jpg':$image_path.$usr->profile_image?>" alt="<?=$usr->first_name.' '.$usr->last_name?>" title="Click to see <?=$usr->first_name.' '.$usr->last_name?>'s profile"></a>
 			</div>
 			<div class="col-sm-8 col-md-8 col-lg-8">
 				<span><a href="<?=$site_url.'/profile/'.$usr->id?>" class="username"><?=$usr->first_name.' '.$usr->last_name?></a></span>
@@ -25,7 +25,7 @@
 	foreach ($book_suggestions as $book):?>
 		<div class="row" id="row-<?=$book->id?>">
 			<div class="col-sm-4 col-md-4 col-lg-4">
-			<img src="<?=$image_path?>/user-pic.jpg" alt="<?=$book->title?>" title="<?=$book->title?>">
+			<a href="<?=$site_url.'/book/'.$book->id?>"><img src="<?=$image_path?>/user-pic.jpg" alt="<?=$book->title?>" title="<?=$book->title?>"></a>
 			</div>
 			<div class="col-sm-8 col-md-8 col-lg-8">
 				<span><a href="<?=$site_url.'/book/'.$book->id?>" class="username"><?=$book->title?></a></span>

@@ -17,6 +17,10 @@ img{
     display: block;
     width: 100%;
 }
+.no-margin-padding{
+    margin: 0;
+    padding: 0;
+}
 .no-responsive-image{
     width: auto;
     height: 100%;
