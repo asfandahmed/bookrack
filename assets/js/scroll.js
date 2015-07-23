@@ -40,7 +40,11 @@
 			function getData() {
 				
 				// Post data to ajax.php
+<<<<<<< HEAD
 				var url = $settings.url+'/'+offset+'/'+$settings.nop;
+=======
+				var url = 'http://localhost/bookrack/index.php/load/posts/'+offset+'/'+$settings.nop;
+>>>>>>> ffc33d3a8b38ccc9ac7459f323a637861e65b57e
 				$.get(url, {
 						
 					
@@ -60,7 +64,12 @@
 					    offset = offset+$settings.nop; 
 						    
 						// Append the data to the content div
+<<<<<<< HEAD
 					   	$this.append(data)
+=======
+					   	$this.find('.middle-content').append(data);
+						
+>>>>>>> ffc33d3a8b38ccc9ac7459f323a637861e65b57e
 						// No longer busy!	
 						busy = false;
 					}	

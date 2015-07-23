@@ -25,5 +25,5 @@ $url .= !empty($bookTitle)?'/'.urldecode($bookTitle):'';
 		Nearby users having <?=$bookTitle?> book:
 	</div>
 </div>
-	
+
 </div>

@@ -23,9 +23,9 @@ class Site extends CI_Controller
 		$email=$this->session->userdata('email');
 		$data['title']='Home - '.APP_NAME;
 		$data['user_info']=$this->user->get_basic_info($id);
+
 		$data['folllow_suggestions']=$this->recommendation->friend_suggestions($email);
 		$data['book_suggestions']=$this->recommendation->book_suggestions($email);
-
 		$this->load->view('templates/header.php',$data);
 		$this->load->view('site/home.php',$data);
 		$this->load->view('templates/footer.php');
@@ -39,7 +39,6 @@ class Site extends CI_Controller
 		$data['title'] = APP_NAME;
 		$data['signin_post_url']='login';
 		$data['register_post_url']='register';
-		
 		$this->load->view('templates/header-index.php',$data);
 		$this->load->view('site/index.php',$data);
 		$this->load->view('templates/footer-index.php');

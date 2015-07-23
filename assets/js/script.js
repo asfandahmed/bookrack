@@ -155,6 +155,7 @@ $('.SuggfollowBtn').click(function(event){
 			$('#row-'+id).fadeOut();
 			humane.log('You followed a user');
 			console.log(data);
+			view_comments(data);
 		},
 		error:function( xhr, status, errorThrown ){
 			humane.log( "Sorry, there was a problem!" );

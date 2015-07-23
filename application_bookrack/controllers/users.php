@@ -187,25 +187,14 @@ class Users extends CI_Controller
 		$data['user_info']=$this->user->get_basic_info($id);
 		$data['user']=$this->user->get($id);
 		$data['owner']=$owner;
-		/*
+		
 		// change this to username in future instead of email
 		$this->session->set_userdata(array(
 			'load_profile_email'=>$data['user']->email
 			));
 		$email=$this->session->userdata('load_profile_email');
-		$count=$this->status->getContentCount($email)->offsetGet(0);
-
-		$config['base_url']=site_url('profile');
-		$config['total_rows']=$count['total'];
-		$config["per_page"]=15;
 		
-		$page = ($this->uri->segment(2)) ? $this->uri->segment(2) : 0;
-		$skip=$page*$config["per_page"];
-		$this->pagination->initialize($config); 
-
 		$data['posts']=$this->status->getContent($email,$skip,$config["per_page"],true);
-		//die(print_r($data['posts']));
-		*/
 		$this->load->view('templates/header.php',$data);
 		$this->load->view('user/profile_upper_section.php',$data);
 		$this->load->view('user/index.php',$data);
@@ -323,6 +312,7 @@ class Users extends CI_Controller
 		$id=$this->session->userdata['user_id'];
 		$this->user->update_user_properties($id,$data);
 	}
+
 	private function resize_image($path,$height,$width)
 	{	
 		$config=array();

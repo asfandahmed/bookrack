@@ -57,7 +57,6 @@ class Searches extends CI_Controller
 			$data['users']=$this->search->get_book_owners($title,$email);
 			$data['lat_lon']=FALSE;
 		}
-
 		$data['bookId']=$id;
 		$data['bookTitle']=$title;
 		$this->load->view('templates/header.php',$data);

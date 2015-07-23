@@ -10,6 +10,7 @@ class Borrows extends CI_Controller
 	}
 	public function index()
 	{
+
 		if($this->common_functions->is_logged_in())
 		{
 			$data['title']='Borrow requests - '.APP_NAME;
@@ -88,4 +89,5 @@ class Borrows extends CI_Controller
 			return json_encode($data);
 		}
 	}
+
 }

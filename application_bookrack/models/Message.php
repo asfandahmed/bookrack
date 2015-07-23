@@ -173,6 +173,7 @@ MATCH u-[:CURRENTMESSAGE]-lp-[:NEXTMESSAGE*0..]-p
 WHERE (lp.u1=ID(u) AND lp.u2=ID(f)) OR (lp.u2=ID(u) AND lp.u1=ID(f))
 RETURN p, u.first_name+ ' ' + u.last_name as u1_name, f.first_name+ ' ' + f.last_name as u2_name, ID(u) as u1_id, f.profile_image as userimage
 ORDER BY p.date_time desc SKIP {skip} LIMIT {limit}
+
 CYPHER;
         $CI = get_instance();
         $result = $CI->neo->execute_query($queryString,array(
