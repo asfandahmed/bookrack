@@ -133,6 +133,9 @@ $route['post/comment'] = 'comments/set_comment';
 $route['like/(:any)'] = 'likes/like_post/$1';
 $route['unlike/(:any)'] = 'likes/unlike_post/$1';
 
+/* like controller routes */
+$route['post/review'] = 'reviews/set_review';
+
 /* admin default controller routes */
 $route['admin'] = 'admin/defaultController/index';
 /* admin books controller routes */

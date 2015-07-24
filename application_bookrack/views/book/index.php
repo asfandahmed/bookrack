@@ -3,7 +3,7 @@
         <main id="main">
             <div class="row">
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 no-margin-padding">
-                
+                    <div class="row">   
                     <div class="col-sm-2 col-md-3 col-lg-3 ">
                         <p><img src="<?=base_url('assets/images/book-256.png')?>" class="img-responsive" alt="<?=$book->title?>-photo"/></p>
                     </div> 
@@ -21,9 +21,15 @@
                         <h5>ISBN <?=$book->isbn_10?> (ISBN13: <?=$book->isbn_13?>)</h5><br>
                     </div> 
                     </article><!-- #post-## -->
-
+                    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 pull-right">
+                        <nav>
+                            <ul>
+                                <li><a href=""><span>Add to wishlist</span></a></li>
+                            </ul>    
+                        </nav>
+                    </div>
                 </div> <!-- /row post  -->
-
+                </div>
             <div class="row">
                 <div class="col-sm-8 col-sm-offset-2">
 
@@ -90,17 +96,15 @@
                     <div id="respond">
                     <?php if($this->common_functions->is_logged_in()):?>
                     <h3 id="reply-title">Post a Review</h3>
-                    <?php echo form_open('',array('method'=>'post','id'=>'commentform'))?>
+                    <?php echo form_open(site_url('post/review'),array('method'=>'post','id'=>'commentform'))?>
+                        <input type="hidden" name="strrv" value="<?=sha1($book->id)?>">
+                        <input type="hidden" name="bookId" value="<?=$book->id?>">
                         <div class="form-group">
-                        <label for="inputComment">Comment</label>
-                        <textarea class="form-control" rows="6"></textarea>
+                        <label for="inputReview">Review</label>
+                        <textarea name="review" class="form-control" rows="6"></textarea>
                         </div>
                         <div class="row">
-                        <div class="col-md-8">
-                        <div class="checkbox">
-                        <label> <input type="checkbox"> Subscribe to updates</label>
-                        </div>
-                        </div>
+                        <div class="col-md-8"></div>
                         <div class="col-md-4 text-right">
                         <button type="submit" class="btn btn-action">Submit</button>
                         </div>

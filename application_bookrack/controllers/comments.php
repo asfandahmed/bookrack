@@ -33,12 +33,12 @@ class Comments extends CI_Controller
 		$this->form_validation->set_rules('statusId','StatusId','required|callback_check_val[strsts]|xss_clean');
 		$this->form_validation->set_rules('strsts','','required|xss_clean');
 		if($this->form_validation->run() === FALSE){
-			$data['success']=false;
+			$data['success']=FALSE;
 			$data['error']="Seems like your comment is empty.";
 		}
 		else{
 			$data['comment']=$this->comment->setComment($id);
-			$data['success']=true;
+			$data['success']=TRUE;
 			$data['error']="Posted!";
 		}
 		echo json_encode($data);
@@ -51,8 +51,8 @@ class Comments extends CI_Controller
 	************************************************************/
 	public function check_val($plain,$hash){
 		if($this->input->post($hash)==sha1($plain))
-			return true;
+			return TRUE;
 		$this->form_validation->set_message('Why you do this?');
-		return false;
+		return FALSE;
 	}
 }
