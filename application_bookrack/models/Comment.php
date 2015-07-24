@@ -1,4 +1,7 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+/*
+Note: This is clone of review class, if a design issue or bug found in this model then it should be fixed in review class also.
+*/
 Class Comment extends CI_Model
 {
     public $node;
