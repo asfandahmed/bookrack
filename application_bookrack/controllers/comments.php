@@ -29,9 +29,9 @@ class Comments extends CI_Controller
 	public function set_comment()
 	{
 		$id = $this->session->userdata('user_id');
-		$this->form_validation->set_rules('comment','Comment','trim|required|xss_clean');
-		$this->form_validation->set_rules('statusId','StatusId','required|callback_check_val[strsts]|xss_clean');
-		$this->form_validation->set_rules('strsts','','required|xss_clean');
+		$this->form_validation->set_rules('comment','Comment','trim|required');
+		$this->form_validation->set_rules('statusId','StatusId','required|callback_check_val[strsts]');
+		$this->form_validation->set_rules('strsts','','required');
 		if($this->form_validation->run() === FALSE){
 			$data['success']=FALSE;
 			$data['error']="Seems like your comment is empty.";

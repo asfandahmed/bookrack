@@ -6,7 +6,7 @@
  */
 class Site extends CI_Controller
 {
-	function __construct()
+	public function __construct()
 	{
 		parent::__construct();
 		$this->load->helper(array('form','url'));
@@ -48,8 +48,8 @@ class Site extends CI_Controller
 		if($this->common_functions->is_logged_in())
 			redirect(site_url('/home'));
 		
-		$this->form_validation->set_rules('email', 'Email', 'trim|required|max_length[60]|xss_clean');
-		$this->form_validation->set_rules('password', 'Password', 'trim|required|max_length[25]|xss_clean');
+		$this->form_validation->set_rules('email', 'Email', 'trim|required|max_length[60]');
+		$this->form_validation->set_rules('password', 'Password', 'trim|required|max_length[25]');
 		
 		if($this->form_validation->run() === FALSE)
 			$this->load_login_form();
@@ -92,11 +92,11 @@ class Site extends CI_Controller
 		$data['register_post_url']='register';
 		$this->load->model('user');
 
-		$this->form_validation->set_rules('first_name', 'First name', 'trim|required|min_length[3]|max_length[15]|xss_clean');
-		$this->form_validation->set_rules('last_name', 'Last name', 'trim|required|min_length[1]|max_length[15]|xss_clean');
-		$this->form_validation->set_rules('gender', 'Gender', 'trim|required|max_length[8]|xss_clean');
-		$this->form_validation->set_rules('email', 'Email', 'trim|required|min_length[3]|max_length[60]|valid_email|callback_email_check|xss_clean');
-		$this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[6]|max_length[25]|xss_clean');
+		$this->form_validation->set_rules('first_name', 'First name', 'trim|required|min_length[3]|max_length[15]');
+		$this->form_validation->set_rules('last_name', 'Last name', 'trim|required|min_length[1]|max_length[15]');
+		$this->form_validation->set_rules('gender', 'Gender', 'trim|required|max_length[8]');
+		$this->form_validation->set_rules('email', 'Email', 'trim|required|min_length[3]|max_length[60]|valid_email|callback_email_check');
+		$this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[6]|max_length[25]');
 		$this->form_validation->set_message('email_check','Email already exists.');
 
 		if($this->form_validation->run() === FALSE)

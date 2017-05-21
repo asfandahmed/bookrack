@@ -21,7 +21,7 @@ spl_autoload_register(function ($sClass) {
 class Neo {
 
 	protected $client=null;
-    private $local=true;
+    private $local=false;
 	public function __construct()
 	{
             if($this->local){

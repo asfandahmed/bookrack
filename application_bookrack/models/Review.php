@@ -16,7 +16,7 @@ Class Review extends CI_Model
 	public $reviewText;
 	public $date_time;
 	
-	public function __construct()
+	function __construct()
     {
         parent::__construct();
         $this->load->library(array('neo','session'));

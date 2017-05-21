@@ -28,8 +28,8 @@ class Messages extends CI_Controller
 		$data = array();
 		if($this->common_functions->is_logged_in())
 		{
-			$this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|xss_clean');
-			$this->form_validation->set_rules('message', 'Message', 'trim|required|xss_clean');
+			$this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email');
+			$this->form_validation->set_rules('message', 'Message', 'trim|required');
 			if($this->form_validation->run() === FALSE){
 				$data['success'] = FALSE;
 				$data['error'] = 'Error occurred.';

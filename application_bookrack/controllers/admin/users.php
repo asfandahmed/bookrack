@@ -112,22 +112,22 @@ class Users extends CI_Controller
 	}
 	private function set_validation()
 	{
-		$this->form_validation->set_rules('first_name', 'First Name', 'trim|required|xss_clean');
-		$this->form_validation->set_rules('last_name', 'Last Name', 'trim|required|xss_clean');
-		$this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|xss_clean');
-		$this->form_validation->set_rules('password', 'Password', 'trim|required|xss_clean');
-		$this->form_validation->set_rules('dob', 'Date of Birth', 'trim|xss_clean');
-		$this->form_validation->set_rules('about', 'About', 'trim|xss_clean');
-		$this->form_validation->set_rules('location', 'Location', 'trim|xss_clean');
-		$this->form_validation->set_rules('profile_url', 'Profile url', 'trim|xss_clean');
-		$this->form_validation->set_rules('skype', 'Skype', 'trim|xss_clean');
-		$this->form_validation->set_rules('facebook', 'Facebook link', 'trim|xss_clean');
-		$this->form_validation->set_rules('twitter', 'Twitter link', 'trim|xss_clean');
-		$this->form_validation->set_rules('googlePlus', 'Google+ link', 'trim|xss_clean');
-		$this->form_validation->set_rules('verified_email', 'Verified email', 'trim|xss_clean');
-		$this->form_validation->set_rules('verified_account', 'Verified account', 'trim|xss_clean');
-		$this->form_validation->set_rules('active', 'Active bit', 'trim|xss_clean');
-		$this->form_validation->set_rules('last_login', 'Verified account', 'trim|xss_clean');
+		$this->form_validation->set_rules('first_name', 'First Name', 'trim|required');
+		$this->form_validation->set_rules('last_name', 'Last Name', 'trim|required');
+		$this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email');
+		$this->form_validation->set_rules('password', 'Password', 'trim|required');
+		$this->form_validation->set_rules('dob', 'Date of Birth', 'trim');
+		$this->form_validation->set_rules('about', 'About', 'trim');
+		$this->form_validation->set_rules('location', 'Location', 'trim');
+		$this->form_validation->set_rules('profile_url', 'Profile url', 'trim');
+		$this->form_validation->set_rules('skype', 'Skype', 'trim');
+		$this->form_validation->set_rules('facebook', 'Facebook link', 'trim');
+		$this->form_validation->set_rules('twitter', 'Twitter link', 'trim');
+		$this->form_validation->set_rules('googlePlus', 'Google+ link', 'trim');
+		$this->form_validation->set_rules('verified_email', 'Verified email', 'trim');
+		$this->form_validation->set_rules('verified_account', 'Verified account', 'trim');
+		$this->form_validation->set_rules('active', 'Active bit', 'trim');
+		$this->form_validation->set_rules('last_login', 'Verified account', 'trim');
 	}
 	public function redirect_user()
 	{

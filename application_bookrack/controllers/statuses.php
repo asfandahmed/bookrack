@@ -16,7 +16,7 @@ Class Statuses extends CI_Controller{
 	public function post()
 	{
 		$data=array();
-		$this->form_validation->set_rules('status','Post','trim|required|xss_clean');
+		$this->form_validation->set_rules('status','Post','trim|required');
 		if($this->form_validation->run() === FALSE){
 			$data['success']=FALSE;
 			$data['error']="Seems like your post is empty.";
@@ -52,7 +52,7 @@ Class Statuses extends CI_Controller{
 	public function delete()
 	{
 		$data = array();
-		$this->form_validation->set_rules('statusId','Post','trim|required|xss_clean');
+		$this->form_validation->set_rules('statusId','Post','trim|required');
 		if($this->form_validation->run() === FALSE){
 			$data['success']=FALSE;
 			$data['error']="Error occurred.";

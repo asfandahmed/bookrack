@@ -27,16 +27,6 @@ $(document).ready(function(){
 		source: url,
 	});
 	// edit profile load div of edit profiles
-	/*$('.edit-link').on("click", function(e){
-		e.preventDefault();
-		var link=$(this).attr('href');
-		$('#content-loader').load(link, function( response, status, xhr ){
-			 if ( status == "error" ) {
-			var msg = "Sorry but there was an error: ";
-			$( "#content-loader" ).html( msg + xhr.status + " " + xhr.statusText );
-			}
-		});
-	});*/
 	$('#load_messages').on("click", function(e){
 		e.preventDefault();
 		var link=$(this).attr('href');
@@ -248,41 +238,6 @@ $(document).on("click",".unlike-button",function(event){
 	event.preventDefault();
 	$(this).unbind();
 });
-/*
-$('#edit-information').click(function(event){
-		var link=$(this).attr('href');
-		$('#content-loader').load(link, function( link,response, status, xhr ){
-			 if ( status == "error" ) {
-			var msg = "Sorry but there was an error: ";
-			$( "#content-loader" ).html( msg + xhr.status + " " + xhr.statusText );
-			}
-		});
-event.preventDefault();
-
-});
-$('#edit-contact').click(function(event){
-		var link=$(this).attr('href');
-		$('#content-loader').load(link, function( link,response, status, xhr ){
-			 if ( status == "error" ) {
-			var msg = "Sorry but there was an error: ";
-			$( "#content-loader" ).html( msg + xhr.status + " " + xhr.statusText );
-			}
-		});
-event.preventDefault();
-});*/
-// replace labels with textbox and back to labels
-/*function label_to_textbox(){
-	    $( ".edit-label" ).replaceWith( function() {
-	    	$('.edit-btns').show();
-	        return "<input type=\"text\" class=\"form-control edit-text\" value=\"" + $( this ).html() + "\" />";
-	    });
-}
-function textbox_to_label(){
-	$( ".edit-text" ).replaceWith( function() {
-	        $('.edit-btns').hide();
-	        return "<label class=\"col-sm-4 col-md-4 col-lg-4 control-label edit-label\">" + $( this ).val() + "</label>";
-	    });
-}*/
 // add books in wishlist and shelf
 function add_books()
 {
@@ -565,33 +520,6 @@ $('.btn-wishlist').click(function(event){
 	event.preventDefault();
 	event.unbind();
 });
-/*
-function ajax_post_get(
-	type="POST", url, 
-	dataType="json", 
-	data_obj, 
-	func_success(data){}, 
-	func_error( xhr, status, errorThrown ) { humane.log( "Sorry, there was a problem!" ); console.log( "Error: " + errorThrown ); console.log( "Status: " + status ); console.dir( xhr );}, 
-	func_complete(){}
-	{
-		var result=null;
-		$.ajax({
-			type : type,
-			url : url,
-			dataType:'json',
-			data:data_obj,
-			success:function(data){
-				func_success(data);
-			},
-			error:function( xhr, status, errorThrown ){
-				func_error( xhr, status, errorThrown );
-			},
-			complete:function(){
-				func_complete();
-			},
-		});
-	return result;
-}*/
 $(document).on("click",".btn-approve-borrow-request",function(event){
 	var element = $(this);
 	$.ajax({
@@ -649,11 +577,6 @@ $(document).on("click",".btn-cancel-borrow-request",function(event){
 	event.preventDefault();
 	$(this).unbind();
 });
-/*
-function request_borrow()
-{
-
-}*/
 function displayComment(data)
 {
 	var commentHTML = createComment(data);

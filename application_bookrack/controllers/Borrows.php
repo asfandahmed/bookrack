@@ -60,7 +60,7 @@ class Borrows extends CI_Controller
 				$data['status'] = "success!";
 			}else
 				$data['status'] = "failure!";
-			return json_encode($data);
+			echo json_encode($data);
 		}
 	}
 	public function ignore($id="")
@@ -73,7 +73,7 @@ class Borrows extends CI_Controller
 				$data['status'] = "success!";
 			}else
 				$data['status'] = "failure!";
-			return json_encode($data);
+			echo json_encode($data);
 		}
 	}
 	public function cancel($id="")
@@ -86,7 +86,7 @@ class Borrows extends CI_Controller
 				$data['status'] = "success!";
 			}else
 				$data['status'] = "failure!";
-			return json_encode($data);
+			echo json_encode($data);
 		}
 	}
 

@@ -152,18 +152,18 @@ class Books extends CI_Controller
 	}
 	private function set_validation()
 	{
-		$this->form_validation->set_rules('title','Title','trim|required|xss_clean');
-		$this->form_validation->set_rules('description','Description','trim|required|xss_clean');
-		$this->form_validation->set_rules('author','Author','trim|required|xss_clean');
-		$this->form_validation->set_rules('publisher','Publisher','trim|required|xss_clean');
-		$this->form_validation->set_rules('published_date','Published Date','trim|required|xss_clean');
-		$this->form_validation->set_rules('edition','Edition','trim|required|xss_clean');
-		$this->form_validation->set_rules('isbn_10','ISBN 10','trim|required|xss_clean');
-		$this->form_validation->set_rules('isbn_13','ISBN 13','trim|required|xss_clean');
-		$this->form_validation->set_rules('genre','Genre','trim|required|xss_clean');
-		$this->form_validation->set_rules('language','Language','trim|required|xss_clean');
-		$this->form_validation->set_rules('ratings','Ratings','trim|required|xss_clean');
-		$this->form_validation->set_rules('total_pages','Total Pages','trim|required|xss_clean');
+		$this->form_validation->set_rules('title','Title','trim|required');
+		$this->form_validation->set_rules('description','Description','trim|required');
+		$this->form_validation->set_rules('author','Author','trim|required');
+		$this->form_validation->set_rules('publisher','Publisher','trim|required');
+		$this->form_validation->set_rules('published_date','Published Date','trim|required');
+		$this->form_validation->set_rules('edition','Edition','trim|required');
+		$this->form_validation->set_rules('isbn_10','ISBN 10','trim|required');
+		$this->form_validation->set_rules('isbn_13','ISBN 13','trim|required');
+		$this->form_validation->set_rules('genre','Genre','trim|required');
+		$this->form_validation->set_rules('language','Language','trim|required');
+		$this->form_validation->set_rules('ratings','Ratings','trim|required');
+		$this->form_validation->set_rules('total_pages','Total Pages','trim|required');
 	}
 	public function redirect_user()
 	{
