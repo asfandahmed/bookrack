@@ -62,6 +62,7 @@ define('REMOTE_PORT', 24789);
 */
 
 define('APP_NAME', 'TheBookLib');
+define('MYSQL_DATETIME_FORMAT', 'Y-m-d H:i:s');
 
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */

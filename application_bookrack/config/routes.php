@@ -178,8 +178,12 @@ $route['admin/authors/update'] = 'admin/authors/update/$1';
 $route['admin/authors/update/(:num)'] = 'admin/authors/update/$1';
 $route['admin/authors/delete'] = 'admin/authors/delete';
 
+/*test route*/
+$route['test'] = 'test/index';
+
 $route['(:any)'] = 'site/index';
 $route['404_override'] = '';
+
 
 
 /* End of file routes.php */

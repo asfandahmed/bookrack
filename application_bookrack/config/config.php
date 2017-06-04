@@ -245,8 +245,8 @@ $config['encryption_key'] = 'dd971619867310ccf69f299db0c29d88f09b2064';
 | 'sess_time_to_update'		= how many seconds between CI refreshing Session Information
 |
 */
-$config['sess_driver'] = 'files';
-$config['sess_save_path'] = NULL;
+$config['sess_driver'] 			= 'files';
+$config['sess_save_path'] 		= NULL;
 $config['sess_cookie_name']		= 'bookrack_session';
 $config['sess_expiration']		= 7200;
 $config['sess_use_database']	= FALSE;
