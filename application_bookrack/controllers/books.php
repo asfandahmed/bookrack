@@ -8,7 +8,7 @@ class Books extends CI_Controller
 		$this->load->library(array('common_functions','session'));
 	}
 	public function index($id){
-		$book = $this->book->get_book($id);
+		$book = $this->book->get($id);
 		$data["title"]=ucfirst($book->title).' - '.APP_NAME;
 		$data['book']=$book;
 		$this->load->view('templates/header.php',$data);

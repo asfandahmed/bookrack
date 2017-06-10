@@ -1,42 +1,37 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-class User extends CI_Model
+class User extends MY_Model
 {
-	private $id;
-	private $first_name;
-	private $last_name;
-	private $email;
-	private $password;
-	private $dob;
-	private $about;
-	private $location;
-	private $profile_url;
-	private $profile_image;
-	private $skype;
-	private $facebook;
-	private $twitter;
-	private $googlePlus;
-	private $verified_email;
-	private $verified_account;
-	private $register_date;
-	private $ip_address;
-	private $latitude;
-	private $longitude;
-	private $last_login;
-	private $is_admin;
-	private $active;
+	public $id;
+	public $first_name;
+	public $last_name;
+	public $email;
+	public $password;
+	public $dob;
+	public $about;
+	public $location;
+	public $profile_url;
+	public $profile_image;
+	public $skype;
+	public $facebook;
+	public $twitter;
+	public $googlePlus;
+	public $verified_email;
+	public $verified_account;
+	public $register_date;
+	public $ip_address;
+	public $latitude;
+	public $longitude;
+	public $last_login;
+	public $is_admin;
+	public $active;
 	protected $CI;
+
 	public function __construct(){
 		parent::__construct();
 		$this->CI =& get_instance();
 
-		$this->CI->load->library('neo');
 	}
-	public function get($id){
-		return $this->CI->neo->get_node($id);
-	}
-	public function get_user($id){
-		return self::createFromNode($this->get($id));
-	}
+
 	/**
 	* @param int $id
 	* @param array $data  contains key value pairs
@@ -167,15 +162,7 @@ class User extends CI_Model
 				RETURN ID(following), following.first_name AS first_name, following.last_name AS last_name, following.about AS about";
 		return $result=$this->CI->neo->execute_query($query,array('id'=>intval($id)));
 	}
-	public function count(){
-		return $this->CI->neo->execute_query("MATCH (n:User) RETURN count(n) as total");
-	}
-	public function fetch($limit, $skip){
-		return $this->CI->neo->execute_query('MATCH (n:User) RETURN ID(n) as id, n.first_name +" "+ n.last_name as name skip {skip} limit {limit}',array('limit'=>intval($limit),'skip'=>intval($skip)));
-	}
-	public function delete($id){
-		$this->CI->neo->remove_node($id);
-	}
+	
 	public function add_to_shelf($userId)
 	{
 		$name=$this->input->post('add_shelf');
@@ -224,7 +211,7 @@ class User extends CI_Model
 		return $this->CI->neo->execute_query($query,array('id'=>intval($id)));
 	}
 	
-	protected static function createFromNode(Everyman\Neo4j\Node $node){
+	public function fromNode(Everyman\Neo4j\Node $node){
 		$user = new User();
 		$user->id=$node->getId();
 		$user->first_name=$node->getProperty('first_name');
@@ -246,20 +233,5 @@ class User extends CI_Model
 		$user->last_login=$node->getProperty('last_login');
 		$user->active=$node->getProperty('active');
 		return $user;
-	}
-	public function __get($property)
-	{
-		if(property_exists($this, $property))
-		{
-			return $this->property;
-		}
-	}
-	public function __set($property, $value)
-	{
-		if(property_exists($this, $property))
-		{
-			$this->property=$value;
-		}
-		return $this;
 	}
 }

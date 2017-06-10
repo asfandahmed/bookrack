@@ -6,8 +6,7 @@
  */
 class Recommendation extends CI_Model
 {
-	function __construct()
-	{
+	public function __construct(){
 		parent::__construct();
 		$this->load->library('neo');
 		$this->load->model(array('user','book'));
@@ -133,9 +132,11 @@ CYPHER;
      */
     protected static function returnAsUsers(Everyman\Neo4j\Query\ResultSet $results)
     {
+        $CI = get_instance();
         $userArray = array();
         foreach ($results as $row) {
-            $user = self::createfromNode($row['x'],"user");
+
+            $user = $CI->user->fromNode($row['x']->getLabel());
             if (isset($row['common'])) {
                 $user->commonFriends = $row['common'];
             }
@@ -153,9 +154,10 @@ CYPHER;
      */
     protected static function returnAsBooks(Everyman\Neo4j\Query\ResultSet $results)
     {
+        $CI = get_instance();
         $book_array = array();
         foreach ($results as $row) {
-            $book = self::createfromNode($row['x'],"book");
+            $book = $CI->book->fromNode($row['x']);
             if (isset($row['common'])) {
                 $book->commonReaders = $row['common'];
             }
@@ -164,25 +166,4 @@ CYPHER;
 
         return $book_array;
     }
-    protected static function createFromNode(Everyman\Neo4j\Node $node, $type)
-    {
-        if($type==="user")
-        {
-            $obj=new User();
-            $obj->id=$node->getId();
-            $obj->first_name=$node->getProperty('first_name');
-            $obj->last_name=$node->getProperty('last_name');
-            $obj->email=$node->getProperty('email');
-            $obj->profile_image=$node->getProperty('profile_image');
-            $obj->profile_url=$node->getProperty('profile_url');
-        }
-        elseif ($type==="book")
-        {
-            $obj = new Book();
-            $obj->id = $node->getId();
-            $obj->title = $node->getProperty('title');
-        }
-		
-		return $obj;
-	}
 }

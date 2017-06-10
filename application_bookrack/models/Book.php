@@ -1,5 +1,5 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-class Book extends CI_Model
+class Book extends MY_Model
 {
 	public $id;
 	public $title="";
@@ -17,27 +17,20 @@ class Book extends CI_Model
 	public $image="";
 	public $date_time="";
 
-	public function __construct()
-	{
+	const BOOK = 1;
+	
+	public function __construct() {
 		parent::__construct();
-		$this->load->library('neo');
 	}
-	public function get($id){
-		return $this->neo->get_node($id);
-	}
-	public function get_book($id){
-		return self::fromNode($this->get($id));
-	}
-	public function relate_genre($n1,$n2){
-		$this->neo->add_relation($n1,$n2,'GENRE');
-	}
+
+	
 	public function relate_author($bookId,$author_name){
 		$query="MATCH (n:Book)
 				WHERE ID(n) = {id}
 				MERGE (m:Author {name:{name}})
 				CREATE UNIQUE (m)-[r:WROTE]->(n)
 				RETURN r,n,m";
-		return $this->neo->execute_query($query,array('id'=>intval($bookId),'name'=>$author_name));
+		return $this->neo->execute_query($query, array('id'=>intval($bookId),'name'=>$author_name));
 	}
 	public function relate_publisher($bookId,$publisher_name){
 		$query="MATCH (n:Book)
@@ -45,10 +38,9 @@ class Book extends CI_Model
 				MERGE (m:Publisher {company:{name}})
 				CREATE UNIQUE (m)-[r:PUBLISHED]->(n)
 				RETURN r,n,m";
-		return $this->neo->execute_query($query,array('id'=>intval($bookId),'name'=>$publisher_name));
+		return $this->neo->execute_query($query, array('id'=>intval($bookId),'name'=>$publisher_name));
 	}
-	public function set_book()
-	{
+	public function set_book() {
 		$this->load->helper('date');
 		$datestring = "%Y-%m-%d %h:%i %a";
 		$time = time();
@@ -67,7 +59,7 @@ class Book extends CI_Model
 			);
 		return $this->neo->insert('Book',$data);
 	}
-	public function update_book(){
+	public function update_book() {
 		$id=$this->input->post('id');
 		$this->load->helper('date');
 		$datestring = "%Y-%m-%d %h:%i %a";
@@ -87,17 +79,7 @@ class Book extends CI_Model
 			);
 		return $this->neo->update($id,$data);
 	}
-	public function delete($id){
-		$this->neo->remove_node($id);
-	}
-	public function count(){
-		return $this->neo->execute_query("MATCH (n:Book) RETURN count(n) as total");
-	}
-	public function fetch($limit, $skip){
-		return $this->neo->execute_query("MATCH (n:Book) RETURN ID(n) as id, n.title skip {skip} limit {limit};",array('limit'=>intval($limit),'skip'=>intval($skip)));
-	}
-	protected static function fromNode(Everyman\Neo4j\Node $node)
-	{
+	public function fromNode(Everyman\Neo4j\Node $node) {
 		$book = new Book();
 		$book->id=$node->getId();
 		$book->title=$node->getProperty('title');
@@ -111,5 +93,5 @@ class Book extends CI_Model
 		$book->published_date=$node->getProperty('published_date');
 		$book->date_time=$node->getProperty('dateTime');
 		return $book;
-	} 
+	}
 }

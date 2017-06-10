@@ -23,8 +23,9 @@ class Genres extends CI_Controller
 		$this->pagination->initialize($config);
 		
 		$page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
-		
-		$data['results']=$this->genre->fetch($config["per_page"], $page);
+
+		$fields = array('ID(n) as id', 'n.name');
+		$data['results']=$this->genre->fetch($fields, $config["per_page"], $page);
 		$data['links']=$this->pagination->create_links();
 		$this->load->view('admin/templates/header.php',$data);
 		$this->load->view('admin/genre/index.php',$data);

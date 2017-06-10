@@ -22,9 +22,11 @@ class Books extends CI_Controller
 		$this->pagination->initialize($config);
 		
 		$page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+		$fields = array('ID(n) as id','n.title');
 		
-		$data['results']=$this->book->fetch($config["per_page"], $page);
+		$data['results']=$this->book->fetch($fields, $config["per_page"], $page);
 		$data['links']=$this->pagination->create_links();
+		
 		$this->load->view('admin/templates/header.php',$data);
 		$this->load->view('admin/book/index.php',$data);
 		$this->load->view('admin/templates/footer.php');
@@ -55,8 +57,15 @@ class Books extends CI_Controller
 				$publisher=$this->input->post('publisher');
 				// insert book and return id
 				$bookId=$this->book->set_book();
-				$this->book->relate_genre($bookId,$genre);
-				$this->book->relate_author($bookId,$author);
+				
+				$this->book->relate($bookId,$genre,My_Model::GENRE);
+				
+				$this->book->match_and_relate(
+					$bookId,
+					array(ucfrist(My_Model::BOOK), ucfirst(My_Model::AUTHOR)),
+					$author
+					);
+
 				$this->book->relate_publisher($bookId,$publisher);
 				echo 'success';
 				$this->load->view('admin/templates/header.php',$data);
@@ -117,7 +126,7 @@ class Books extends CI_Controller
 				$author=$this->input->post('author');
 				$publisher=$this->input->post('publisher');
 
-				$this->book->relate_genre($book,$genre);
+				$this->book->relate($book,$genre,My_Model::GENRE);
 				$this->book->relate_author($book,$author);
 				$this->book->relate_publisher($book,$publisher);
 				redirect(site_url('admin/books/view/'.$book));

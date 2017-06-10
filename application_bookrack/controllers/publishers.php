@@ -9,7 +9,7 @@ class Publishers extends CI_Controller
 	}
 	public function index($id){
 		$data["title"]="Publisher";
-		$data['publisher']=$this->publisher->get_publisher($id);
+		$data['publisher']=$this->publisher->get($id);
 		$this->load->view('templates/header.php',$data);
 		$this->load->view('publisher/index.php');
 		$this->load->view('templates/footer.php');

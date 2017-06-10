@@ -34,17 +34,13 @@ class Neo {
                 ->setAuth(REMOTE_USER, REMOTE_PASS);
             }
 	}
-    public function __destruct()
-    {
-        $this->client = null;
-    }
     public function add_index($name)
-    {	
-		return $name = new NodeIndex($this->client, $name);
+    {   
+        return $name = new NodeIndex($this->client, $name);
     }
     public function add_to_index($index,$node,$property)
     {
-    	return $index->add($node, $property, $node->getProperty($property));
+        return $index->add($node, $property, $node->getProperty($property));
     }
     public function get_node($id)
     {
@@ -52,7 +48,7 @@ class Neo {
     }
     public function add_node($node,$property,$value)
     {
-    	$node = $this->client->makeNode()->setProperty($property, $value)->save();
+        $node = $this->client->makeNode()->setProperty($property, $value)->save();
     }
     public function remove_node($id)
     {
@@ -98,7 +94,7 @@ class Neo {
     public function add_label($node_id,$name)
     {
         $node = $this->client->getNode($node_id);
-    	$label = $this->client->makeLabel($name);
+        $label = $this->client->makeLabel($name);
         $node->addLabels(array($label));
     }
     public function remove_label($node_id,$name)
@@ -159,7 +155,6 @@ class Neo {
     {
         try{
             $query = new Query($this->client,$query_str,$parameters);
-            //print_r($query);
             return $query->getResultSet();    
         }
         catch(Exception $e){
@@ -174,26 +169,6 @@ class Neo {
                     ->setReturnFilter(Traversal::ReturnAll)
                     ->setMaxDepth($depth);
         return $nodes = $traversal->getResults($startNode, Traversal::ReturnTypeNode);
-    }
-    public function create_book($property,$value)
-    {
-        try
-        {
-            /* creating node index */
-            $books = new NodeIndex($this->client,'Book');
-           /* creating label*/
-            $label = $this->client->makeLabel('Book');
-            /* creating node */
-            $node = $this->client->makeNode()->setProperty($property,$value)->save();
-            /* labeling node */
-            $node->addLabels(array($label));
-            /* adding node to index */
-            $books->add($node, $property, $node->getProperty($property));
-        }
-        catch(Exception $e)
-        {
-            echo $e->getMessage();
-        }
     }
     public function insert($modelName,$data)
     {
@@ -250,6 +225,10 @@ class Neo {
         {
             echo $e->getMessage();   
         }
+    }
+    public function __destruct()
+    {
+        $this->client = null;
     }
 }
 

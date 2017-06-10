@@ -17,8 +17,9 @@ class Users extends CI_Controller
 		{
 			$is_profile_owner=$this->has_current_profile($id);
 			$this->load_user_profile($id,$is_profile_owner);
-		}else
-			$this->load_user_profile($this->session->userdata['user_id'],TRUE);
+		}else{
+			$this->load_user_profile($this->session->userdata('user_id'),TRUE);
+		}
 	}
 	public function edit()
 	{

@@ -22,8 +22,9 @@ class Publishers extends CI_Controller
 		$this->pagination->initialize($config);
 		
 		$page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
-		
-		$data['results']=$this->publisher->fetch($config["per_page"], $page);
+
+		$fields = array('ID(n) as id', 'n.company');
+		$data['results']=$this->publisher->fetch($fields, $config["per_page"], $page);
 		$data['links']=$this->pagination->create_links();
 		$this->load->view('admin/templates/header.php',$data);
 		$this->load->view('admin/publisher/index.php',$data);

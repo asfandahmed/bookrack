@@ -24,7 +24,7 @@ class Site extends CI_Controller
 		$data['title']='Home - '.APP_NAME;
 		$data['user_info']=$this->user->get_basic_info($id);
 
-		$data['folllow_suggestions']=$this->recommendation->friend_suggestions($email);
+		//$data['folllow_suggestions']=$this->recommendation->friend_suggestions($email);
 		$data['book_suggestions']=$this->recommendation->book_suggestions($email);
 		$this->load->view('templates/header.php',$data);
 		$this->load->view('site/home.php',$data);

@@ -22,7 +22,8 @@ class Users extends CI_Controller
 		
 		$page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
 		
-		$data['results']=$this->user->fetch($config["per_page"], $page);
+		$fields = array('ID(n) as id', 'n.first_name +" "+ n.last_name as name');
+		$data['results']=$this->user->fetch($fields, $config["per_page"], $page);
 		$data['links']=$this->pagination->create_links();
 		$this->load->view('admin/templates/header.php',$data);
 		$this->load->view('admin/user/index.php',$data);
