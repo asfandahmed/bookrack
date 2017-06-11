@@ -18,13 +18,16 @@ class Site extends CI_Controller
 		if(!$this->common_functions->is_logged_in())
 			redirect(site_url());
 
-		$this->load->model(array('user','status','recommendation'));
+		$this->load->library('recommendation');
+		$this->load->model(array('user','status'));
+
 		$id=$this->session->userdata('user_id');
 		$email=$this->session->userdata('email');
+		
 		$data['title']='Home - '.APP_NAME;
 		$data['user_info']=$this->user->get_basic_info($id);
 
-		//$data['folllow_suggestions']=$this->recommendation->friend_suggestions($email);
+		$data['folllow_suggestions']=$this->recommendation->friend_suggestions($email);
 		$data['book_suggestions']=$this->recommendation->book_suggestions($email);
 		$this->load->view('templates/header.php',$data);
 		$this->load->view('site/home.php',$data);

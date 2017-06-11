@@ -3,11 +3,10 @@ class Test extends CI_Controller
 {
 	public function __construct(){
 		parent::__construct();
-		$this->load->model('author');
-		$this->load->helper('date');
-		
+		$this->load->library('recommendation');		
 	}
 	public function index() {
-		var_dump($this->author->get(204));
+		$a = $this->recommendation->book_suggestions('asfandahmed1@gmail.com');
+		var_dump($a);
 	}
 }
