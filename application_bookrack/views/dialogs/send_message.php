@@ -28,7 +28,7 @@
                         <div class="col-md-10 col-xs-10">
                             <div class="messages msg_sent">
                                 <p><?=$message->text;?></p>
-                                <time datetime="<?=$message->date_time?>"><?=$message->u1_name;?> • sent <?=$this->common_functions->time_ago($message->date_time)?></time>
+                                <time datetime="<?=$message->date_time?>"><?=$message->u1_name;?> • sent <?=$this->utility_functions->time_ago($message->date_time)?></time>
                             </div>
                         </div>
                         <div class="col-md-2 col-xs-2 avatar">
@@ -43,7 +43,7 @@
                           <div class="col-md-10 col-xs-10">
                               <div class="messages msg_receive">
                                   <p><?=$message->text;?></p>
-                                  <time datetime="<?=$message->date_time?>"><?=$message->u2_name;?> • received <?=$this->common_functions->time_ago($message->date_time)?></time>
+                                  <time datetime="<?=$message->date_time?>"><?=$message->u2_name;?> • received <?=$this->utility_functions->time_ago($message->date_time)?></time>
                               </div>
                           </div>
                       </div>

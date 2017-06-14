@@ -44,7 +44,7 @@
 
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <?php if($this->common_functions->is_logged_in()):?>
+      <?php if($this->utility_functions->is_logged_in()):?>
       <ul class="nav navbar-nav">
         <li <?=($this->router->class=="site")?'class="active"':""?>><a href="<?=site_url('home')?>"><span class="glyphicon glyphicon-home"></span> Home</a></li>
         <li <?=($this->router->class=="notifications")?'class="active"':""?>><a href="<?=site_url('notifications')?>"><span class="glyphicon glyphicon-bell"></span> Notifications</a></li>
@@ -62,7 +62,7 @@
 
       <?php endif;?>
       <ul class="nav navbar-nav navbar-right">
-        <?php if(!$this->common_functions->is_logged_in()):?>
+        <?php if(!$this->utility_functions->is_logged_in()):?>
         <li><a href="<?=site_url('login')?>">Sign in</a></li>
         <li><a href="<?=site_url('register')?>">Sign up</a></li>
         
@@ -85,7 +85,7 @@
 </nav>
 </div>  
 <div class="container-fluid" id="content">
-  <?php if($this->common_functions->is_logged_in()):?>
+  <?php if($this->utility_functions->is_logged_in()):?>
   <div class="row">
     <div class="col-sm-offset-3 col-md-offset-3 col-lg-offset-3 col-sm-5 col-md-5 col-lg-5">
       <ul id="search-results"></ul>

@@ -11,7 +11,7 @@ class Notifications extends CI_Controller
 		parent::__construct();
 		$this->load->model('notification');
 		$this->load->helper(array('url'));
-		$this->load->library(array('common_functions','session'));
+		$this->load->library(array('utility_functions','session'));
 	}
 	/**
 	* Index method for notifications controllers
@@ -32,7 +32,7 @@ class Notifications extends CI_Controller
 	public function check_new()
 	{
 		$data = array('success'=>FALSE,'result'=>array());
-		if($this->common_functions->is_logged_in())
+		if($this->utility_functions->is_logged_in())
 		{
 			$email = $this->session->userdata('email');
 			$data['result'] = $this->notification->check_unread($email);

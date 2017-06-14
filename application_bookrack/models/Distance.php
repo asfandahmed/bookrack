@@ -7,13 +7,13 @@ class Distance extends CI_Model
 		parent::__construct();
 		$this->load->library('neo');
 	}
-	public function get_distance($currentUserId,destinedUserId)
+	public function get_distance($currentUserId, $destinedUserId)
 	{
 		$currentUser=self::get_coordinates($currentUserId);
 		$destinedUser=self::get_coordinates($destinedUserId);
 		return self::calculate_distance($currentUser['latitude'],$currentUser['longitude'],$destinedUser['latitude'],$destinedUser['longitude']);
 	}
-	protected static function convert_distance($dist, $unit="M")
+	public static function convert_distance($dist, $unit="M")
 	{
 		$miles=$dist * 60 * 1.1515;
 		if ($unit == "K") {

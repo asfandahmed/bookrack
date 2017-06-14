@@ -6,7 +6,7 @@ class Authors extends CI_Controller
 		parent::__construct();
 		$this->load->model('author');
 		$this->load->helper(array('url','form'));
-		$this->load->library(array('form_validation','common_functions'));
+		$this->load->library(array('form_validation','utility_functions'));
 		
 	}
 	public function index()
@@ -117,7 +117,7 @@ class Authors extends CI_Controller
 	}
 	public function redirect_user()
 	{
-		if(!$this->common_functions->is_admin()==1)
+		if(!$this->utility_functions->is_admin()==1)
 			redirect(site_url());
 	}
 }

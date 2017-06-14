@@ -7,7 +7,7 @@ class Books extends CI_Controller
 		parent::__construct();
 		$this->load->model(array('book','genre','author'));
 		$this->load->helper(array('url','form'));
-		$this->load->library(array('form_validation','neo','common_functions'));
+		$this->load->library(array('form_validation','neo','utility_functions'));
 	}
 	public function index()
 	{
@@ -176,7 +176,7 @@ class Books extends CI_Controller
 	}
 	public function redirect_user()
 	{
-		if(!$this->common_functions->is_admin()==1)
+		if(!$this->utility_functions->is_admin()==1)
 			redirect(site_url());
 	}
 }

@@ -6,11 +6,11 @@ class Reviews extends CI_Controller
 		parent::__construct();
 		$this->load->helper('url');
 		$this->load->model('review');
-		$this->load->library(array('session','common_functions','form_validation'));
+		$this->load->library(array('session','utility_functions','form_validation'));
 	}
 	public function get_all_reviews($bookId)
 	{
-		if($this->common_functions->is_logged_in())
+		if($this->utility_functions->is_logged_in())
 		{
 			$limit=20;
 			$skip=0;

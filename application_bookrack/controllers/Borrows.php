@@ -4,14 +4,14 @@ class Borrows extends CI_Controller
 	function __construct()
 	{
 		parent::__construct();
-		$this->load->library(array('common_functions','form_validation','session'));
+		$this->load->library(array('utility_functions','form_validation','session'));
 		$this->load->helper(array('url'));
 		$this->load->model(array('borrow','notification'));
 	}
 	public function index()
 	{
 
-		if($this->common_functions->is_logged_in())
+		if($this->utility_functions->is_logged_in())
 		{
 			$data['title']='Borrow requests - '.APP_NAME;
 			$this->load->view('templates/header.php',$data);
@@ -20,7 +20,7 @@ class Borrows extends CI_Controller
 		}
 	}
 	public function loadsent($skip,$limit){
-		if($this->common_functions->is_logged_in()){
+		if($this->utility_functions->is_logged_in()){
 			$email=$this->session->userdata('email');
 			$skip=is_numeric($skip) ? $skip : die($skip);
 			$limit=is_numeric($limit) ? $limit : die($limit);
@@ -29,7 +29,7 @@ class Borrows extends CI_Controller
 		}
 	}
 	public function loadreceived($skip,$limit){
-		if($this->common_functions->is_logged_in()){
+		if($this->utility_functions->is_logged_in()){
 			$email=$this->session->userdata('email');
 			$skip=is_numeric($skip) ? $skip : die($skip);
 			$limit=is_numeric($limit) ? $limit : die($limit);
@@ -39,7 +39,7 @@ class Borrows extends CI_Controller
 	}
 	public function insert()
 	{
-		if($this->common_functions->is_logged_in())
+		if($this->utility_functions->is_logged_in())
 		{
 			$id = $this->session->userdata('user_id');
 			$to = $this->input->post('to');
@@ -52,7 +52,7 @@ class Borrows extends CI_Controller
 	}
 	public function approve($id="")
 	{
-		if($this->common_functions->is_logged_in())
+		if($this->utility_functions->is_logged_in())
 		{
 			$data=array();
 			if($id>0){
@@ -65,7 +65,7 @@ class Borrows extends CI_Controller
 	}
 	public function ignore($id="")
 	{
-		if($this->common_functions->is_logged_in())
+		if($this->utility_functions->is_logged_in())
 		{
 			$data=array();
 			if($id>0){
@@ -78,7 +78,7 @@ class Borrows extends CI_Controller
 	}
 	public function cancel($id="")
 	{
-		if($this->common_functions->is_logged_in())
+		if($this->utility_functions->is_logged_in())
 		{	
 			$data=array();
 			if($id>0){

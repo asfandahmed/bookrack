@@ -6,11 +6,11 @@ class Users extends CI_Controller
 		parent::__construct();
 		$this->load->model(array('user','status','notification'));
 		$this->load->helper(array('url','form'));
-		$this->load->library(array('common_functions','session','form_validation','pagination'));
+		$this->load->library(array('utility_functions','session','form_validation','pagination'));
 	}
 	public function index($id="")
 	{
-		if(!$this->common_functions->is_logged_in())
+		if(!$this->utility_functions->is_logged_in())
 			redirect(site_url());
 		
 		if(intval($id)>0)
@@ -23,7 +23,7 @@ class Users extends CI_Controller
 	}
 	public function edit()
 	{
-		if(!$this->common_functions->is_logged_in())
+		if(!$this->utility_functions->is_logged_in())
 			redirect(site_url());
 
 		$data['title'] = "Edit profile";
@@ -59,7 +59,7 @@ class Users extends CI_Controller
 	}
 	public function followers($id="")
 	{
-		if(!$this->common_functions->is_logged_in())
+		if(!$this->utility_functions->is_logged_in())
 			redirect(site_url());
 		
 		if(intval($id)>0)
@@ -71,7 +71,7 @@ class Users extends CI_Controller
 	}
 	public function following($id="")
 	{
-		if(!$this->common_functions->is_logged_in())
+		if(!$this->utility_functions->is_logged_in())
 			redirect(site_url());
 		
 		if(intval($id)>0)
@@ -83,7 +83,7 @@ class Users extends CI_Controller
 	}
 	public function shelf($id="")
 	{
-		if(!$this->common_functions->is_logged_in())
+		if(!$this->utility_functions->is_logged_in())
 			redirect(site_url());
 		
 		if(intval($id)>0)
@@ -95,7 +95,7 @@ class Users extends CI_Controller
 	}
 	public function wishlist($id="")
 	{
-		if(!$this->common_functions->is_logged_in())
+		if(!$this->utility_functions->is_logged_in())
 			redirect(site_url());
 
 		if(intval($id)>0)

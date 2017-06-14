@@ -94,7 +94,7 @@
 
 
                     <div id="respond">
-                    <?php if($this->common_functions->is_logged_in()):?>
+                    <?php if($this->utility_functions->is_logged_in()):?>
                     <h3 id="reply-title">Post a Review</h3>
                     <?php echo form_open(site_url('post/review'),array('method'=>'post','id'=>'commentform'))?>
                         <input type="hidden" name="strrv" value="<?=sha1($book->id)?>">

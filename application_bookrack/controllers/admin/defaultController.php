@@ -4,7 +4,7 @@ class DefaultController extends CI_Controller
 	public function __construct(){
 		parent::__construct();
 		$this->load->helper(array('url'));
-		$this->load->library('common_functions');
+		$this->load->library('utility_functions');
 	}
 	public function index()
 	{
@@ -17,7 +17,7 @@ class DefaultController extends CI_Controller
 	}
 	public function redirect_user()
 	{
-		if(!$this->common_functions->is_admin()==1)
+		if(!$this->utility_functions->is_admin()==1)
 			redirect(site_url());
 	}
 }

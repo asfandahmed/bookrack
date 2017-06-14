@@ -11,7 +11,7 @@ Class Statuses extends CI_Controller{
 		parent::__construct();
 		$this->load->model(array('status','user'));
 		$this->load->helper(array('url','form'));
-		$this->load->library(array('common_functions','form_validation','session'));
+		$this->load->library(array('utility_functions','form_validation','session'));
 	}
 	public function post()
 	{
@@ -35,7 +35,7 @@ Class Statuses extends CI_Controller{
 	}
 	public function loadContent($skip,$limit)
 	{
-		if($this->common_functions->is_logged_in())
+		if($this->utility_functions->is_logged_in())
 		{
 			$profile = FALSE;
 			if($this->uri->segment(2)=="profile")

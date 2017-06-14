@@ -4,13 +4,13 @@ class Searches extends CI_Controller
 	function __construct()
 	{
 		parent::__construct();
-		$this->load->library(array('common_functions','form_validation'));
+		$this->load->library(array('utility_functions','form_validation'));
 		$this->load->helper(array('url'));
 		$this->load->model(array('search'));
 	}
 	public function index()
 	{
-		if(!$this->common_functions->is_logged_in())
+		if(!$this->utility_functions->is_logged_in())
 			redirect(site_url());
 
 		$keywords=$this->input->get('search',TRUE);
@@ -28,7 +28,7 @@ class Searches extends CI_Controller
 
 	}
 	public function get_results($keywords="",$filters="anything",$skip=0,$limit=10){
-		if($this->common_functions->is_logged_in())
+		if($this->utility_functions->is_logged_in())
 		{			
 			$keywords = urldecode($keywords);
 			$filters = urldecode($filters);
@@ -40,7 +40,7 @@ class Searches extends CI_Controller
 	}
 	public function nearest_users($id,$title)
 	{
-		if(!$this->common_functions->is_logged_in())
+		if(!$this->utility_functions->is_logged_in())
 			redirect(site_url());
 
 		$title = urldecode($title);
@@ -65,7 +65,7 @@ class Searches extends CI_Controller
 	}
 	public function load_nearest_users($id,$title,$skip,$limit)
 	{
-		if($this->common_functions->is_logged_in())
+		if($this->utility_functions->is_logged_in())
 		{
 			$email=$this->session->userdata('email');
 			if ($this->search->check_lat_lon($email))

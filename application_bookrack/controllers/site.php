@@ -10,12 +10,12 @@ class Site extends CI_Controller
 	{
 		parent::__construct();
 		$this->load->helper(array('form','url'));
-		$this->load->library(array('session','common_functions','form_validation'));
+		$this->load->library(array('session','utility_functions','form_validation'));
 	}
 	public function home()
 	{
 		//$this->output->enable_profiler(TRUE);
-		if(!$this->common_functions->is_logged_in())
+		if(!$this->utility_functions->is_logged_in())
 			redirect(site_url());
 
 		$this->load->library('recommendation');
@@ -36,7 +36,7 @@ class Site extends CI_Controller
 	}
 	public function index()
 	{
-		if($this->common_functions->is_logged_in())
+		if($this->utility_functions->is_logged_in())
 			redirect(site_url('/home'));
 		
 		$data['title'] = APP_NAME;
@@ -48,7 +48,7 @@ class Site extends CI_Controller
 	}
 	public function login()
 	{
-		if($this->common_functions->is_logged_in())
+		if($this->utility_functions->is_logged_in())
 			redirect(site_url('/home'));
 		
 		$this->form_validation->set_rules('email', 'Email', 'trim|required|max_length[60]');
@@ -80,7 +80,7 @@ class Site extends CI_Controller
 	}
 	public function logout()
 	{
-		if(!$this->common_functions->is_logged_in())
+		if(!$this->utility_functions->is_logged_in())
 			redirect(site_url());
 
 		$this->session->sess_destroy();
@@ -88,7 +88,7 @@ class Site extends CI_Controller
 	}
 	public function register()
 	{
-		if($this->common_functions->is_logged_in())
+		if($this->utility_functions->is_logged_in())
 			redirect(site_url('/home'));
 
 		$data['title']='Sign up - '.APP_NAME;
@@ -133,7 +133,7 @@ class Site extends CI_Controller
 	}
 	public function about(){
 		$data['title'] = 'About - '.APP_NAME;
-		if($this->common_functions->is_logged_in()){
+		if($this->utility_functions->is_logged_in()){
 			$this->load->view('templates/header.php', $data);
 			$this->load->view('site/about.php', $data);
 			$this->load->view('templates/footer.php');	
@@ -146,7 +146,7 @@ class Site extends CI_Controller
 	}
 	public function privacy(){
 		$data['title'] = 'Privacy - '.APP_NAME;
-		if($this->common_functions->is_logged_in()){
+		if($this->utility_functions->is_logged_in()){
 			$this->load->view('templates/header.php', $data);
 			$this->load->view('site/privacy.php', $data);
 			$this->load->view('templates/footer.php');	
@@ -158,7 +158,7 @@ class Site extends CI_Controller
 	}
 	public function help(){
 		$data['title'] = 'Help - '.APP_NAME;
-		if($this->common_functions->is_logged_in()){
+		if($this->utility_functions->is_logged_in()){
 			$this->load->view('templates/header.php', $data);
 			$this->load->view('site/help.php', $data);
 			$this->load->view('templates/footer.php');	
@@ -170,7 +170,7 @@ class Site extends CI_Controller
 	}
 	public function feedback(){
 		$data['title'] = 'Feedback - '.APP_NAME;
-		if($this->common_functions->is_logged_in()){
+		if($this->utility_functions->is_logged_in()){
 			$this->load->view('templates/header.php', $data);
 			$this->load->view('site/feedback.php', $data);
 			$this->load->view('templates/footer.php');	
@@ -182,7 +182,7 @@ class Site extends CI_Controller
 	}
 	public function advertise(){
 		$data['title'] = 'Advertise - '.APP_NAME;
-		if($this->common_functions->is_logged_in()){
+		if($this->utility_functions->is_logged_in()){
 			$this->load->view('templates/header.php', $data);
 			$this->load->view('site/advertise.php', $data);
 			$this->load->view('templates/footer.php');	
