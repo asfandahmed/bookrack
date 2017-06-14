@@ -14,7 +14,7 @@ class Comments extends CI_Controller
 		{
 			$limit=20;
 			$skip=0;
-			$data['comments'] = $this->comment->getContent($postId,$skip,$limit);
+			$data['comments'] = $this->comment->get_comments($postId,$skip,$limit);
 			$this->load->view('dialogs/comments.php',$data);
 		}
 	}
