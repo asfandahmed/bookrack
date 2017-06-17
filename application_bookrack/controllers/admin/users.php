@@ -76,7 +76,6 @@ class Users extends CI_Controller
 		else
 		{
 			$this->user->update_user();
-			echo "success";
 			$this->load->view('admin/templates/header.php',$data);
 			$this->load->view('admin/user/form.php');
 			$this->load->view('admin/templates/footer.php');

@@ -26,10 +26,10 @@ class Comment extends CI_Model
             'commentId'=> uniqid(),
             'userId'=>$userId,
             'commentText'=>$text,
-            'dateTime'=>time(),
+            'timestamp'=>time(),
             );
         $result = $this->linked_list->add('Status', 'statusId', $statusId, get_class(), $comment);
-        return isset($result->current()['m']) ? $this->FromNode($result->current()['m']) : NULL;        
+        return $this->return_mapped_content($result);
     }
     public function get_comments($status_id, $skip=0, $limit=5){
         $results = $this->linked_list->get_content('Status','statusId',$status_id, get_class(), $skip, $limit);
@@ -48,7 +48,7 @@ class Comment extends CI_Model
         return $comment;
     }
     
-	protected static function return_mapped_content(Everyman\Neo4j\Query\ResultSet $results)
+	public function return_mapped_content(Everyman\Neo4j\Query\ResultSet $results)
     {
         $mappedContentArray = array();
         foreach($results as $row) {

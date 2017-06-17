@@ -151,10 +151,10 @@ class Neo {
         }
 
     }
-    public function execute_query($query_str,$parameters=array())
+    public function execute_query($query_str, $parameters=array())
     {
         try{
-            $query = new Query($this->client,$query_str,$parameters);
+            $query = new Query($this->client, $query_str, $parameters);
             return $query->getResultSet();    
         }
         catch(Exception $e){

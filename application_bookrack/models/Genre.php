@@ -31,4 +31,11 @@ class Genre extends MY_Model
 			);
 		$this->neo->update($id,$data);	
 	}
+	public function fromNode(Everyman\Neo4j\Node $node)
+	{
+		$genre = new Genre;
+		$genre->id=$node->getId();
+		$genre->name=$node->getProperty('name');
+		return $genre;
+	}
 }

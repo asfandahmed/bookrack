@@ -37,7 +37,7 @@ class Author extends MY_Model
 			);
 		$this->neo->update($id,$data);
 	}
-	protected function fromNode(Everyman\Neo4j\Node $node){
+	public function fromNode(Everyman\Neo4j\Node $node){
 		$author = new Author();
 		$author->id=$node->getId();
 		$author->name=$node->getProperty('name');

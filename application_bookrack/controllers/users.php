@@ -1,7 +1,7 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 class Users extends CI_Controller
 {
-	function __construct()
+	public function __construct()
 	{
 		parent::__construct();
 		$this->load->model(array('user','status','notification'));
@@ -202,8 +202,10 @@ class Users extends CI_Controller
 		}
 		else
 		{
-			$this->load->model('Status');
-			$data=$this->user->add_to_shelf($id);
+			$this->load->model('status');
+			$this->load->model('shelf');
+			$title = "abc";
+			$data=$this->shelf->add_book($id, $title);
 			// post status on timeline
 			$status = new Status();
 			$email = $this->session->userdata('email');

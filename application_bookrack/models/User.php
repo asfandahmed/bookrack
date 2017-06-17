@@ -39,45 +39,24 @@ class User extends MY_Model
 	public function update_user_properties($id,$data){
 		$this->CI->neo->update($id,$data);
 	}
-	public function set_user(){
-		$time = time();
-		$regDate = time();
-		$admin=$this->input->post('admin');
-		if(empty($admin))
-			$admin=0;
-		$data = array(
-			'first_name'=>$this->input->post('first_name'),
-			'last_name'=>$this->input->post('last_name'),
-			'email'=>$this->input->post('email'),
-			'password'=>sha1($this->input->post('password')),
-			'dob'=>$this->input->post('dob'),
-			'about'=>$this->input->post('about'),
-			'location'=>'',
-			'ip_address'=>$this->input->ip_address(),
-			'profile_url'=>'',
-			'profile_image'=>'user-pic.jpg',
-			'skype'=>$this->input->post('skype'),
-			'facebook'=>$this->input->post('facebook'),
-			'twitter'=>$this->input->post('twitter'),
-			'googlePlus'=>$this->input->post('googlePlus'),
-			'verified_email'=>$this->input->post('verified_email'),
-			'verified_account'=>$this->input->post('verified_account'),
-			'register_date'=>$regDate,
-			'last_login'=>$regDate,
-			'is_admin'=>$admin,
-			'active'=>$this->input->post('active'),
-			);
+	public function set_user()
+	{	
+		$data = $this->set_input_values();
 		return $this->CI->neo->insert('User',$data);
 	}
-	public function update_user(){
-		$id=$this->input->post('id');
+	public function update_user()
+	{
+		$id = $this->input->post('id');
+		$data = $this->set_input_values();
+		return $this->CI->neo->update($id,$data);	
+	}
+	public function set_input_values(){
 		$admin=$this->input->post('admin');
-		if(empty($admin))
+		if(empty($admin)){
 			$admin=0;
-		$datestring = "%Y-%m-%d %h:%i %a";
+		}
 		$time = time();
-		$regDate=mdate($datestring, $time);
-		$data = array(
+		return array(
 			'first_name'=>$this->input->post('first_name'),
 			'last_name'=>$this->input->post('last_name'),
 			'email'=>$this->input->post('email'),
@@ -92,16 +71,19 @@ class User extends MY_Model
 			'googlePlus'=>$this->input->post('googlePlus'),
 			'verified_email'=>$this->input->post('verified_email'),
 			'verified_account'=>$this->input->post('verified_account'),
-			'register_date'=>$regDate,
-			'last_login'=>$regDate,
+			'register_date'=>$time,
+			'last_login'=>$time,
 			'is_admin'=>$admin,
 			'active'=>$this->input->post('active'),
 			);
-		return $this->CI->neo->update($id,$data);	
 	}
 	public function check_user_exists($email)
 	{
-			$result=$this->CI->neo->execute_query("MATCH (n:User {email:{email}}) RETURN ID(n) AS id, n.first_name, n.last_name, n.password, n.is_admin, n.profile_image, n.username LIMIT 1",array('email'=>$email));
+			$cypher = "MATCH (n:User {email:{email}}) RETURN ID(n) AS id, n.first_name, n.last_name, n.password, n.is_admin, n.profile_image, n.username LIMIT 1";
+			$result=$this->CI->neo->execute_query($cypher, array(
+				'email'=>$email
+				)
+			);
 			if(isset($result[0]))
 				return $result;
 			return false;
@@ -127,16 +109,7 @@ class User extends MY_Model
         );
         return $query->getResultSet();
 	}
-	public function add_user_relation($n1,$n2,$relationName,$data)
-	{
-		$this->CI->neo->add_relation($n1,$n2,$relationName,$data);
-	}
-	public function get_user_relations($id,$relations)
-	{	
-	}
-	public function remove_user_relation($id)
-	{
-	}
+	
 	public function get_basic_info($id)
 	{
 		$result=array();
@@ -163,52 +136,28 @@ class User extends MY_Model
 		return $result=$this->CI->neo->execute_query($query,array('id'=>intval($id)));
 	}
 	
-	public function add_to_shelf($userId)
-	{
-		$name=$this->input->post('add_shelf');
-		$query="MATCH (n:User)
-				WHERE ID(n) = {id} 
-				MERGE (m:Book {title:{name}})
-				CREATE UNIQUE (n)-[r:OWNS]->(m)
-				RETURN r,n,m";
-		return $this->CI->neo->execute_query($query,array('id'=>intval($userId),'name'=>$name));
-	}
-	public function add_to_wishlist($userId)
-	{
-		$name=$this->input->post('add_wishlist');
-		$query="MATCH (n:User)
-				WHERE ID(n) = {id}
-				MERGE (m:Book {title:{name}})
-				CREATE UNIQUE (n)-[r:WISHES]->(m)
-				RETURN r,n,m";
-		return $this->CI->neo->execute_query($query,array('id'=>intval($userId),'name'=>$name));
-	}
+
 	public function get_books($id,$type){
+		$books=array();
 		switch ($type) {
-			case "OWNS": // owns
-				$query="START a=node({id}) 
-						MATCH (a)-[r:OWNS]->(b:Book)
-						WITH b
-						OPTIONAL MATCH (b)-[:GENRE]->(g)
-						WITH b,g 
-						RETURN b, collect(g.name) as genre";		
+			case "OWNS": 
+				$this->CI->load->model('shelf');
+				$books = $this->CI->shelf->get($id);
 				break;
-			case "WISHES": // wishes
-				$query="START a=node({id}) MATCH (a)-[r:WISHES]->(b:Book) 
-						WITH b
-						OPTIONAL MATCH (b)-[:GENRE]->(g:Genre)
-						WITH b,g 
-						RETURN b, collect(g.name) as genre";		
+			case "WISHES": 
+				$this->CI->load->model('wishlist');
+				$books = $this->CI->wishlist->get($id);
+				break;
+			case "FAVORITES": 
+				$this->CI->load->model('favorite');
+				$books = $this->CI->favorite->get($id);
 				break;
 			default:
-				$query="START a=node({id}) MATCH (a)-[r:OWNS]->(b:Book) 
-						WITH b
-						OPTIONAL MATCH (b)-[:GENRE]->(g:Genre)
-						WITH b,g 
-						RETURN b, collect(g.name) as genre";
+				$this->CI->load->model('shelf');
+				$books = $this->CI->shelf->get($id);
 				break;
 		}		
-		return $this->CI->neo->execute_query($query,array('id'=>intval($id)));
+		return $books;
 	}
 	
 	public function fromNode(Everyman\Neo4j\Node $node){

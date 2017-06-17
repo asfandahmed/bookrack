@@ -44,7 +44,7 @@ Class Statuses extends CI_Controller{
 			$email=$this->session->userdata('email');
 			$skip=is_numeric($skip) ? $skip : die($skip);
 			$limit=is_numeric($limit) ? $limit : die($limit);	
-			$data['posts']=$this->status->getContent($email,$skip,$limit,$profile);
+			$data['posts']=$this->status->get_statuses($email, $skip, $limit);
 			$this->load->view('post/post.php',$data);	
 		}
 		
