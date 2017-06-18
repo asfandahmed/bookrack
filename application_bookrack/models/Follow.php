@@ -51,7 +51,7 @@ class Follow{
 	}
 	public function count_followers($id)
 	{
-		$cypher = "START n=node({id}) MATCH (n)<-[r:FOLLOWS]-() RETURN COUNT(r) AS followers";
+		$cypher = "START n=node({id}) MATCH (n)<-[r:FOLLOWS]-() WHERE r.approved = 1 RETURN COUNT(r) AS followers";
 		return $this->CI->neo->execute_query($cypher, array(
 			'id'=>intval($id)
 			)
@@ -59,7 +59,7 @@ class Follow{
 	}
 	public function count_following($id)
 	{
-		$cypher = "START n=node({id}) MATCH (n)-[r:FOLLOWS]->() RETURN COUNT(r) AS following";
+		$cypher = "START n=node({id}) MATCH (n)-[r:FOLLOWS]->() WHERE r.approved = 1 RETURN COUNT(r) AS following";
 		return $this->CI->neo->execute_query($cypher, array(
 			'id'=>intval($id)
 			)
